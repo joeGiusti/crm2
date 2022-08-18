@@ -141,3 +141,5 @@ infinite scroll
   notes
 
 image upload progress bar
+
+hilight today on calendar

@@ -37,7 +37,7 @@
     color: white;
 }
 .eventDarkGreen{
-    border: 2px solid rgb(18, 74, 18, .5);
+    border: 1px solid rgb(18, 74, 18, .5);
     color: rgba(255, 255, 255, 0.5);
 }
 .eventGreen:hover{
@@ -68,17 +68,17 @@
     }
 }
 .eventYellow{
-    border: 2px solid rgba(255, 248, 38, 0.5);
+    border: 1px solid rgba(255, 248, 38, 0.5);
 }
 .eventOrange{
-    border: 2px solid rgba(255, 179, 16, 0.5);
+    border: 1px solid rgba(255, 179, 16, 0.5);
 }
 .eventBlue{
-    border: 2px solid rgba(24, 76, 249, 0.5);
+    border: 1px solid rgba(24, 76, 249, 0.5);
 }
 .eventLightBlue{
-    border: 2px solid rgba(66, 182, 255, 0.5);
+    border: 1px solid rgba(66, 182, 255, 0.5);
 }
 .eventGray{
-    border: 2px solid rgba(99, 106, 129, 0.867);
+    border: 1px solid rgba(99, 106, 129, 0.867);
 }

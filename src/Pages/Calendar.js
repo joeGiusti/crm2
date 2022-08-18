@@ -11,6 +11,7 @@ function Calendar(props) {
   const [dayOfFocus, setDayOfFocus] = useState(moment().clone())
   const [displayEventMenu, setDisplaEventMenu] = useState(false)
   const [calendarArray, setCalendarArray] = useState([])
+  const [selectedEvent, setSelectedEvent] = useState(null)
 
   useEffect(()=>{
     refreshCalendar(moment().clone())
@@ -84,6 +85,9 @@ function Calendar(props) {
           <div>
             <EventMenu
               setOpen={closeMenu}
+              selectedEvent={selectedEvent}
+              NumbersToString={props.NumbersToString}
+              contactsArray={props.contactsArray}
             ></EventMenu>
           </div>
         }
@@ -96,6 +100,7 @@ function Calendar(props) {
             setSelectedDay={()=>{}}
             contactData={props.contactData}
             NumbersToString={props.NumbersToString}
+            setSelectedEvent={setSelectedEvent}
           >
           </Day>
         ))}

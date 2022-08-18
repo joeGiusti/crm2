@@ -10,7 +10,6 @@ import Settings from './Pages/Settings'
 import "./Styles/Vars.css"
 import Sidebar from './Components/Sidebar';
 import ContactMenu from './Components/ContactMenu';
-import EventMenu from './Components/EventMenu';
 import ImageDetail from './Components/ImageDetail';
 import { initializeApp } from 'firebase/app'
 import { getDatabase, onValue, ref, set, push, update } from 'firebase/database'
@@ -151,6 +150,7 @@ function App() {
           contactData={contactData}
           eventArray={evenstArray}
           NumbersToString={NumbersToString}
+          contactsArray={contactsArray}
         ></Calendar>
       )
     if(page === "contacts")

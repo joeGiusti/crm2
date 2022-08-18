@@ -1,7 +1,8 @@
 .App{
     --background-color: rgba(30, 30, 50, 0.798);
     --background-color2: rgba(30, 30, 50, 0.95);
-    --background-hover: rgba(52, 60, 104, 0.49)
+    --background-hover: rgba(52, 60, 104, 0.49);
+    --background-hover: rgba(43, 43, 71, 0.9);
 }
 div{
     box-sizing: border-box;
