@@ -92,6 +92,7 @@ select{
   position: absolute;
   top: 10px;    
   width: 95%;  
+  user-select: none;
 }
 .abp{
   line-height: 30px;
@@ -102,4 +103,13 @@ select{
 .arrow{
   width: 30px;
   user-select: none;
+}
+.shadowHilight{
+  color: rgba(255, 255, 255, 0.604);
+  transition: 500ms;
+}
+.shadowHilight:hover{
+  color: white;
+  transition: 0ms;
+  box-shadow: 0px 0px 5px rgba(84, 112, 234, 0.502);  
 }

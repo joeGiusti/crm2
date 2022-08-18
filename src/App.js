@@ -22,11 +22,11 @@ function App() {
   // #region
   const [page, setPage] = useState("calendar")
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [displayContactMenu, setDisplayContactMenu] = useState(false)
-  const [displayEventMenu, setDisplaEventMenu] = useState(false)
+  const [displayContactMenu, setDisplayContactMenu] = useState(false)  
   const [displayImageDetail, setDisplayImageDetail] = useState(false)
   const [contactsArray, setContactsArray] = useState([])
   const [search, setSearch] = useState("")
+  const [evenstArray, setEventsArray] = useState([])
   const [selectedContact, setSelectedContact] = useState({
     name: "",
     key: "",
@@ -36,6 +36,14 @@ function App() {
     urlList: [], 
     archived: false,
   })
+  const [selectedDay, setSelectedDay] = useState({
+    color:"",
+    date:null,
+    imageKey:null,
+    key:null,
+    name:"",
+    notes:"",
+  })
   const tabDown = useRef(false)
   const firebase = useRef(null)
 
@@ -43,6 +51,7 @@ function App() {
     setUpKeyListener()
     setBackground("https://i.ytimg.com/vi/Y1qQZbTF8iQ/maxresdefault.jpg")
     firebaseSetup()
+    loadEventsArray()
   },[])
 
   function  firebaseSetup() {
@@ -136,8 +145,12 @@ function App() {
   function DisplayPage(){    
     if(page === "calendar")
       return(
-        <Calendar
-          openMenu={setDisplaEventMenu}
+        <Calendar          
+          firebase={firebase}
+          setSelectedDay={setSelectedDay}
+          contactData={contactData}
+          eventArray={evenstArray}
+          NumbersToString={NumbersToString}
         ></Calendar>
       )
     if(page === "contacts")
@@ -183,7 +196,7 @@ function App() {
   }
 
   function openEvent(_id){
-    setDisplaEventMenu(true)
+    // //setDisplaEventMenu(true)
   }
 
   function openContact(_id){
@@ -218,7 +231,7 @@ function App() {
   }
   function closeAll(){
     // close all windows and sidebar
-    setDisplaEventMenu(false)
+    //setDisplaEventMenu(false)
     setDisplayContactMenu(false)
     setSidebarOpen(false)
   }
@@ -276,7 +289,17 @@ function App() {
     })
     return tempArray
   }
-
+  function loadEventsArray(){
+    if(firebase.current)
+      onValue(ref(firebase.current.db, "events"), eventsSnap => {
+        var tempArray = []
+        console.log("eventsSnap: ")
+        eventsSnap.forEach(eventSnap => {
+          tempArray.push(eventSnap.val())
+        })
+        setEventsArray(tempArray)
+      })
+  }
   // #endregion
   
   //\\// ==================== ==================== Save / Delete ==================== ==================== \\//\\
@@ -343,7 +366,21 @@ function App() {
       )
     })
   }
-
+  function contactData(_key){
+    if(_key == "None")
+      return {name:""}
+    //console.log("looking through "+contactsArray.length+" contacts for "+_key)
+    var tempContactData = {name:""}
+    contactsArray.forEach(contact => {     
+      // console.log(contact.key + " =? " + _key) 
+      if(contact.key == _key){
+        //console.log("found it")
+        tempContactData = contact        
+      }
+    })
+    //console.log("returning "+tempContactData)
+    return tempContactData
+  }
   // #endregion
 
   return (
@@ -365,13 +402,8 @@ function App() {
             selectedContact={selectedContact}
             firebase={firebase}
             StringToNumbers={StringToNumbers}
-          ></ContactMenu>}
-        {displayEventMenu &&
-          <EventMenu
-            setOpen={setDisplaEventMenu}
-            open={displayEventMenu}
-            displayImages={displayImages}
-          ></EventMenu>}
+          ></ContactMenu>
+        }        
         {displayImageDetail &&
           <ImageDetail></ImageDetail>
         }

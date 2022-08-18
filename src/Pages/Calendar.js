@@ -3,39 +3,75 @@ import "../Styles/Calendar.css"
 import Day from '../Components/Day'
 import moment from "moment"
 import ArrowButtons from '../Components/ArrowButtons'
+import {onValue, ref} from 'firebase/database'
+import EventMenu from '../Components/EventMenu'
+
 function Calendar(props) {
 
-  const [monthArray, setMonthArray] = useState([])
   const [dayOfFocus, setDayOfFocus] = useState(moment().clone())
+  const [displayEventMenu, setDisplaEventMenu] = useState(false)
+  const [calendarArray, setCalendarArray] = useState([])
 
   useEffect(()=>{
-    setMonthArray(createMonthArray(moment().clone()))
-  },[])
+    refreshCalendar(moment().clone())
+  },[props.eventArray])
 
   function nextMonth(){
     var newDay = dayOfFocus.clone().add(1, "month")
+    refreshCalendar(newDay)
     setDayOfFocus(newDay)
-    setMonthArray(createMonthArray(newDay))
   }
-  function lastMonth(){
+  function lastMonth(){    
     var newDay = dayOfFocus.clone().subtract(1, "month")
+    refreshCalendar(newDay)
     setDayOfFocus(newDay)
-    setMonthArray(createMonthArray(newDay))
   }
 
-  function createMonthArray(day){    
-    if(!day)
-      day = moment().clone()    
-    var start = day.clone().startOf("month").startOf("week")
+  function refreshCalendar(_day){    
+    setCalendarArray(createCalendarArray(createMonthArray(_day), props.eventArray))
+  }
+
+  function createMonthArray(_day){        
+
+    if(!_day)
+      _day = moment().clone()    
+    var start = _day.clone().startOf("month").startOf("week")
     var counter = start.clone()
-    var end = day.clone().endOf("month").endOf("week").add(1,"day")
-    var dayArray = []
+    var end = _day.clone().endOf("month").endOf("week").add(1,"day")
+    
+    var tempArray = []
     while(counter.isBefore(end, "day"))
-      dayArray.push(counter.add(1, "day").clone())
+      tempArray.push({
+        moment: counter.add(1, "day").clone(), 
+        events: [],
+      })
 
-    return dayArray
+    return tempArray
   }
 
+  function createCalendarArray(_monthArray, _eventArray){
+    
+    var temCalendarArray = [..._monthArray]
+    temCalendarArray.forEach(dayData => {
+      _eventArray.forEach(eventData => {
+        if(dayData.moment.isSame(eventData.date, "day") && dayData.moment.isSame(eventData.date, "month"))
+          dayData.events.push(eventData)
+      })
+    })
+
+    return temCalendarArray
+  }
+
+  function openMenu(){
+    console.log("opening menu")
+    setDisplaEventMenu(true)
+    //console.log(displayEventMenu)
+  }
+  function closeMenu(){
+    console.log("closing menu")
+    setDisplaEventMenu(false)
+    //console.log(displayEventMenu)
+  }
 
   return (
     <div className='calendar'>
@@ -44,11 +80,22 @@ function Calendar(props) {
           arrowLeft={lastMonth}
           arrowRight={nextMonth}
         ></ArrowButtons>
-        {monthArray.map((dayData, index) => (          
+        {displayEventMenu &&         
+          <div>
+            <EventMenu
+              setOpen={closeMenu}
+            ></EventMenu>
+          </div>
+        }
+        {calendarArray.map((dayData, index) => (          
           <Day
             dayData={dayData}
             index={index}
-            openMenu={props.openMenu}
+            openMenu={openMenu}
+            // setSelectedDay={props.setSelectedDay}
+            setSelectedDay={()=>{}}
+            contactData={props.contactData}
+            NumbersToString={props.NumbersToString}
           >
           </Day>
         ))}

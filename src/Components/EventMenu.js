@@ -3,7 +3,7 @@ import ContactMenu from './ContactMenu'
 function EventMenu(props) {
   return (
     <>
-        { props.open &&  
+        { 
             <div className='box2 menuBox blueGlow eventMenu'>
                 <div className='closeButton' onClick={()=>props.setOpen(false)}>x</div>
                 <div className='leftDiv'>

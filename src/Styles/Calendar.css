@@ -18,3 +18,67 @@
     border: 5px solid rgba(6, 4, 20, 0.0);
     margin: 0.5px;    
 }
+.event{
+    height: 20px;
+    max-width: 100%;
+    border: 1px solid rgba(107, 107, 237, 0.337);
+    overflow: hidden;    
+    color: rgba(255, 255, 255, 0.704);
+    margin: 5px;
+    transition: 2000ms;
+    border-radius: 2px;
+}
+.event:hover{
+    box-shadow: 0 0 10px rgba(107, 107, 237, 0.505);    
+    transition: 100ms;
+}
+.eventGreen{
+    border: 2px solid green;
+    color: white;
+}
+.eventDarkGreen{
+    border: 2px solid rgb(18, 74, 18, .5);
+    color: rgba(255, 255, 255, 0.5);
+}
+.eventGreen:hover{
+    border: 2px solid rgba(38, 255, 38, 0.867);
+    box-shadow: 0 0 10px rgba(0, 128, 0, 0.997);
+}
+.eventLightGreen{
+    background-color: rgba(0, 255, 0, 0.672);    
+    color: white;
+    font-weight: bold;    
+    animation-name: goldGlow;
+    animation-duration: 10s;
+    animation-iteration-count: infinite;
+}
+.eventLightGreen:hover{
+    background-color: rgb(41, 255, 41);   
+    box-shadow: 0 0 10px gold;
+}
+@keyframes goldGlow {
+    0% {
+        box-shadow: 0 0 3px gold;
+    }
+    50% {
+        box-shadow: 0 0 10px gold;
+    }
+    100%{
+        box-shadow: 0 0 3px gold;
+    }
+}
+.eventYellow{
+    border: 2px solid rgba(255, 248, 38, 0.5);
+}
+.eventOrange{
+    border: 2px solid rgba(255, 179, 16, 0.5);
+}
+.eventBlue{
+    border: 2px solid rgba(24, 76, 249, 0.5);
+}
+.eventLightBlue{
+    border: 2px solid rgba(66, 182, 255, 0.5);
+}
+.eventGray{
+    border: 2px solid rgba(99, 106, 129, 0.867);
+}
