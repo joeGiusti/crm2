@@ -116,16 +116,18 @@ select{
 .contactNameSelect{
   position: absolute;
   top:50%;
-  width: 80%;
+  width: 90%;
   right: 10%;
 }
 .contactNameSelect input{
   width: 100%;
   height: 30px;
 }
-.contactNameSelect datalist{
-  background-color: blue;
+.contactNameSelect select{
+  width: 100%;
+  height: 30px;
 }
 .contactNameSelect option{
-  background-color: blue;
+  width: 100%;
+  background-color: var(--background-color);  
 }

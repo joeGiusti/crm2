@@ -14,6 +14,11 @@ function EventMenu(props) {
       return "Orange"
   }
 
+  function selectedAContact(){
+    var contactKey = document.getElementById("contactSelector").value
+    console.log("selected "+contactKey)
+  }
+
   return (
     <>
         { 
@@ -24,24 +29,28 @@ function EventMenu(props) {
                 {/* https://stackoverflow.com/questions/65186998/alternatives-to-datalist-tag
                 https://twitter.github.io/typeahead.js/ */}
                 <div className='contactNameSelect'>
-                  <input type="text" name="example" list="exampleList"/>
+                  {/* <input type="text" name="example" list="exampleList"/>
                   <datalist id="exampleList">
                     {props.contactsArray.map(contact => (
                       <option value={contact.name}></option>
                     ))}
-                  </datalist>
-                </div>
+                  </datalist> */}
+                  {/* <input type="text" name="example" list="exampleList"/> */}
 
-                  {/* <select>
-                    <option>Name</option>
-                    <option>Name</option>
-                  </select>                   */}
+                  <select id="contactSelector" onChange={selectedAContact} defaultValue={props.selectedEvent && props.selectedEvent.imageKey}>
+                    {Array.isArray(props.contactsArray) && props.contactsArray.map(contact => (
+                      <>
+                        {contact && <option value={contact.key}>{contact.name}</option>}
+                      </>
+                    ))}
+                  </select>
+                </div>
                   <textarea placeholder='notes'></textarea>                  
                 </div>
                 <div className='contactImageInfo'>
-                  <input placeholder='Name' defaultValue={props.NumbersToString(props.selectedEvent.name)}></input>
+                  <input placeholder='Name' defaultValue={props.selectedEvent && props.NumbersToString(props.selectedEvent.name)}></input>
                   {console.log(props.selectedEvent)}
-                  <select placeholder='status' className='eventStatusSelect' defaultValue={colorFunction(props.selectedEvent.color)}>
+                  <select placeholder='status' className='eventStatusSelect' defaultValue={props.selectedEvent && colorFunction(props.selectedEvent.color)}>
                     <option>Blue</option>                    
                     <option>Yellow</option>
                     <option>Green</option>
@@ -52,9 +61,9 @@ function EventMenu(props) {
                     <option>DarkGreen</option>
                   </select>
                   <input type={"checkbox"} className="eventCheckbox" defaultChecked={true}></input>
-                  <input type={"date"} className="eventDateInput" defaultValue={props.selectedEvent.date}></input>
+                  <input type={"date"} className="eventDateInput" defaultValue={props.selectedEvent && props.selectedEvent.date}></input>
                   <input type={"date"} className="eventDateInput"></input>
-                  <textarea placeholder='Notes'  defaultValue={props.NumbersToString(props.selectedEvent.notes)}></textarea>
+                  <textarea placeholder='Notes'  defaultValue={props.selectedEvent && props.NumbersToString(props.selectedEvent.notes)}></textarea>
                   <div className='hoverBox button'>Delete</div>
                   <div className='hoverBox button'>Revert</div>
                 </div>
