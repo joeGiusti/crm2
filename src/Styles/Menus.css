@@ -1,0 +1,102 @@
+.menuBox{
+    height: 80vh;
+    width: 80vw;
+    position: fixed;
+    top:10vh;
+    left: calc(50% - 40vw);
+    position: fixed;
+}
+.leftDiv{
+    width: 49%;
+    height: 100%;    
+    display: inline-block;
+    position: relative;
+    box-sizing: border-box;        
+}
+.leftDiv img{
+    width: calc(100% - 10px);
+    height: 100%;
+    margin: 5px;
+    margin-top: 10px;
+    object-fit: contain;
+    box-sizing: border-box;
+}
+.imageButton{
+    position: absolute;    
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    bottom: 10px;
+    cursor: pointer;
+    user-select: none;
+    line-height: 35px;
+}
+.contactImageInfo{
+    width: 50%;
+    height: 100%;    
+    display: inline-block;
+    box-sizing: border-box;      
+}
+.contactImageInfo input{
+    width: calc(95% - 35px);
+    float: left;
+    margin-left: 2.5%;
+    height: 35px;        
+    margin-top: 10px;
+    padding: 5px;    
+    box-sizing: border-box;
+}
+.contactImageInfo textarea{
+    height: calc(100% - 145px );
+    width: 95%;
+}
+.contactImageInfo select{
+    width: 95%;
+    height: 30px;
+    margin: 10px;
+}
+.menuBox .closeButton{
+    top: 12.5px;
+    right: 12.5px;
+    height: 30px;
+    width: 30px;
+    line-height: 25px;
+}
+.eventMenu img{
+    height: 55%;
+}
+.eventMenu .leftDiv textarea{    
+    height: 41%;
+    width: calc(100% - 10px);    
+}
+.eventMenu .leftDiv select{
+    position: absolute;
+    top:48%;
+    width: 80%;
+    right: 10%;
+}
+.eventMenu .eventStatusSelect{
+    width: calc(90% - 50px);
+    box-sizing: border-box;
+    float: left;
+    margin-right: 0;
+    margin-left: 8px;
+    margin: 5px 0 5px 8px;
+}
+.eventMenu .eventCheckbox{
+    height: 30px;
+    width: 30px;
+    margin: 5px;
+}
+.eventMenu .eventDateInput{
+    width: calc(50% - 12px);
+    margin: 0px 0 5px 8px;
+}
+.eventMenu textarea{
+    height: calc(100% - 172px);
+    box-sizing: border-box;
+}
+.eventMenu .leftDiv textarea{
+    height: calc(40%);
+    box-sizing: border-box;
+}

@@ -1,0 +1,92 @@
+.contactsContainer{    
+    width: 90vw;
+    height: 90vh;
+    margin-left:5vw;    
+    margin-top: 60px;
+    overflow-y: scroll;    
+    display: inline-block;    
+}
+.contactBox{
+    height: 200px;
+    width: 200px;
+    margin: 2px;
+    position: relative;
+    
+    filter: brightness(0.7) grayscale(.3);    
+    border-radius: 3px;        
+}
+.contactBox:hover{
+    filter: brightness(1);    
+}
+.contactBox img{
+ height: 100%;
+ width: 100%;
+ object-fit: cover;
+ background-color: rgba(76, 76, 147, 0.483);
+}
+.contactName{
+    position: absolute;
+    bottom: 5px;    
+    width: 100%;        
+    font-weight: bold;        
+}
+.Gray{
+    border: 2px solid gray;    
+}
+.Gray .contactName{
+    background-image: radial-gradient(rgba(212, 212, 212, 0.66), rgba(255, 255, 255, 0.192), rgba(0, 0, 255, 0));   
+}
+.Clear{
+
+}
+.Clear .contactName{
+    background-image: radial-gradient(rgba(212, 212, 212, 0.66), rgba(255, 255, 255, 0.192), rgba(0, 0, 255, 0));   
+}
+.Green{
+    border: 2px solid rgb(0, 255, 0);      
+}
+.Green .contactName{
+    background-image: radial-gradient(rgba(121, 255, 114, 0.66), rgba(38, 255, 0, 0.192), rgba(0, 0, 255, 0));   
+}
+.Blue{
+    border: 2px solid blue;
+}
+.Blue .contactName{
+    background-image: radial-gradient(rgba(0, 21, 255, 0.66), rgba(4, 0, 255, 0.192), rgba(0, 0, 255, 0));   
+}
+.LightBlue{
+    border: 2px solid rgb(39, 159, 246);
+}
+.LightBlue .contactName{
+    background-image: radial-gradient(rgba(39, 159, 246, 0.66), rgba(39, 159, 246, 0.192), rgba(0, 0, 255, 0));   
+}
+.Yellow{
+    border: 2px solid yellow;
+}
+.Yellow .contactName{
+    background-image: radial-gradient(rgba(251, 255, 0, 0.66), rgba(255, 234, 0, 0.192), rgba(0, 0, 255, 0));   
+}
+.Orange{
+    border: 2px solid orange;
+}
+.Orange .contactName{
+    background-image: radial-gradient(rgba(255, 132, 0, 0.66), rgba(255, 119, 0, 0.192), rgba(0, 0, 255, 0));   
+}
+.contactArrow{
+    position: absolute;
+    bottom: 50%;
+    height: 20px;
+    width: 20px;
+    line-height: 15px;
+    border-radius: 3px;
+    background-color: rgba(0, 0, 255, 0);
+    cursor: pointer;
+    transition: 500ms;
+    user-select: none;
+}
+.contactArrow:hover{
+    text-shadow: 0 0 10px white;
+    color: gold;
+    background-color: rgba(81, 82, 93, 0.456);
+    transition: 0ms;
+}

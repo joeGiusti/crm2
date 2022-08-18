@@ -1,0 +1,143 @@
+open new contact and new event page
+  on shortcut key
+  on click
+close contact and new event page
+  on escape
+  on x
+
+move sidebar display const into app.js
+  same functionality (open on click and shortcut, cloase on x and escape)
+  close it when pressing excape
+
+
+contact menu ui
+  image
+    image left and right buttons
+    when image clicked detail view shows
+      detail has l and r buttons as well as an autoplay button
+
+  name
+  status (color coded)
+  notes
+  view dates button
+    takes to calendar and sets filter of that contact name
+
+event menu ui
+  contact section
+    contact select (input with text field and dropdown)
+      Can have input with div below it that displays when there is something typed (string state is updated on change)
+      displays list of contacts filtered by the input string
+      arrow keys hilight, enter selects hilighted open
+      button to create new contact next to serch input
+        if created there automatically puts that contact in the field    
+    contact image
+    contact notes
+    edit contact button
+  event name
+  date (start and end)
+  status (color coded)
+    button to select weather or not status change will change contact status change    
+  notes
+
+
+populate contact edit menu
+  save selected contact dat in to app state 
+  use that app state in the menu
+
+
+save json
+save contact edits (realtme on change)
+  name
+  notes
+
+save current images into array in db (probably in load function)
+display images from array
+add images arrays to db
+
+
+get current day
+display calendar days 
+display event on calendar (demo data)
+ 
+add image to contact
+  with button
+  with drag and drop
+
+revert button
+
+*
+
+new contact button (same functionality as tab + m)
+create new contact (when some input is put in new contact fields)
+delete contact button
+
+events display on calendar
+edit event menu
+  data populates when clicking en event
+  modify data in db
+create new event with event menu 
+  when day clicked
+  when tab + n
+
+
+
+
+========== ========== ========== ==========
+Later
+
+note edit / view ui
+  displays note on entire display section (wehre the calendar etc would be)
+  button to go back to notes  
+  button to revert changes  
+display notes (demo data)
+
+settings page ui
+
+account page ui
+
+========== ========== ========== ==========
+Extra
+
+top bar filters
+  add filter button
+  opens add filter window
+    status
+    name
+    order by
+
+select things with arrows
+  on key press if its an arrow key
+    depending on the selected item
+    prevent default
+    change index of selected item
+    display by adding css to thing when selectedIndes = that index
+    for sidemenu selection, days on calendar, contacts, etc
+    when thing is selected call change arrow focus function that sets index = -1 and focus = "new focus"
+
+content changes auto save
+button to revert changes
+undo button
+
+image(s) in sidebar from gallery
+
+display number of contacts based on screen size
+
+setting focus on proper elements when menus open
+
+scroll calendar 
+  viewport is set to a set height
+  can scroll through days
+  they load dynamically based on current month, last month, and next month
+
+droping an image onto the contacts page creates a new contact
+ or opens the contact menu with that image loaded in (saves on first key enter)
+
+multi image functionality
+
+infinite scroll
+  calendar
+  contacts
+  gallery
+  notes
+
+image upload progress bar
