@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react'
+import moment from 'moment'
 
 function Day(props) {
     useEffect(()=>{        
@@ -11,6 +12,14 @@ function Day(props) {
  
     function selectDay(){
       props.setSelectedDay(props.dayData)
+      props.setSelectedEvent({
+        name:"",
+        notes:"",
+        color:"eventGray",
+        date:moment().clone().format("YYYY-DD-MM"),
+        imageKey:"",
+        newEvent:true
+      })   
       props.openMenu(true)
     }    
     function selectEvent(clickEvent, eventData){

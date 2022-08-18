@@ -1,8 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ContactMenu from './ContactMenu'
 function EventMenu(props) {
 
+  const [eventContact, setEventContct]= useState(null)
+
+  useEffect(()=>{
+    if(!props.selectedEvent.newEvent){
+      setEventContct(props.contactData(props.selectedEvent.imageKey))
+      console.log("loading contact")      
+      console.log(props.contactData(props.selectedEvent.imageKey))      
+    }else{
+      console.log("no selected event")
+    }
+  },[])
+
   function colorFunction(_color){
+    if(!_color)
+      return ""
     return _color.replace("event", "")
     if(_color === "eventBlue")
       return "Blue"
@@ -17,6 +31,7 @@ function EventMenu(props) {
   function selectedAContact(){
     var contactKey = document.getElementById("contactSelector").value
     console.log("selected "+contactKey)
+    setEventContct(props.contactData(contactKey))    
   }
 
   return (
@@ -25,7 +40,7 @@ function EventMenu(props) {
             <div className='box2 menuBox blueGlow eventMenu'>
                 <div className='closeButton' onClick={()=>props.setOpen(false)}>x</div>
                 <div className='leftDiv'>
-                <img></img>
+                <img src={eventContact && eventContact.images && eventContact.images[0]}></img>
                 {/* https://stackoverflow.com/questions/65186998/alternatives-to-datalist-tag
                 https://twitter.github.io/typeahead.js/ */}
                 <div className='contactNameSelect'>
@@ -45,7 +60,7 @@ function EventMenu(props) {
                     ))}
                   </select>
                 </div>
-                  <textarea placeholder='notes'></textarea>                  
+                  <textarea placeholder='notes' defaultValue={eventContact && eventContact.notes}></textarea>                  
                 </div>
                 <div className='contactImageInfo'>
                   <input placeholder='Name' defaultValue={props.selectedEvent && props.NumbersToString(props.selectedEvent.name)}></input>

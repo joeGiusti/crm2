@@ -88,6 +88,7 @@ function Calendar(props) {
               selectedEvent={selectedEvent}
               NumbersToString={props.NumbersToString}
               contactsArray={props.contactsArray}
+              contactData={props.contactData}              
             ></EventMenu>
           </div>
         }
@@ -95,8 +96,7 @@ function Calendar(props) {
           <Day
             dayData={dayData}
             index={index}
-            openMenu={openMenu}
-            // setSelectedDay={props.setSelectedDay}
+            openMenu={openMenu}            
             setSelectedDay={()=>{}}
             contactData={props.contactData}
             NumbersToString={props.NumbersToString}
