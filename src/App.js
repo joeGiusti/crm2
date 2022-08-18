@@ -150,6 +150,7 @@ function App() {
           contactData={contactData}
           eventArray={evenstArray}
           NumbersToString={NumbersToString}
+          StringToNumbers={StringToNumbers}
           contactsArray={contactsArray}
         ></Calendar>
       )
@@ -320,6 +321,9 @@ function App() {
     if(!string)
       return ""
 
+    if(typeof(string) !== 'string')
+      return
+
     // Initial values
     var c = 0
     var returnString =""    
@@ -340,6 +344,8 @@ function App() {
     // If there is no string just return
     if(!string)
       return ""
+    if(typeof(string) !== 'string')
+      return
 
     // Initial values
     var c = 0

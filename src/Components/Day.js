@@ -11,14 +11,15 @@ function Day(props) {
     },[])
  
     function selectDay(){
-      props.setSelectedDay(props.dayData)
+      props.setSelectedDay()
       props.setSelectedEvent({
-        name:"",
-        notes:"",
-        color:"eventGray",
-        date:moment().clone().format("YYYY-DD-MM"),
-        imageKey:"",
-        newEvent:true
+        name: "",
+        notes: "",
+        color: "eventGray",
+        //date: props.dayData().format("YYYY-MM-DD"),
+        date: props.dayData.moment.format("YYYY-MM-DD"),
+        imageKey: "",
+        newEvent: true,
       })   
       props.openMenu(true)
     }    

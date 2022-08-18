@@ -88,7 +88,9 @@ function Calendar(props) {
               selectedEvent={selectedEvent}
               NumbersToString={props.NumbersToString}
               contactsArray={props.contactsArray}
-              contactData={props.contactData}              
+              contactData={props.contactData}     
+              firebase={props.firebase}    
+              StringToNumbers={props.StringToNumbers}     
             ></EventMenu>
           </div>
         }
