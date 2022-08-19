@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/joeGiusti.github.io/crm2/static/css/main.7ffbac7a.css",
+    "main.js": "/joeGiusti.github.io/crm2/static/js/main.ea7ecd97.js",
+    "static/js/787.a2a4df3f.chunk.js": "/joeGiusti.github.io/crm2/static/js/787.a2a4df3f.chunk.js",
+    "index.html": "/joeGiusti.github.io/crm2/index.html",
+    "main.7ffbac7a.css.map": "/joeGiusti.github.io/crm2/static/css/main.7ffbac7a.css.map",
+    "main.ea7ecd97.js.map": "/joeGiusti.github.io/crm2/static/js/main.ea7ecd97.js.map",
+    "787.a2a4df3f.chunk.js.map": "/joeGiusti.github.io/crm2/static/js/787.a2a4df3f.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7ffbac7a.css",
+    "static/js/main.ea7ecd97.js"
+  ]
+}
