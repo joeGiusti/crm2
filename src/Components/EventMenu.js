@@ -118,15 +118,16 @@ function EventMenu(props) {
           </div>
           <div className='contactImageInfo'>
             <input id='nameInput' placeholder='Name' defaultValue={props.selectedEvent && props.NumbersToString(props.selectedEvent.name)} onChange={updatedSomething}></input>            
-            <select id='eventStatusSelector' placeholder='status' className='eventStatusSelect' defaultValue={props.selectedEvent && colorFunction(props.selectedEvent.color)} onChange={updatedSomething}>
-              <option>Blue</option>                    
-              <option>Yellow</option>
-              <option>Green</option>
-              <option>Gray</option>
-              <option>LightBlue</option>
-              <option>Clear</option>
-              <option>Orange</option>
-              <option>DarkGreen</option>
+            <select id='eventStatusSelector' placeholder='status' className='eventStatusSelect' defaultValue={props.selectedEvent && props.selectedEvent.color} onChange={updatedSomething}>
+              <option value="eventBlue">Blue</option>                    
+              <option value="eventYellow">Yellow</option>
+              <option value="eventLightGreen">Light Green</option>
+              <option value="eventGreen">Green</option>
+              <option value="eventGray">Gray</option>
+              <option value="eventLightBlue">LightBlue</option>
+              <option value="eventClear">Clear</option>
+              <option value="eventOrange">Orange</option>
+              <option value="eventDarkGreen">DarkGreen</option>
             </select>
             <input type={"checkbox"} className="eventCheckbox" defaultChecked={true} onChange={updatedSomething}></input>
             <input id='dateStartSelector' type={"date"} className="eventDateInput" defaultValue={props.selectedEvent && props.selectedEvent.date} onChange={updatedSomething}></input>

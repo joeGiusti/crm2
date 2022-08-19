@@ -8,24 +8,25 @@ import EventMenu from '../Components/EventMenu'
 
 function Calendar(props) {
 
-  const [dayOfFocus, setDayOfFocus] = useState(moment().clone())
+  
   const [displayEventMenu, setDisplaEventMenu] = useState(false)
   const [calendarArray, setCalendarArray] = useState([])
   const [selectedEvent, setSelectedEvent] = useState(null)
 
-  useEffect(()=>{
-    refreshCalendar(moment().clone())
+  useEffect(()=>{    
+    // Builds a calendar (array of days) and places events in those days. Puts that in state and maps it to screen
+    refreshCalendar(props.dayOfFocus)
   },[props.eventArray])
 
   function nextMonth(){
-    var newDay = dayOfFocus.clone().add(1, "month")
+    var newDay =props.dayOfFocus.clone().add(1, "month")
     refreshCalendar(newDay)
-    setDayOfFocus(newDay)
+    props.setDayOfFocus(newDay)
   }
   function lastMonth(){    
-    var newDay = dayOfFocus.clone().subtract(1, "month")
+    var newDay =props.dayOfFocus.clone().subtract(1, "month")
     refreshCalendar(newDay)
-    setDayOfFocus(newDay)
+    props.setDayOfFocus(newDay)
   }
 
   function refreshCalendar(_day){    
@@ -77,7 +78,7 @@ function Calendar(props) {
   return (
     <div className='calendar'>
         <ArrowButtons
-          message={dayOfFocus.format("MMMM")}
+          message={ props.dayOfFocus.format("MMMM YYYY") }
           arrowLeft={lastMonth}
           arrowRight={nextMonth}
         ></ArrowButtons>

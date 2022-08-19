@@ -1,7 +1,7 @@
 .contactsContainer{    
     width: 90vw;
     height: 90vh;
-    margin-left:5vw;    
+    margin-left:0vw;    
     margin-top: 60px;
     overflow-y: scroll;    
     display: inline-block;    

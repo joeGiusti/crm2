@@ -143,7 +143,7 @@ function ContactMenu(props) {
             <div className='box2 menuBox blueGlow'>
                 <div className='closeButton' onClick={()=>props.setOpen(false)}>x</div>
                 <div className='leftDiv'>
-                  <img id="imageDisplay" src={props.selectedContact ? props.selectedContact.images[imageIndex] : ""} onDragOver={(e)=>imageDragOver(e)} onDrop={(e)=>imageDrop(e)}></img>
+                  <img id="imageDisplay" src={props.selectedContact && Array.isArray(props.selectedContact.images) && props.selectedContact.images[imageIndex]} onDragOver={(e)=>imageDragOver(e)} onDrop={(e)=>imageDrop(e)}></img>
                   <div className='hoverBox imageButton left'>Edit</div>
                   <label className='hoverBox imageButton right' for="imageInput">+</label>
                   <div className="contactArrow left" onClick={lastImage}>{"<"}</div>

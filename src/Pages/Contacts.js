@@ -46,6 +46,7 @@ function Contacts(props) {
           openMenu={props.openMenu}
           contact={contact}
           setSelectedContact={props.setSelectedContact}
+          openContact={props.openContact}
         ></Contact>
       ))}
     </div>

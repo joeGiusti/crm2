@@ -13,12 +13,6 @@ function Contact(props) {
         }, props.index * 250); 
     },[])
 
-    function openContactMenu(){
-      props.setSelectedContact(props.contact)
-      props.openMenu(true)
-      console.log("setting contact to "+props.contact.name)
-    }
-
     function imageLeft(event){
       event.stopPropagation()      
       // setImageIndex(imageIndex - 1)
@@ -35,7 +29,7 @@ function Contact(props) {
     }
 
   return (
-    <div className={'hoverBox contactBox '+props.contact.color} key={"contact"+props.index} id={"contact"+props.index} onClick={openContactMenu}>
+    <div className={'hoverBox contactBox '+props.contact.color} key={"contact"+props.index} id={"contact"+props.index} onClick={()=>props.openContact(props.contact)}>
         <div className='contactName'>                  
           {props.contact.name}
         </div>

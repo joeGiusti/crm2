@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react'
 import moment from 'moment'
+import Event from "./Event"
 
 function Day(props) {
     useEffect(()=>{        
@@ -15,36 +16,28 @@ function Day(props) {
       props.setSelectedEvent({
         name: "",
         notes: "",
-        color: "eventGray",
-        //date: props.dayData().format("YYYY-MM-DD"),
+        color: "eventGray",        
         date: props.dayData.moment.format("YYYY-MM-DD"),
         imageKey: "",
         newEvent: true,
       })   
       props.openMenu(true)
     }    
-    function selectEvent(clickEvent, eventData){
-      props.openMenu(true)      
-      clickEvent.stopPropagation()   
-      props.setSelectedEvent(eventData)   
-    }
-
-    function eventName(_eventData){
-      var name = _eventData.name
-      if(!name || name === "")
-        name = props.contactData(_eventData.imageKey).name
-      else
-        name = props.NumbersToString(name)
-      return name
-    }
 
   return (
-    <div className='hoverBox day' key={"day"+props.index} id={"day"+props.index} onClick={selectDay}>
-      {props.dayData.moment.format("D") === "1" ? props.dayData.moment.format("MMMM, DD") : props.dayData.moment.format("DD")}      
-      {props.dayData.events.map(eventData => (
-        <div className={'event shadowHilight '+eventData.color} onClick={(clickEvent)=>selectEvent(clickEvent, eventData)}>{eventName(eventData)}</div>        
-        // <div className='event'>{console.log(eventData.imageKey)}</div>
-      ))}
+    <div className='day' key={"day"+props.index} id={"day"+props.index} onClick={selectDay}>
+      {props.dayData.moment.format("D") === "1" ? props.dayData.moment.format("MMMM, DD") : props.dayData.moment.format("DD")}   
+      <div key={props.dayData.moment.format("MMMM, DD")}>
+        {props.dayData.events.map(eventData => (
+          <Event          
+            eventData={eventData}
+            contactData={props.contactData}
+            NumbersToString={props.NumbersToString}
+            setSelectedEvent={props.setSelectedEvent}
+            openMenu={props.openMenu}
+          ></Event>                  
+        ))}
+      </div>   
     </div>
   )
 }

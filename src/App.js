@@ -14,18 +14,24 @@ import ImageDetail from './Components/ImageDetail';
 import { initializeApp } from 'firebase/app'
 import { getDatabase, onValue, ref, set, push, update } from 'firebase/database'
 import { getStorage, uploadBytes, ref as sRef, getDownloadURL } from 'firebase/storage'
+import moment from 'moment'
+import SpaceComponent from './Components/SpaceComponent';
 
 function App() {
   
   //\\// ==================== ==================== Vars and Init ==================== ==================== \\//\\
   // #region
   const [page, setPage] = useState("calendar")
+
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [displayContactMenu, setDisplayContactMenu] = useState(false)  
   const [displayImageDetail, setDisplayImageDetail] = useState(false)
+
   const [contactsArray, setContactsArray] = useState([])
+  const [eventsArray, setEventsArray] = useState([])
+  const [dayOfFocus, setDayOfFocus] = useState(moment().clone())
+
   const [search, setSearch] = useState("")
-  const [evenstArray, setEventsArray] = useState([])
   const [selectedContact, setSelectedContact] = useState({
     name: "",
     key: "",
@@ -35,25 +41,20 @@ function App() {
     urlList: [], 
     archived: false,
   })
-  const [selectedDay, setSelectedDay] = useState({
-    color:"",
-    date:null,
-    imageKey:null,
-    key:null,
-    name:"",
-    notes:"",
-  })
+
   const tabDown = useRef(false)
   const firebase = useRef(null)
 
   useEffect(()=>{
     setUpKeyListener()
-    setBackground("https://i.ytimg.com/vi/Y1qQZbTF8iQ/maxresdefault.jpg")
+    // setBackground("https://i.ytimg.com/vi/Y1qQZbTF8iQ/maxresdefault.jpg")
+    // setBackground("./Images/cubefield.gif")
     firebaseSetup()
+    loadContacts()
     loadEventsArray()
   },[])
 
-  function  firebaseSetup() {
+  function firebaseSetup() {
     // Connect to the app and get refs to the db and storage
     var app = initializeApp({
       apiKey: "AIzaSyDCrQSCE91lh7GYlr7eTFbX--e1NnvF7Uw",
@@ -69,8 +70,7 @@ function App() {
     
     // Save a ref to the refs
     firebase.current = {app: app, db: db, storage: storage}
-
-    loadContacts()
+    
   }  
 
   function setBackground(url){
@@ -145,13 +145,14 @@ function App() {
     if(page === "calendar")
       return(
         <Calendar          
-          firebase={firebase}
-          setSelectedDay={setSelectedDay}
+          firebase={firebase}          
           contactData={contactData}
-          eventArray={evenstArray}
+          eventArray={eventsArray}
           NumbersToString={NumbersToString}
           StringToNumbers={StringToNumbers}
           contactsArray={contactsArray}
+          dayOfFocus={dayOfFocus}
+          setDayOfFocus={setDayOfFocus}
         ></Calendar>
       )
     if(page === "contacts")
@@ -161,6 +162,7 @@ function App() {
           firebase={firebase}
           contactsArray={filterContacts(contactsArray)}
           setSelectedContact={setSelectedContact}
+          openContact={openContact}
         ></Contacts>
       )
     if(page === "notes")
@@ -196,48 +198,48 @@ function App() {
 
   }
 
-  function openEvent(_id){
-    // //setDisplaEventMenu(true)
-  }
-
-  function openContact(_id){
-    setDisplayContactMenu(true)
-  }
-
   function openSidebar(event){
     setSidebarOpen(true)
     if(event)
       event.stopPropagation()
   }
-
   function closeSidebar(event){        
       setSidebarOpen(false)
       if(event)
           event.stopPropagation()
   }
-  function newContact(){
-    setSelectedContact({
-      name:"",
-      key:"",
-      color:"Gray",
-      notes:"",
-      url:"",
-      urlList:[]
-    })
-    // upload to db now
-    openContact("new")
-  }
-  function newEvent(){
-    openEvent("new")
-  }
   function closeAll(){
-    // close all windows and sidebar
     //setDisplaEventMenu(false)
     setDisplayContactMenu(false)
     setSidebarOpen(false)
   }
-  function displayImages(_imageUrlArray){
 
+
+  function openContact(_contact){    
+    setSelectedContact(_contact)
+    setDisplayContactMenu(true)
+  }
+
+  function newContact(){
+    setSelectedContact({
+      name: "",
+      key: "",
+      color: "Gray",
+      notes: "",
+      url: "",
+      urlList: [], 
+      newContact: true,
+    })
+    setDisplayContactMenu(true)
+  }
+  function newEvent(){
+    //setDisplayEventMenu(true)
+    //setSelectedEvent({})    
+  }
+
+  function displayImages(_imageUrlArray){
+    // Save url array in state
+    // display image display menu (just shows images with arrows)
   }
 
   // #endregion
@@ -305,10 +307,12 @@ function App() {
   
   //\\// ==================== ==================== Save / Delete ==================== ==================== \\//\\
   // #region
+
   // #endregion
   
   //\\// ==================== ==================== Auth ==================== ==================== \\//\\
   // #region
+
   // #endregion
   
   //\\// ==================== ==================== Helper Functions ==================== ==================== \\//\\
@@ -361,10 +365,7 @@ function App() {
     // Return the result
     return returnString;
   }
-  window.addEventListener("keydown", event=>{
-    // if(event.key === "A")
-    //   addImageArrays()
-  })
+
   function addImageArrays(){
     contactsArray.forEach(contact => {
       set(ref(firebase.current.db, "images2/"+contact.key+"/images"),         
@@ -375,16 +376,15 @@ function App() {
   function contactData(_key){
     if(_key == "None")
       return {name:""}
-    //console.log("looking through "+contactsArray.length+" contacts for "+_key)
+        
     var tempContactData = {name:""}
     contactsArray.forEach(contact => {     
       // console.log(contact.key + " =? " + _key) 
-      if(contact.key == _key){
-        //console.log("found it")
+      if(contact.key == _key){        
         tempContactData = contact        
       }
     })
-    //console.log("returning "+tempContactData)
+    
     return tempContactData
   }
   // #endregion
@@ -413,6 +413,7 @@ function App() {
         {displayImageDetail &&
           <ImageDetail></ImageDetail>
         }
+        {/* <SpaceComponent></SpaceComponent> */}
       </div>
     </div>
   );
