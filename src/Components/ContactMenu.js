@@ -22,10 +22,15 @@ function ContactMenu(props) {
   const [imageIndex, setImageIndex] = useState(0)
   const [imageArray, setImageArray] = useState([])
   const updated = useRef(false)
+  const imagesToUpload = useRef([])
+
+  // this is a list of image links as they are loaded from or into the db
+  const dbImages = useRef([])
 
   useEffect(()=>{
     if(props.selectedContact && Array.isArray(props.selectedContact.images))
       setImageArray(props.selectedContact.images)
+      dbImages.current = props.selectedContact.images
   },[])
 
   // #endregion
@@ -49,13 +54,11 @@ function ContactMenu(props) {
     update(dbRef(props.firebase.current.db, "images2/"+props.selectedContact.key), {name: props.StringToNumbers(name)})
   }
   function updateNotes(){
-    var notes = document.getElementById("notesInput").value
-    console.log("updating name to "+notes)
+    var notes = document.getElementById("notesInput").value    
     set(dbRef(props.firebase.current.db, "images2/"+props.selectedContact.key+"/notes"), props.StringToNumbers(notes))
   }
   function updateStaus(){
-    var status = document.getElementById("statusInput").value
-    console.log("updating name to "+status)
+    var status = document.getElementById("statusInput").value    
     set(dbRef(props.firebase.current.db, "images2/"+props.selectedContact.key+"/color"), props.StringToNumbers(status))
   }
   function updateArchived(){
@@ -156,32 +159,30 @@ function ContactMenu(props) {
   // when menu closes (or save is pressed, or tab + s) they are uploaded and the links are saved into an array and put in the db
 
   // Db upload 
-  function addImage(image){
-    console.log("adding image")
-    console.log(image)
+  function addImage(file){
+  
+    console.log("uploading image "+file)
+    console.log(imageArray)
+
+    // Display it immediately
+    setImageArray([URL.createObjectURL(file), ...imageArray])
     
-    // Get the url and display it
-    var fileUrl = URL.createObjectURL(image)
-    document.getElementById("imageDisplay").src = fileUrl
-    
-    // upload to db
-    uploadBytes(sRef(props.firebase.current.storage, "images2/"+props.selectedContact.key), image).then(imageUpload => {
+    //Upload to db (adding a random number at the end so it doesn't over write)
+    uploadBytes(sRef(props.firebase.current.storage, "images2/"+props.selectedContact.key + (Math.random())*1000), file).then(imageUpload => {
       getDownloadURL(imageUpload.ref).then(imageUrl => {
-         console.log("uploaded image with url "+imageUrl)
-         console.log("current image array")
-         console.log(props.selectedContact.images)
-         set(dbRef(props.firebase.current.db, "images2/"+props.selectedContact.key+"/images"), [imageUrl])
+
+        // Keep track of the current image urls so multiple can be uploaded and correct array will be put in the db (state will not be accurate here)
+        dbImages.current = [imageUrl, ...dbImages.current ]
+        set(dbRef(props.firebase.current.db, "images2/"+props.selectedContact.key+"/images"), dbImages.current)
+         
       })
     })
-    // add the download url to the array in the db
-    // display it in the viewer (update props.contact.images?)
-    //   or get images array in useEffect, display that, and update that
   }
 
   // Image sources
-  function newImageSelected(event){
-    var file = event.target.files[0]
-    addImage(file)
+  function newImageSelected(event){    
+    var file = event.target.files[0]    
+    addImage(file)    
   }
   function imageDragOver(event){
     event.preventDefault()
@@ -189,23 +190,33 @@ function ContactMenu(props) {
   function imageDrop(event){
     event.preventDefault()
     var file = event.dataTransfer.files[0]
-    setImageArray([URL.createObjectURL(file), ...imageArray])
-    console.log(imageArray)
-    console.log([])
-    //addImage(file)
+    addImage(file)
+    // console.log(event.dataTransfer.files)
+    // for(var fileId in event.dataTransfer.files)
+    //  addImage(event.dataTransfer.files[fileId])
+    return
+    event.dataTransfer.files.forEach(file =>{
+
+      addImage(file)  
+    })
   }
+
 
   // View
   function nextImage(){
-    // setImageIndex(imageIndex + 1)    
-    // return
+    setImageIndex(imageIndex + 1)    
+    console.log("going to image " + (imageIndex + 1))
+    //console.log(imageArray[imageIndex + 1])
+    return
 
     if(imageIndex < imageArray.length - 1)
       setImageIndex(imageIndex + 1)
   }
   function lastImage(){
-    // setImageIndex(imageIndex - 1)    
-    // return
+    setImageIndex(imageIndex - 1)    
+    console.log("going to image " + (imageIndex - 1))
+    //console.log(imageArray[imageIndex - 1])
+    return
     if(imageIndex > 0)
       setImageIndex(imageIndex - 1)
   }
@@ -221,7 +232,7 @@ function ContactMenu(props) {
                 <div className='leftDiv'> 
                   <img id="imageDisplay" src={imageArray[imageIndex]} onDragOver={(e)=>imageDragOver(e)} onDrop={(e)=>imageDrop(e)}></img>
                   <div className='hoverBox imageButton left'>Edit</div>
-                  <label className='hoverBox imageButton right' for="imageInput">+</label>
+                  <label className='hoverBox imageButton right' htmlFor="imageInput">+</label>
                   <div className="contactArrow left" onClick={lastImage}>{"<"}</div>
                   <div className='contactArrow right' onClick={nextImage}>{">"}</div>
                   <input type="file" id="imageInput" style={{display:"none"}} onChange={(event)=>newImageSelected(event)}></input>
