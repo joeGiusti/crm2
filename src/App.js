@@ -216,8 +216,6 @@ function App() {
 
 
   function openContact(_contact){    
-    console.log("opening contact "+_contact.name)
-    console.log(displayContactMenu)
     setSelectedContact(_contact)
     setDisplayContactMenu(true)
   }

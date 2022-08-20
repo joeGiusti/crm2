@@ -42,6 +42,7 @@ function Contacts(props) {
         ></ArrowButtons>
       {pagedContacts(props.contactsArray).map((contact, index) => (
         <Contact
+          key={contact.key}
           index={index}
           openMenu={props.openMenu}
           contact={contact}

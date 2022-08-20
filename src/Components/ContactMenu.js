@@ -4,6 +4,7 @@ import "../Styles/Menus.css"
 import {update, set, ref as dbRef, remove} from 'firebase/database'
 import  {uploadBytes, ref as sRef ,getDownloadURL} from 'firebase/storage'
 import userEvent from '@testing-library/user-event'
+import ImageArrayViewer from './ImageArrayViewer'
 
 function ContactMenu(props) {    
 
@@ -230,11 +231,14 @@ function ContactMenu(props) {
             <div className='box2 menuBox blueGlow'>
                 <div className='closeButton' onClick={()=>closeMenu()}>x</div>
                 <div className='leftDiv'> 
-                  <img id="imageDisplay" src={imageArray[imageIndex]} onDragOver={(e)=>imageDragOver(e)} onDrop={(e)=>imageDrop(e)}></img>
+                <div className='imageDisplayContainer' onDragOver={(e)=>imageDragOver(e)} onDrop={(e)=>imageDrop(e)}>
+                  <ImageArrayViewer
+                    imageArray={imageArray}
+                  ></ImageArrayViewer>
+                </div>
+                  {/* <img id="imageDisplay" src={imageArray[imageIndex]} onDragOver={(e)=>imageDragOver(e)} onDrop={(e)=>imageDrop(e)}></img> */}
                   <div className='hoverBox imageButton left'>Edit</div>
                   <label className='hoverBox imageButton right' htmlFor="imageInput">+</label>
-                  <div className="contactArrow left" onClick={lastImage}>{"<"}</div>
-                  <div className='contactArrow right' onClick={nextImage}>{">"}</div>
                   <input type="file" id="imageInput" style={{display:"none"}} onChange={(event)=>newImageSelected(event)}></input>
                 </div>
                 <div className='contactImageInfo'>

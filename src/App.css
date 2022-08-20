@@ -154,3 +154,17 @@ select{
 .hidden{
   display: none;
 }
+.imageDisplayContainer{
+  height: 100%;
+  width: 100%;  
+  
+}
+.imageArrayViewer{
+  height: 100%;
+  width: 100%;  
+  position: relative;
+}
+.imageArrayViewer img{
+  height: 100%;
+  width: 100%;  
+}

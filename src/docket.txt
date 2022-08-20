@@ -160,4 +160,4 @@ save contact data on close, not in realtime
 
 load calendar in App.js so there is no loading delat when switching back and fourth
 
-
+create calendar holder and calendar so can have scroll on page and see contact previews at right edge

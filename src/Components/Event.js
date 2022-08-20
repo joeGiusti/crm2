@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import ImageArrayViewer from './ImageArrayViewer'
 
 function Event(props) {
   
@@ -29,8 +30,11 @@ function Event(props) {
     return (
     <div className={'event shadowHilight ' + (props.eventData && props.eventData.color)} onClick={(clickEvent)=>selectEvent(clickEvent, props.eventData)} key={"event"+props.eventData.key}>
         {eventName()}
-        <div className={'contactPreview '}>                        
-            <img src={contactData && contactData.url}></img>
+        <div className={'contactPreview '}>       
+            <ImageArrayViewer
+                imageArray={contactData && contactData.images}
+            ></ImageArrayViewer>                 
+            {/* <img src={contactData && contactData.url}></img> */}
         </div>
     </div>
   )
