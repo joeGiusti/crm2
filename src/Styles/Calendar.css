@@ -1,14 +1,15 @@
 .calendar{
-    width: 90vw;
+    width: 80vw;
     min-width: 700px;
-    max-width: 90vw;
     height: calc(95vh - 80px);         
     margin-left: 0vw;
     margin-top: 60px;
     display: inline-block;    
     padding: 5px;
     overflow-y: scroll;   
-
+    position: relative;
+    padding-top: 60px;
+    overflow-x: hidden;
 }
 .day{
     width: calc(14.28% - 2px);

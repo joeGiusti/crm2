@@ -6,6 +6,7 @@ function Sidebar(props) {
   function updateSearch(){
     var searchInput = document.getElementById("searchInput").value
     props.setSearch(searchInput)
+    //props.setPage()
   }
 
   return (

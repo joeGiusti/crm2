@@ -12,7 +12,7 @@ import Sidebar from './Components/Sidebar';
 import ContactMenu from './Components/ContactMenu';
 import ImageDetail from './Components/ImageDetail';
 import { initializeApp } from 'firebase/app'
-import { getDatabase, onValue, ref, set, push, update } from 'firebase/database'
+import { getDatabase, onValue, ref as dbRef, set, push, update } from 'firebase/database'
 import { getStorage, uploadBytes, ref as sRef, getDownloadURL } from 'firebase/storage'
 import moment from 'moment'
 import SpaceComponent from './Components/SpaceComponent';
@@ -216,10 +216,13 @@ function App() {
 
 
   function openContact(_contact){    
+    console.log("opening contact "+_contact.name)
+    console.log(displayContactMenu)
     setSelectedContact(_contact)
     setDisplayContactMenu(true)
   }
 
+  // Opens the new contact button
   function newContact(){
     setSelectedContact({
       name: "",
@@ -248,7 +251,7 @@ function App() {
   //\\// ==================== ==================== Load ==================== ==================== \\//\\
   // #region
   function loadContacts(){
-    onValue(ref(firebase.current.db, "images2"), imagesSnap => {
+    onValue(dbRef(firebase.current.db, "images2"), imagesSnap => {
       var images = []
       imagesSnap.forEach(imageSnap => {
 
@@ -281,20 +284,20 @@ function App() {
     })
   }    
   function filterContacts(_contactsArray){
-    
+    console.log("filtering contacts"+Math.random())
     if(!Array.isArray(_contactsArray))
       return
 
     var tempArray = []
-    _contactsArray.forEach(contact => {
-      if(contact.name.toLowerCase().includes(search.toLocaleLowerCase()))
+    _contactsArray.forEach(contact => {      
+      if( contact.name && typeof contact.name === 'string' && contact.name.toLowerCase().includes(search.toLocaleLowerCase()))
         tempArray.push(contact)
     })
     return tempArray
   }
   function loadEventsArray(){
     if(firebase.current)
-      onValue(ref(firebase.current.db, "events"), eventsSnap => {
+      onValue(dbRef(firebase.current.db, "events"), eventsSnap => {
         var tempArray = []
         console.log("eventsSnap: ")
         eventsSnap.forEach(eventSnap => {
@@ -307,6 +310,16 @@ function App() {
   
   //\\// ==================== ==================== Save / Delete ==================== ==================== \\//\\
   // #region
+
+  function createContactDb(_contactData){
+    var newRef = push(dbRef(dbRef(firebase.current.db, "images2/")))
+    _contactData.key = newRef.key
+    updateContactsDb(_contactData)
+  }
+
+  function updateContactsDb(_contactData){
+    update(dbRef(firebase.current.db, "images2/"+_contactData.key), _contactData)
+  }
 
   // #endregion
   
@@ -368,7 +381,7 @@ function App() {
 
   function addImageArrays(){
     contactsArray.forEach(contact => {
-      set(ref(firebase.current.db, "images2/"+contact.key+"/images"),         
+      set(dbRef(firebase.current.db, "images2/"+contact.key+"/images"),         
         [contact.url]
       )
     })
@@ -408,6 +421,8 @@ function App() {
             selectedContact={selectedContact}
             firebase={firebase}
             StringToNumbers={StringToNumbers}
+            createContactDb={createContactDb}
+            updateContact={updateContactsDb}
           ></ContactMenu>
         }        
         {displayImageDetail &&

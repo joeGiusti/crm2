@@ -94,7 +94,7 @@ select{
 .arrowButtons{
   position: absolute;
   top: 10px;    
-  width: 95%;  
+  width: 100%;  
   user-select: none;
 }
 .abp{
