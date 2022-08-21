@@ -44,7 +44,8 @@
     background-image: radial-gradient(rgba(212, 212, 212, 0.66), rgba(255, 255, 255, 0.192), rgba(0, 0, 255, 0));   
 }
 .Green{
-    border: 2px solid rgb(0, 255, 0);      
+    border: 2px solid rgb(0, 255, 0);    
+    box-shadow: 0px 0px 5px gold;  
 }
 .Green .contactName{
     background-image: radial-gradient(rgba(121, 255, 114, 0.66), rgba(38, 255, 0, 0.192), rgba(0, 0, 255, 0));   

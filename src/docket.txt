@@ -71,6 +71,8 @@ new contact button (same functionality as tab + m)
 create new contact (on close, like with EventMenu
 delete contact button
 
+contact selection input with filtered dropdown
+
 events display on calendar
 edit event menu
   data populates when clicking en event

@@ -32,6 +32,8 @@ function EventMenu(props) {
     var status = document.getElementById("eventStatusSelector").value
     var notes = document.getElementById("notesInput").value    
     var imageKey = eventContact.key
+    if(!imageKey)
+      imageKey = ""
 
     var ref = null
     if(props.selectedEvent.newEvent)
