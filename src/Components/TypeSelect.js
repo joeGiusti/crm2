@@ -78,7 +78,7 @@ function TypeSelect(props) {
 
     return (
     <div id='selectText' className='typeSelect'>
-        <input id='textInput' onChange={typeChange} onFocus={()=>setHideOptions(false)} className="typeSelectInput"></input>
+        <input id='textInput' onChange={typeChange} onFocus={()=>setHideOptions(false)} className="typeSelectInput" autoComplete='off'></input>
         <div className={"typeSelectOptionHolder " + (hideOptions ? 'hidden':'')} onClick={console.log("hello"+Math.random())} >
             {filteredArray.map((value, index) => (
                 <div onClick={()=>selectOption(filteredArrayRef.current[index])} className={"typeSelectOption "+((index == selectedIndex) ?" selected " : "")}>

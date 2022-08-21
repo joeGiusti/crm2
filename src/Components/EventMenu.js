@@ -30,9 +30,9 @@ function EventMenu(props) {
     var date = document.getElementById("dateStartSelector").value
     var dateEnd = document.getElementById("dateEndSelector").value
     var status = document.getElementById("eventStatusSelector").value
-    var notes = document.getElementById("notesInput").value
-    var imageKey = document.getElementById("contactSelector").value    
-    
+    var notes = document.getElementById("notesInput").value    
+    var imageKey = eventContact.key
+
     var ref = null
     if(props.selectedEvent.newEvent)
       ref = push(dbRef(props.firebase.current.db, "events/"))

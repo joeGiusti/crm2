@@ -110,7 +110,7 @@ function TypeSelectContacts(props) {
 
     return (
     <div id='selectText' className='typeSelect'>
-        <input id='textInput' onChange={typeChange} onFocus={()=>setHideOptions(false)} className="typeSelectInput"></input>
+        <input id='textInput' onChange={typeChange} onFocus={()=>setHideOptions(false)} className="typeSelectInput" autoComplete='off'></input>
         <div className={"typeSelectOptionHolder " + (hideOptions ? 'hidden':'')} >
             {filteredArray.map((contact, index) => (
                 <div onClick={()=>selectOption(filteredArrayRef.current[index])} className={"typeSelectOption "+((index == selectedIndex) ?" selected " : "")}>
