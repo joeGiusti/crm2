@@ -7,8 +7,8 @@
     display: inline-block;    
 }
 .contactBox{
-    height: 200px;
-    width: 200px;
+    height: 140px;
+    width: 140px;
     margin: 2px;
     position: relative;
     
@@ -28,7 +28,8 @@
     position: absolute;
     bottom: 5px;    
     width: 100%;        
-    font-weight: bold;        
+    font-weight: bold;    
+    font-size: 12px;    
 }
 .Gray{
     border: 2px solid gray;    
@@ -79,14 +80,22 @@
     width: 20px;
     line-height: 15px;
     border-radius: 3px;
-    background-color: rgba(0, 0, 255, 0);
+    background-color: rgba(106, 106, 150, 0.1);
     cursor: pointer;
     transition: 500ms;
     user-select: none;
+    height: 20px;
+    line-height: 16px;
 }
 .contactArrow:hover{
     text-shadow: 0 0 10px white;
     color: gold;
     background-color: rgba(81, 82, 93, 0.456);
     transition: 0ms;
+}
+.contactArrowLeft{
+
+}
+.contactArrowRight{
+
 }

@@ -1,3 +1,4 @@
+import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import ImageArrayViewer from './ImageArrayViewer'
 
@@ -28,14 +29,17 @@ function Event(props) {
     }
 
     return (
-    <div className={'event shadowHilight ' + (props.eventData && props.eventData.color)} onClick={(clickEvent)=>selectEvent(clickEvent, props.eventData)} key={"event"+props.eventData.key}>
+    <div className='eventContainer'>        
+        <div className={'event shadowHilight ' + (props.eventData && props.eventData.color)} onClick={(clickEvent)=>selectEvent(clickEvent, props.eventData)} key={"event"+props.eventData.key}>
         {eventName()}
+        {console.log(moment(props.eventData.date, "YYYY-MM-DD").day())}
         <div className={'contactPreview '}>       
             <ImageArrayViewer
-                imageArray={contactData && contactData.images}
+                imageArray={contactData && contactData.images}                
             ></ImageArrayViewer>                 
             {/* <img src={contactData && contactData.url}></img> */}
         </div>
+        </div>        
     </div>
   )
 }

@@ -76,37 +76,40 @@ function Calendar(props) {
   }
 
   return (
-    <div className='calendar'>
-        <ArrowButtons
-          message={ props.dayOfFocus.format("MMMM YYYY") }
-          arrowLeft={lastMonth}
-          arrowRight={nextMonth}
-        ></ArrowButtons>
-        {displayEventMenu &&         
-          <div>
-            <EventMenu
-              setOpen={closeMenu}
-              selectedEvent={selectedEvent}
+    <div className='calendarContainer'>
+      <ArrowButtons
+        message={ props.dayOfFocus.format("MMMM YYYY") }
+        arrowLeft={lastMonth}
+        arrowRight={nextMonth}
+      ></ArrowButtons>
+      <div className='calendar'>
+          {displayEventMenu &&         
+            <div>
+              <EventMenu
+                setOpen={closeMenu}
+                selectedEvent={selectedEvent}
+                NumbersToString={props.NumbersToString}
+                contactsArray={props.contactsArray}
+                contactData={props.contactData}     
+                firebase={props.firebase}    
+                StringToNumbers={props.StringToNumbers}     
+              ></EventMenu>
+            </div>
+          }
+          {calendarArray.map((dayData, index) => (          
+            <Day
+              dayData={dayData}
+              index={index}
+              openMenu={openMenu}            
+              setSelectedDay={()=>{}}
+              contactData={props.contactData}
               NumbersToString={props.NumbersToString}
-              contactsArray={props.contactsArray}
-              contactData={props.contactData}     
-              firebase={props.firebase}    
-              StringToNumbers={props.StringToNumbers}     
-            ></EventMenu>
-          </div>
-        }
-        {calendarArray.map((dayData, index) => (          
-          <Day
-            dayData={dayData}
-            index={index}
-            openMenu={openMenu}            
-            setSelectedDay={()=>{}}
-            contactData={props.contactData}
-            NumbersToString={props.NumbersToString}
-            setSelectedEvent={setSelectedEvent}
-          >
-          </Day>
-        ))}
+              setSelectedEvent={setSelectedEvent}
+            >
+            </Day>
+          ))}
+      </div>
+
     </div>
   )
 }

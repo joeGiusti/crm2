@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import ContactMenu from './ContactMenu'
 import { set, update, ref as dbRef, push } from 'firebase/database'
+import ImageArrayViewer from './ImageArrayViewer'
+import TypeSelect from './TypeSelect'
+import TypeSelectContacts from './TypeSelectContacts'
 
 function EventMenu(props) {
 
@@ -8,11 +11,12 @@ function EventMenu(props) {
   const needsUpdate = useRef(false)
 
   useEffect(()=>{
-    console.log("opening event")
-    console.log(props.selectedEvent)
+ 
+    // If its not a new event get the contact data
     if(!props.selectedEvent.newEvent){
       setEventContct(props.contactData(props.selectedEvent.imageKey))
     }
+
   },[])
 
   // Db functions
@@ -58,8 +62,6 @@ function EventMenu(props) {
   }  
 
   function deleteEvent(){
-    console.log("deleting "+props.selectedEvent.key)
-    console.log(props.selectedEvent.newEvent)
     if(props.selectedEvent.newEvent)
       return
     set(dbRef(props.firebase.current.db, "events/"+props.selectedEvent.key), null)
@@ -83,20 +85,28 @@ function EventMenu(props) {
     props.setOpen(false)
   }
 
-  function selectedAContact(){
-    var contactKey = document.getElementById("contactSelector").value    
+  function selectContact(_contact){
     updatedSomething()
-    setEventContct(props.contactData(contactKey))    
+    setEventContct(_contact)    
   }
-
   return (
     <>        
       <div className='box2 menuBox blueGlow eventMenu'>
           <div className='closeButton' onClick={closeMenu}>x</div>
           <div className='leftDiv'>
-          <img src={eventContact && eventContact.images && eventContact.images[0]}></img>
-          {/* https://stackoverflow.com/questions/65186998/alternatives-to-datalist-tag
-          https://twitter.github.io/typeahead.js/ */}
+            <div className='leftDivImgArrayContainer'>
+              <ImageArrayViewer
+                imageArray={eventContact && eventContact.images && eventContact.images}
+              ></ImageArrayViewer>
+            </div>
+          {/* <img src={eventContact && eventContact.images && eventContact.images[0]}></img> */}
+          {/* 
+            over my head...
+            maybe need to learn jquery
+            https://stackoverflow.com/questions/65186998/alternatives-to-datalist-tag
+            https://twitter.github.io/typeahead.js/ 
+            https://twitter.github.io/typeahead.js/examples/
+          */}
           <div className='contactNameSelect'>
             {/* <input type="text" name="example" list="exampleList"/>
             <datalist id="exampleList">
@@ -104,16 +114,19 @@ function EventMenu(props) {
                 <option value={contact.name}></option>
               ))}
             </datalist> */}
-            {/* <input type="text" name="example" list="exampleList"/> */}
-
-            <select id="contactSelector" onChange={selectedAContact} defaultValue={props.selectedEvent && props.selectedEvent.imageKey}>
+            {/* <input type="text" name="example" list="exampleList"/> */}    
+            {/* <select id="contactSelector" onChange={selectedAContact} defaultValue={props.selectedEvent && props.selectedEvent.imageKey}>
               {Array.isArray(props.contactsArray) && props.contactsArray.map(contact => (
                 <>
                   {contact && <option value={contact.key}>{contact.name}</option>}
                 </>
-              ))}
-            </select>
+              ))}              
+            </select>    */}
           </div>
+          <TypeSelectContacts
+            optionArray={props.contactsArray}
+            selectContact={selectContact}
+          ></TypeSelectContacts>     
             <textarea placeholder='notes' defaultValue={eventContact && eventContact.notes}></textarea>                  
           </div>
           <div className='contactImageInfo'>

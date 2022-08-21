@@ -71,10 +71,10 @@ select{
   top: calc(50% - 50px);   
 }
 .left{
-  left: 10px;  
+  left: 3%;  
 }
 .right{
-  right: 10px;  
+  right: 3%;  
 }
 .App .button{
   height: 30px;
@@ -167,4 +167,27 @@ select{
 .imageArrayViewer img{
   height: 100%;
   width: 100%;  
+  object-fit: contain;
+}
+.imageDetail{
+  position: absolute;
+  top: 5vh;
+  left: 10vw;
+  background-color: var(--background-color2);
+  width: 80vw;
+  height: 90vh;
+}
+.newContactText{
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: 1000ms;
+  line-height: 110px;
+}
+.newContactText:hover{
+  opacity: 1;
+  line-height: 130px;
 }

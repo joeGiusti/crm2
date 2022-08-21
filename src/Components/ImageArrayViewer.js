@@ -21,8 +21,9 @@ function ImageArrayViewer(props) {
     }
 
   return (
-    <div className='imageArrayViewer'>
+    <div className='imageArrayViewer' onClick={()=>props.onClick(props.imageArray)}>
         <img src={Array.isArray(props.imageArray) && props.imageArray[index]}></img>
+        <div className={props.messageClass}>{props.message}</div>
         { Array.isArray(props.imageArray) && (props.imageArray.length > 1) &&
             <>
                 <div className="contactArrow left" onClick={(event)=>lastImage(event)}>{"<"}</div>
@@ -31,6 +32,10 @@ function ImageArrayViewer(props) {
         }
     </div>    
   )
+}
+
+ImageArrayViewer.defaultProps = {
+  onClick: ()=>{}
 }
 
 export default ImageArrayViewer

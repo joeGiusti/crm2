@@ -16,6 +16,8 @@ import { getDatabase, onValue, ref as dbRef, set, push, update } from 'firebase/
 import { getStorage, uploadBytes, ref as sRef, getDownloadURL } from 'firebase/storage'
 import moment from 'moment'
 import SpaceComponent from './Components/SpaceComponent';
+import userEvent from '@testing-library/user-event';
+import EventMenu from './Components/EventMenu';
 
 function App() {
   
@@ -25,11 +27,13 @@ function App() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [displayContactMenu, setDisplayContactMenu] = useState(false)  
-  const [displayImageDetail, setDisplayImageDetail] = useState(false)
+  const [displayImageDetail, setDisplayImageDetail] = useState(false)  
+  const [displayEventMenu, setDisplayEventMenu] = useState(false)
 
   const [contactsArray, setContactsArray] = useState([])
   const [eventsArray, setEventsArray] = useState([])
   const [dayOfFocus, setDayOfFocus] = useState(moment().clone())
+  const [imageDetailArray, setImageDetailArray] = useState([])
 
   const [search, setSearch] = useState("")
   const [selectedContact, setSelectedContact] = useState({
@@ -44,6 +48,7 @@ function App() {
 
   const tabDown = useRef(false)
   const firebase = useRef(null)
+  const tabIndexRef = useRef(0)
 
   useEffect(()=>{
     setUpKeyListener()
@@ -52,6 +57,8 @@ function App() {
     firebaseSetup()
     loadContacts()
     loadEventsArray()
+    //window.focus(document.getElementById("root"))    
+    
   },[])
 
   function firebaseSetup() {
@@ -80,12 +87,47 @@ function App() {
     document.getElementById("mainApp").style.backgroundImage = "url("+url+")"    
   }
 
+  // Put this isn app.js because it adds another event listener every time App.js refreshes and useEffect is called
+  function keyPressSetup(){
+    window.addEventListener("keyup", (event) => {      
+            
+      if(event.key == "Tab"){
+        console.log("pressed tab")
+
+        //tabIndexRef.current = tabIndexRef.current + 1    
+        
+        if(tabIndexRef.current == 0)
+          tabIndexRef.current = tabIndexRef.current = 1
+        else
+          tabIndexRef.current = tabIndexRef.current = 0
+
+        if(tabIndexRef.current == 0)
+          document.getElementById("nameInput").focus()
+        if(tabIndexRef.current == 1)
+          document.getElementById("notesInput").focus()
+      }         
+
+    })
+  }
+
+  const justTabbed = useRef(false)
+
+  function tabFocus(){    
+    
+    if(!justTabbed.current)
+      console.log("tab focus"+Math.random())
+
+    // This makes it so there is only one tab press
+    justTabbed.current = true
+    setTimeout(() => justTabbed.current = false, 100);
+  }
+
   function setUpKeyListener(){
     window.addEventListener("keydown", (event) => {      
             
       if(event.key == "Tab"){
-        event.preventDefault()
-        tabDown.current = true        
+        //event.preventDefault()
+        tabDown.current = true                     
       }         
 
       if(tabDown.current)
@@ -130,8 +172,8 @@ function App() {
     })
     window.addEventListener("keyup", (event) => {
         if(event.key == "Tab"){
-            event.preventDefault()
-            tabDown.current = false
+          //event.preventDefault()
+          tabDown.current = false
         }                
     })
   }
@@ -163,6 +205,9 @@ function App() {
           contactsArray={filterContacts(contactsArray)}
           setSelectedContact={setSelectedContact}
           openContact={openContact}
+          newContact={newContact}
+          createContactDb={createContactDb}
+          updateContactDb={updateContactDb}
         ></Contacts>
       )
     if(page === "notes")
@@ -216,6 +261,8 @@ function App() {
 
 
   function openContact(_contact){    
+    console.log("opening contact")
+    console.log(_contact)
     setSelectedContact(_contact)
     setDisplayContactMenu(true)
   }
@@ -238,10 +285,12 @@ function App() {
     //setSelectedEvent({})    
   }
 
-  function displayImages(_imageUrlArray){
-    // Save url array in state
-    // display image display menu (just shows images with arrows)
+  function openImageDetail(_imageUrlArray){
+    setImageDetailArray(_imageUrlArray)
+    setDisplayImageDetail(true)
   }
+
+  
 
   // #endregion
 
@@ -282,7 +331,7 @@ function App() {
     })
   }    
   function filterContacts(_contactsArray){
-    console.log("filtering contacts"+Math.random())
+
     if(!Array.isArray(_contactsArray))
       return
 
@@ -296,8 +345,7 @@ function App() {
   function loadEventsArray(){
     if(firebase.current)
       onValue(dbRef(firebase.current.db, "events"), eventsSnap => {
-        var tempArray = []
-        console.log("eventsSnap: ")
+        var tempArray = []        
         eventsSnap.forEach(eventSnap => {
           tempArray.push(eventSnap.val())
         })
@@ -310,13 +358,31 @@ function App() {
   // #region
 
   function createContactDb(_contactData){
-    var newRef = push(dbRef(dbRef(firebase.current.db, "images2/")))
-    _contactData.key = newRef.key
-    updateContactsDb(_contactData)
+
+    var newRef = push(dbRef(firebase.current.db, "images2"))
+
+    var tempContactData = {
+      name: _contactData.name,
+      notes: _contactData.notes,      
+      status: _contactData.status,
+      images:_contactData.images,
+      dateCreated: moment().format("DD-MMMM-YYYY"),
+    }
+
+    tempContactData.key = newRef.key
+
+    updateContactDb(tempContactData)
+    
   }
 
-  function updateContactsDb(_contactData){
+  function updateContactDb(_contactData){
+
+    var tempContactData = _contactData
+    tempContactData.name = StringToNumbers(_contactData.name)
+    tempContactData.notes = StringToNumbers(_contactData.notes)
+
     update(dbRef(firebase.current.db, "images2/"+_contactData.key), _contactData)
+
   }
 
   // #endregion
@@ -414,17 +480,25 @@ function App() {
         {displayContactMenu && 
           <ContactMenu
             setOpen={setDisplayContactMenu}
-            open={displayContactMenu}
-            displayImages={displayImages}
+            open={displayContactMenu}            
             selectedContact={selectedContact}
             firebase={firebase}
             StringToNumbers={StringToNumbers}
-            createContactDb={createContactDb}
-            updateContact={updateContactsDb}
+            createContactDb={createContactDb}     
+            updateContactDb={updateContactDb}               
+            openImageDetail={openImageDetail}
           ></ContactMenu>
+        }
+        {displayEventMenu &&
+          <EventMenu
+          
+          ></EventMenu>
         }        
         {displayImageDetail &&
-          <ImageDetail></ImageDetail>
+          <ImageDetail
+            imageArray={imageDetailArray}
+            setOpen={setDisplayImageDetail}
+          ></ImageDetail>
         }
         {/* <SpaceComponent></SpaceComponent> */}
       </div>

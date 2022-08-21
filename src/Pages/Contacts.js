@@ -8,6 +8,18 @@ function Contacts(props) {
   const [pageRange, setPageRange] = useState({start:0, end:12})
   const pageAmount = useRef(12)
 
+  function calcPageAmount(){
+    // this will be called in useEffect and on window resize
+
+    // get div width
+    // calc number of contact squares will fit horizontally
+
+    // get div height
+    // calc number of contact squares will fit vertically
+
+    // return nHorizontal * nVertical
+
+  }
 
   function pagedContacts(_contactsArray){
     var tempContacts = []
@@ -20,6 +32,8 @@ function Contacts(props) {
 
   function pageNext(){
     
+    setPageRange({start: pageRange.start + pageAmount.current, end: pageRange.end + pageAmount.current})
+    return
     if(pageRange.start + pageAmount.current >= props.contactsArray.length)
       return      
     if((pageRange.end + pageAmount.current) <= props.contactsArray.length)
@@ -35,11 +49,16 @@ function Contacts(props) {
 
   return (
     <div className='contactsContainer'>
-        <ArrowButtons
-          message={pageRange.start + " to " + pageRange.end+" of "+props.contactsArray.length}
-          arrowLeft={pageLast}
-          arrowRight={pageNext}
-        ></ArrowButtons>
+      <ArrowButtons
+        message={pageRange.start + " to " + pageRange.end+" of "+props.contactsArray.length}
+        arrowLeft={pageLast}
+        arrowRight={pageNext}
+      ></ArrowButtons>
+      <div className='hoverBox contactBox newContactBox' onClick={props.newContact}>
+      <img src="https://firebasestorage.googleapis.com/v0/b/practice-79227.appspot.com/o/images2%2F-MuBiR0Qtsp7RRJ12mOn478.99475428835837?alt=media&token=c10862b2-91e1-4bf3-8953-f8e2930edf00"></img>
+        {/* <img src="https://firebasestorage.googleapis.com/v0/b/practice-79227.appspot.com/o/images2%2F-MteKD1lOtpuKqb8Dx_J?alt=media&token=bdaa5943-b7d1-4b59-a76b-b94861ed5f9e"></img> */}
+      <div className='newContactText'> + New Contact + </div>      
+      </div>
       {pagedContacts(props.contactsArray).map((contact, index) => (
         <Contact
           key={contact.key}

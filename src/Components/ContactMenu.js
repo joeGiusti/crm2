@@ -8,41 +8,73 @@ import ImageArrayViewer from './ImageArrayViewer'
 
 function ContactMenu(props) {    
 
-  // next steps
-  // when image is added upload to the image array and display
-  //   file select and drag over
-  // the new one is index 0
-  // can look through those images with arrow keys
-  // images are uploaded when menu closes
-  //   also with save button
-  // those images are loaded and viewable when contact is clicked again
 
   //\\// ==================== ==================== Vars and Init ==================== ==================== \\//\\
   // #region
-
-  const [imageIndex, setImageIndex] = useState(0)
+  
   const [imageArray, setImageArray] = useState([])
-  const updated = useRef(false)
-  const imagesToUpload = useRef([])
-
-  // this is a list of image links as they are loaded from or into the db
+  // This flag is set when something is changed and contact is updated if needed
+  const update = useRef(false)
+  // this is a list of image links as they are loaded from or into the db. All added to db when menu closes (unlesss reset is pressed)
   const dbImages = useRef([])
+
+
+
 
   useEffect(()=>{
     if(props.selectedContact && Array.isArray(props.selectedContact.images))
       setImageArray(props.selectedContact.images)
-      dbImages.current = props.selectedContact.images
+      if(Array.isArray(props.selectedContact.images))
+        dbImages.current = props.selectedContact.images      
+
+      document.getElementById("nameInput").focus()
+
+      keyListener()
   },[])
+
+  function keyListener(){
+    document.getElementById("contactMenu").addEventListener("keydown", (event)=>{      
+      if(event.key == "Tab")
+        tabFocus()
+    })  
+  }
+
+  // #endregion
+
+  //\\// ==================== ==================== Display ==================== ==================== \\//\\
+  // #region
+  // Flag var so this is only called once per tab press
+  const justTabbed = useRef(false)
+  // when tab is pressed (window.addEventListener("keydown", ()=>{})) index goes up and doc.getelement(idAdIndex).focus() so the window focuses on that one
+  const tabIndexRef = useRef(1)
+  function tabFocus(){    
+    
+    if(!justTabbed.current){
+      console.log("tab focus on contact menu " + tabIndexRef.current)
+            
+      if(tabIndexRef.current == 0)
+      document.getElementById("nameInput").focus()
+
+      if(tabIndexRef.current == 1)
+      document.getElementById("notesInput").focus()
+      
+      if(tabIndexRef.current == 2)
+        document.getElementById("statusInput").focus()
+        
+        tabIndexRef.current = tabIndexRef.current + 1
+        if(tabIndexRef.current == 3)
+        tabIndexRef.current = 0
+    }    
+
+    // Flag var so this is only called once per tab press
+    justTabbed.current = true
+    setTimeout(() => justTabbed.current = false, 100);
+  }
 
   // #endregion
   
   //\\// ==================== ==================== Display ==================== ==================== \\//\\
-  // #region
-
-  function imageLink(){
-    return "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.onlinewebfonts.com%2Fsvg%2Fimg_508995.png&f=1&nofb=1"
-    return props.contactData.images[imageIndex]
-  }
+  // #region  
 
 
   // #endregion
@@ -83,48 +115,48 @@ function ContactMenu(props) {
   // Updates the db and closes the menu
   function closeMenu(){
     
+    console.log("update.current")
+    console.log(update.current)
+
     // Save the input data into db
-    if(updated.current)
-      updateContactsDb()
+    if(update.current)
+      updateContactDb()
     
     // Close the menu
     props.setOpen(false)
   }
 
-  function updateContactsDb(){
+  function updateContactDb(){
 
     // Gather the info
     var name = document.getElementById("nameInput").value
     var notes = document.getElementById("notesInput").value
     var status = document.getElementById("statusInput").value
 
-    if(props.selectedContact.newContact)
-      props.createContact({
+    console.log("in update contact ")
+    console.log(props.selectedContact.newContact)
+    if(props.selectedContact.newContact){
+      props.createContactDb({
         name: name,
         notes: notes,
         status: status,
-        images:[]  
+        images:dbImages.current  
       })
+      return
+    }
 
     // Put it in the db
-    props.updateContactsDb({
+    props.updateContactDb({
       name: name,
       notes: notes,
       status: status,
-      images:[]      
+      images: dbImages.current,
+      key: props.selectedContact.key,      
     })
   }
 
   // Reverts the contact to the way it was before any changes were made *!*! needs to be updated
   function revert(){     
-    console.log("reverting contact")   
-    // update contact to props.selectedContact values
-    // update(dbRef(props.firebase.current.db, "images2/"+props.selectedContact.key), {
-    //   name: props.StringToNumbers(props.selectedContact.name),
-    //   notes: props.StringToNumbers(props.selectedContact.notes), 
-    //   color: props.selectedContact.color,
-    //   url: props.selectedContact.url,      
-    // })
     
     // Set the values to what they were before
     document.getElementById("nameInput").value = props.selectedContact.name
@@ -134,37 +166,28 @@ function ContactMenu(props) {
     // reset the image array
     if(props.selectedContact && Array.isArray(props.selectedContact.images))
       setImageArray(props.selectedContact.images)
+
+    // and the list of images to be added
+    dbImages.current = props.selectedContact.images
+
+    // should also delete the ones added from the db so there aren't unused images there
+    //deleteImage()
   }  
   
   // Deletes the contact in the db and closes the menu
-  function deleteContact(){
-    document.getElementById("nameInput").value = "Contact Deleted"
-    remove(dbRef(props.firebase.current.db, "images2/"+props.key))
+  function deleteContact(){    
+    remove(dbRef(props.firebase.current.db, "images2/"+props.selectedContact.key))
     props.setOpen(false)
   }
 
   // #endregion
 
-  //\\// ==================== ==================== Helper ==================== ==================== \\//\\
-  // #region
-
-
-  // #endregion
-
-
   //\\// ==================== ==================== Images ==================== ==================== \\//\\
   // #region
-
-  // in useEffect images are loaded from selectedContact.images into a state array so it can be modified
-  // adding image to contact will put it in the array of contacts that are displayed
-  // when menu closes (or save is pressed, or tab + s) they are uploaded and the links are saved into an array and put in the db
 
   // Db upload 
   function addImage(file){
   
-    console.log("uploading image "+file)
-    console.log(imageArray)
-
     // Display it immediately
     setImageArray([URL.createObjectURL(file), ...imageArray])
     
@@ -175,7 +198,7 @@ function ContactMenu(props) {
         // Keep track of the current image urls so multiple can be uploaded and correct array will be put in the db (state will not be accurate here)
         dbImages.current = [imageUrl, ...dbImages.current ]
         set(dbRef(props.firebase.current.db, "images2/"+props.selectedContact.key+"/images"), dbImages.current)
-         
+           
       })
     })
   }
@@ -192,72 +215,43 @@ function ContactMenu(props) {
     event.preventDefault()
     var file = event.dataTransfer.files[0]
     addImage(file)
-    // console.log(event.dataTransfer.files)
-    // for(var fileId in event.dataTransfer.files)
-    //  addImage(event.dataTransfer.files[fileId])
-    return
-    event.dataTransfer.files.forEach(file =>{
-
-      addImage(file)  
-    })
   }
 
+  function deleteImage(){
 
-  // View
-  function nextImage(){
-    setImageIndex(imageIndex + 1)    
-    console.log("going to image " + (imageIndex + 1))
-    //console.log(imageArray[imageIndex + 1])
-    return
-
-    if(imageIndex < imageArray.length - 1)
-      setImageIndex(imageIndex + 1)
-  }
-  function lastImage(){
-    setImageIndex(imageIndex - 1)    
-    console.log("going to image " + (imageIndex - 1))
-    //console.log(imageArray[imageIndex - 1])
-    return
-    if(imageIndex > 0)
-      setImageIndex(imageIndex - 1)
   }
 
   // #endregion
 
   return (
-    <>
-        { props.open &&  
-          
-            <div className='box2 menuBox blueGlow'>
-                <div className='closeButton' onClick={()=>closeMenu()}>x</div>
-                <div className='leftDiv'> 
-                <div className='imageDisplayContainer' onDragOver={(e)=>imageDragOver(e)} onDrop={(e)=>imageDrop(e)}>
-                  <ImageArrayViewer
-                    imageArray={imageArray}
-                  ></ImageArrayViewer>
-                </div>
-                  {/* <img id="imageDisplay" src={imageArray[imageIndex]} onDragOver={(e)=>imageDragOver(e)} onDrop={(e)=>imageDrop(e)}></img> */}
-                  <div className='hoverBox imageButton left'>Edit</div>
-                  <label className='hoverBox imageButton right' htmlFor="imageInput">+</label>
-                  <input type="file" id="imageInput" style={{display:"none"}} onChange={(event)=>newImageSelected(event)}></input>
-                </div>
-                <div className='contactImageInfo'>
-                  <input id='nameInput' placeholder='Name' defaultValue={props.selectedContact ? props.selectedContact.name : ""} onChange={needsUpdate}></input>
-                  <select id='statusInput' placeholder='status' defaultValue={props.selectedContact ? props.selectedContact.color : ""} onChange={needsUpdate}>
-                    <option>Blue</option>
-                    <option>Yellow</option>
-                    <option>Green</option>
-                    <option>Gray</option>
-                    <option>Orange</option>
-                    <option>LightBlue</option>                    
-                  </select>                                                                                             
-                  <textarea id='notesInput' placeholder='Notes' defaultValue={props.selectedContact ? props.selectedContact.notes : ""} onChange={needsUpdate}></textarea>
-                  <div className='box hoverBox button' onClick={deleteContact}>Delete</div>
-                  <div className='box hoverBox button' onClick={revert}>Revert</div>
-                </div>
-            </div>
-        }
-    </>
+    <div className='box2 menuBox blueGlow' id="contactMenu">
+        <div className='closeButton' onClick={()=>closeMenu()}>x</div>
+        <div className='leftDiv'> 
+        <div className='imageDisplayContainer' onDragOver={(e)=>imageDragOver(e)} onDrop={(e)=>imageDrop(e)}>
+          <ImageArrayViewer
+            imageArray={imageArray.length > 0 ? imageArray : ["https://firebasestorage.googleapis.com/v0/b/practice-79227.appspot.com/o/images2%2F-MteKD1lOtpuKqb8Dx_J?alt=media&token=bdaa5943-b7d1-4b59-a76b-b94861ed5f9e"]}
+            onClick={props.openImageDetail}
+          ></ImageArrayViewer>
+        </div>                  
+          <div className='hoverBox imageButton left'>Edit</div>
+          <label className='hoverBox imageButton right' htmlFor="imageInput">+</label>
+          <input type="file" id="imageInput" style={{display:"none"}} onChange={(event)=>newImageSelected(event)}></input>
+        </div>
+        <div className='contactImageInfo'>                
+          <input id='nameInput' placeholder='Name' defaultValue={props.selectedContact ? props.selectedContact.name : ""} onChange={needsUpdate} autoComplete="off"></input>
+          <select id='statusInput' placeholder='status' defaultValue={props.selectedContact ? props.selectedContact.color : ""} onChange={needsUpdate}>
+            <option>Blue</option>
+            <option>Yellow</option>
+            <option>Green</option>
+            <option>Gray</option>
+            <option>Orange</option>
+            <option>LightBlue</option>                    
+          </select>                                                                                             
+          <textarea id='notesInput' placeholder='Notes' defaultValue={props.selectedContact ? props.selectedContact.notes : ""} onChange={needsUpdate}></textarea>
+          <div className='box hoverBox button' onClick={deleteContact}>Delete</div>
+          <div className='box hoverBox button' onClick={revert}>Revert</div>                                
+        </div>
+    </div>            
   )
 }
 ContactMenu.defaultProps = {
@@ -265,3 +259,12 @@ ContactMenu.defaultProps = {
     setOpen: (param) => {console.log("no function: setting open to " + param)}
 }
 export default ContactMenu
+
+  // next steps
+  // when image is added upload to the image array and display
+  //   file select and drag over
+  // the new one is index 0
+  // can look through those images with arrow keys
+  // images are uploaded when menu closes
+  //   also with save button
+  // those images are loaded and viewable when contact is clicked again

@@ -65,6 +65,11 @@ add image to contact
 
 revert button
 
+show contact on event hover
+
+new contact button (same functionality as tab + m)
+create new contact (on close, like with EventMenu
+delete contact button
 
 events display on calendar
 edit event menu
@@ -74,6 +79,10 @@ create new event with event menu
   when day clicked
 *
   when tab + n
+    move event menu to app.js
+
+reorder contact images
+delete contact images
 
   move calendar building to App.js
     it will only happen once in useEffect then if events onValue updates
@@ -81,15 +90,6 @@ create new event with event menu
     can display event menu with tab + n If this was done now it woudl casuse the calendar to refresh?
       maybe test this first by moving displayEventMenu state to App.js and opening event menu
       its being updated in App.js but only used in Calendar.js, will it cause Calendar.js useEffect to re-run?
-
-show contact on event hover
-
-new contact button (same functionality as tab + m)
-create new contact (on close, like with EventMenu
-delete contact button
-
-
-
 
 
 
@@ -161,3 +161,6 @@ save contact data on close, not in realtime
 load calendar in App.js so there is no loading delat when switching back and fourth
 
 create calendar holder and calendar so can have scroll on page and see contact previews at right edge
+
+for a speed increace could use json[key] instead of itterating to place things
+would have to use for(var key in json) return <div>json[key].name</div> instead of map
