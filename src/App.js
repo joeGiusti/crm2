@@ -125,7 +125,7 @@ function App() {
   function setUpKeyListener(){
     window.addEventListener("keydown", (event) => {      
             
-      if(event.key == "Tab"){
+      if(event.key == "Tab"){        
         //event.preventDefault()
         tabDown.current = true                     
       }         
@@ -195,6 +195,7 @@ function App() {
           contactsArray={contactsArray}
           dayOfFocus={dayOfFocus}
           setDayOfFocus={setDayOfFocus}
+          updateContactDb={updateContactDb}
         ></Calendar>
       )
     if(page === "contacts")
@@ -316,7 +317,7 @@ function App() {
             
         // Put the values in an object and push it in a temp array which will be added to state
 
-        images.push({
+        images.unshift({
           name:imageSnapName,
           notes:imageSnapNotes,
           color:imageSnap.child("color").val(),
@@ -347,7 +348,11 @@ function App() {
       onValue(dbRef(firebase.current.db, "events"), eventsSnap => {
         var tempArray = []        
         eventsSnap.forEach(eventSnap => {
-          tempArray.push(eventSnap.val())
+          
+          var tempEvent = eventSnap.val()
+
+          tempArray.push(tempEvent)
+
         })
         setEventsArray(tempArray)
       })
@@ -378,8 +383,11 @@ function App() {
   function updateContactDb(_contactData){
 
     var tempContactData = _contactData
-    tempContactData.name = StringToNumbers(_contactData.name)
-    tempContactData.notes = StringToNumbers(_contactData.notes)
+    
+    if(_contactData.name)
+      tempContactData.name = StringToNumbers(_contactData.name)
+    if(_contactData.notes)
+      tempContactData.notes = StringToNumbers(_contactData.notes)
 
     update(dbRef(firebase.current.db, "images2/"+_contactData.key), _contactData)
 
@@ -491,7 +499,7 @@ function App() {
         }
         {displayEventMenu &&
           <EventMenu
-          
+            updateContactDb={updateContactDb}
           ></EventMenu>
         }        
         {displayImageDetail &&

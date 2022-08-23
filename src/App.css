@@ -100,8 +100,8 @@ select{
 .abp{
   line-height: 30px;
   display: inline-block;
-  margin: 10px;
   height: 30px;
+  margin: 0 10px;
 }
 .arrow{
   width: 30px;

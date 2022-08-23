@@ -166,3 +166,25 @@ create calendar holder and calendar so can have scroll on page and see contact p
 
 for a speed increace could use json[key] instead of itterating to place things
 would have to use for(var key in json) return <div>json[key].name</div> instead of map
+
+go to end of contacts list button instead of just one page over
+
+==== 8-22-2022 ====
+
+DONE
+reverse order of contacts so ones that were just created go to the top
+
+create contact in the new event menu 
+  so don't have to create a contact in the contact menu then go to the calendar menu seperately
+
+DONE
+  make the new contact button visible even when the sidebar is open
+    maybe insert it at a certain index 
+    or make the contacts section smaller
+
+DONE
+events default to blue
+
+scrollbar makes calendar only show 6 days per week becasue it effectw width
+
+remove contact from event when press None

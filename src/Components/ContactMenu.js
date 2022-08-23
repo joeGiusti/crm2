@@ -5,6 +5,7 @@ import {update, set, ref as dbRef, remove} from 'firebase/database'
 import  {uploadBytes, ref as sRef ,getDownloadURL} from 'firebase/storage'
 import userEvent from '@testing-library/user-event'
 import ImageArrayViewer from './ImageArrayViewer'
+import ImageArrayEdit from './ImageArrayEdit'
 
 function ContactMenu(props) {    
 
@@ -13,6 +14,7 @@ function ContactMenu(props) {
   // #region
   
   const [imageArray, setImageArray] = useState([])
+  const [displayImageEdit, setDisplayImageEdit] = useState(false) 
   // This flag is set when something is changed and contact is updated if needed
   const update = useRef(false)
   // this is a list of image links as they are loaded from or into the db. All added to db when menu closes (unlesss reset is pressed)
@@ -114,9 +116,6 @@ function ContactMenu(props) {
 
   // Updates the db and closes the menu
   function closeMenu(){
-    
-    console.log("update.current")
-    console.log(update.current)
 
     // Save the input data into db
     if(update.current)
@@ -139,17 +138,26 @@ function ContactMenu(props) {
       props.createContactDb({
         name: name,
         notes: notes,
-        status: status,
+        color: status,
         images:dbImages.current  
       })
       return
     }
 
+    console.log("uploading")
+    console.log({
+      name: name,
+      notes: notes,
+      color: status,
+      images: dbImages.current,
+      key: props.selectedContact.key,      
+    })
+
     // Put it in the db
     props.updateContactDb({
       name: name,
       notes: notes,
-      status: status,
+      color: status,
       images: dbImages.current,
       key: props.selectedContact.key,      
     })
@@ -203,6 +211,14 @@ function ContactMenu(props) {
     })
   }
 
+  function updateImageOrder(_imageUrlArray){
+    console.log("updating image order")
+    console.log(_imageUrlArray)
+    setImageArray(_imageUrlArray)
+    dbImages.current = _imageUrlArray
+    update.current = true
+  }
+
   // Image sources
   function newImageSelected(event){    
     var file = event.target.files[0]    
@@ -225,15 +241,16 @@ function ContactMenu(props) {
 
   return (
     <div className='box2 menuBox blueGlow' id="contactMenu">
+      
         <div className='closeButton' onClick={()=>closeMenu()}>x</div>
         <div className='leftDiv'> 
-        <div className='imageDisplayContainer' onDragOver={(e)=>imageDragOver(e)} onDrop={(e)=>imageDrop(e)}>
-          <ImageArrayViewer
-            imageArray={imageArray.length > 0 ? imageArray : ["https://firebasestorage.googleapis.com/v0/b/practice-79227.appspot.com/o/images2%2F-MteKD1lOtpuKqb8Dx_J?alt=media&token=bdaa5943-b7d1-4b59-a76b-b94861ed5f9e"]}
-            onClick={props.openImageDetail}
-          ></ImageArrayViewer>
-        </div>                  
-          <div className='hoverBox imageButton left'>Edit</div>
+          <div className='imageDisplayContainer' onDragOver={(e)=>imageDragOver(e)} onDrop={(e)=>imageDrop(e)}>
+            <ImageArrayViewer
+              imageArray={imageArray.length > 0 ? imageArray : ["https://firebasestorage.googleapis.com/v0/b/practice-79227.appspot.com/o/images2%2F-MteKD1lOtpuKqb8Dx_J?alt=media&token=bdaa5943-b7d1-4b59-a76b-b94861ed5f9e"]}
+              onClick={props.openImageDetail}
+            ></ImageArrayViewer>
+          </div>                  
+          <div className='hoverBox imageButton left' onClick={()=>setDisplayImageEdit(true)}>Edit</div>
           <label className='hoverBox imageButton right' htmlFor="imageInput">+</label>
           <input type="file" id="imageInput" style={{display:"none"}} onChange={(event)=>newImageSelected(event)}></input>
         </div>
@@ -251,6 +268,15 @@ function ContactMenu(props) {
           <div className='box hoverBox button' onClick={deleteContact}>Delete</div>
           <div className='box hoverBox button' onClick={revert}>Revert</div>                                
         </div>
+        <>
+          {displayImageEdit &&
+              <ImageArrayEdit
+                imageArray={imageArray}
+                setDisplay={setDisplayImageEdit}
+                saveArray={updateImageOrder}
+              ></ImageArrayEdit>            
+          }
+      </>
     </div>            
   )
 }

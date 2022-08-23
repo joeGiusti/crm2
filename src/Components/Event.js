@@ -31,8 +31,7 @@ function Event(props) {
     return (
     <div className='eventContainer'>        
         <div className={'event shadowHilight ' + (props.eventData && props.eventData.color)} onClick={(clickEvent)=>selectEvent(clickEvent, props.eventData)} key={"event"+props.eventData.key}>
-        {eventName()}
-        {console.log(moment(props.eventData.date, "YYYY-MM-DD").day())}
+        {eventName()}        
         <div className={'contactPreview '}>       
             <ImageArrayViewer
                 imageArray={contactData && contactData.images}                

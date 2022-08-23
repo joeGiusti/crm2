@@ -62,10 +62,10 @@
     line-height: 25px;
 }
 .eventMenu .leftDiv textarea{    
-    height: 35%;
+    
     width: 98%;
+    height: calc(50% - 120px);    
     margin-left: 5px;
-    height: 40%;    
     box-sizing: border-box;
 }
 .eventMenu .leftDiv select{
@@ -132,4 +132,45 @@
     transition: 0ms;
     color: white;
     box-shadow: 0px 0px 5px rgb(84 112 234 / 50%);
+}
+.imageArrayEdit{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 95%;
+    height: 95%;
+    background-color: rgba(30, 30, 50, 1);  
+    z-index: 1;
+}
+.imageEditImageContainer{
+    height: 155px;
+    width: 155px;    
+    border: 1px solid black;    
+    display: inline-block;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 5px;
+}
+.imageEditImageBox{
+    height: 140px;
+    width: 140px;
+    position: relative;
+    display: inline-block;
+    cursor: move;    
+    box-sizing: border-box;
+    margin: 0;
+}
+.imageEditImageBox img{
+    height: 100%;
+    width: 100%;    
+    object-fit: contain;
+    margin: 0;
+}
+.imageEditImageBox .smallCloseButton{
+    height: 15px;
+    width: 15px;
+    line-height: 13px;
+    font-size: 10px;
+    top: 4px;
+    right: 4px;
 }

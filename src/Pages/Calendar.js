@@ -12,12 +12,15 @@ function Calendar(props) {
   const [displayEventMenu, setDisplaEventMenu] = useState(false)
   const [calendarArray, setCalendarArray] = useState([])
   const [selectedEvent, setSelectedEvent] = useState(null)
+  const [selectedDay, setSelectedDay] = useState(moment().clone())
 
   useEffect(()=>{    
     // Builds a calendar (array of days) and places events in those days. Puts that in state and maps it to screen
     refreshCalendar(props.dayOfFocus)
+    setUpKeyListener()
+    
   },[props.eventArray])
-
+  
   function nextMonth(){
     var newDay =props.dayOfFocus.clone().add(1, "month")
     refreshCalendar(newDay)
@@ -27,6 +30,21 @@ function Calendar(props) {
     var newDay =props.dayOfFocus.clone().subtract(1, "month")
     refreshCalendar(newDay)
     props.setDayOfFocus(newDay)
+  }
+  
+  function setUpKeyListener(){
+    // console.log("set up key listener")
+    // document.getElementById("selectText"       ).addEventListener("keyup", (event)=>{  
+    // window.addEventListener("keyup", (event) => {
+    //   console.log(event.key)
+    //   if(event.key === "ArrowRight"){
+    //     console.log("arrow right")
+    //     // var newSelectedDay = selectedDay.add(1, "day")
+    //     // console.log(newSelectedDay)
+    //     // setSelectedDay(newSelectedDay)
+    //     //refreshCalendar()
+    //   }
+    // })
   }
 
   function refreshCalendar(_day){    
@@ -76,13 +94,13 @@ function Calendar(props) {
   }
 
   return (
-    <div className='calendarContainer'>
+    <div className='calendarContainer' id='calendarContainer'>      
       <ArrowButtons
         message={ props.dayOfFocus.format("MMMM YYYY") }
         arrowLeft={lastMonth}
         arrowRight={nextMonth}
       ></ArrowButtons>
-      <div className='calendar'>
+      <div className='calendar' id='calendar'>
           {displayEventMenu &&         
             <div>
               <EventMenu
@@ -92,15 +110,17 @@ function Calendar(props) {
                 contactsArray={props.contactsArray}
                 contactData={props.contactData}     
                 firebase={props.firebase}    
-                StringToNumbers={props.StringToNumbers}     
+                StringToNumbers={props.StringToNumbers}   
+                updateContactDb={props.updateContactDb}  
               ></EventMenu>
             </div>
           }
-          {calendarArray.map((dayData, index) => (          
+          {selectedDay && calendarArray.map((dayData, index) => (          
             <Day
               dayData={dayData}
               index={index}
               openMenu={openMenu}            
+              selectedDay={selectedDay}
               setSelectedDay={()=>{}}
               contactData={props.contactData}
               NumbersToString={props.NumbersToString}

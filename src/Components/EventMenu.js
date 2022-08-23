@@ -7,17 +7,64 @@ import TypeSelectContacts from './TypeSelectContacts'
 
 function EventMenu(props) {
 
+  const eventContactRef = useRef()
   const [eventContact, setEventContct]= useState(null)
   const needsUpdate = useRef(false)
 
   useEffect(()=>{
  
+    console.log("in useeffect")
+
     // If its not a new event get the contact data
     if(!props.selectedEvent.newEvent){
       setEventContct(props.contactData(props.selectedEvent.imageKey))
+      eventContactRef.current = props.contactData(props.selectedEvent.imageKey)
     }
+    document.getElementById("textInput").focus()
+    
+    setUpKeyListener()
 
   },[])
+
+  const justPressedTab = useRef(false)
+  const tabIndex = useRef(0)
+  const tabDown = useRef(false)
+  function setUpKeyListener(){
+    console.log("in key listener")
+    document.getElementById("eventMenu").addEventListener("keydown", event => {     
+      console.log(" keywodn "+event.key) 
+      if(event.key == "Tab"){
+
+        tabDown.current = true
+
+        if(!justPressedTab.current){
+          console.log("tabbing over")
+          tabIndex.current = tabIndex.current + 1
+          // if(tabIndex.current == 1)
+          //   document.getElementById("name").focus()
+          justPressedTab.current = true
+          setTimeout(() => {
+            justPressedTab.current = false
+          }, 100);
+        }
+      }
+      if(tabDown.current && event.key == "o"){
+        var n = ""
+       try{ 
+          n = document.getElementById("nameInput").value
+          console.log(document.getElementById("nameInput").value)
+          console.log(n)      
+        }catch(err){}
+        closeMenu()
+      }
+    })
+    document.getElementById("eventMenu").addEventListener("keyup", event => {      
+      if(event.key == "Tab")
+        tabDown.current = false
+      if(event.key == "p")
+        console.log(document.getElementById("nameInput").value)
+    })
+  }
 
   // Db functions
   function updateEvent(){
@@ -25,15 +72,21 @@ function EventMenu(props) {
     if(!needsUpdate.current)
       return
 
-    // gather data
-    var name = document.getElementById("nameInput").value
-    var date = document.getElementById("dateStartSelector").value
-    var dateEnd = document.getElementById("dateEndSelector").value
-    var status = document.getElementById("eventStatusSelector").value
-    var notes = document.getElementById("notesInput").value    
-    var imageKey = eventContact.key
-    if(!imageKey)
-      imageKey = ""
+      // gather data
+      try{ 
+        var name = document.getElementById("nameInput").value    
+        var date = document.getElementById("dateStartSelector").value
+        var dateEnd = document.getElementById("dateEndSelector").value
+        var status = document.getElementById("eventStatusSelector").value
+        var notes = document.getElementById("notesInput").value  
+        var imageKey = ""
+      }catch(err){}    
+
+    if(eventContact && eventContact.key && typeof eventContact.key == "string")
+      imageKey = eventContact.key    
+
+    if(eventContactRef.current && eventContactRef.current.key && typeof eventContactRef.current.key == "string")
+      imageKey = eventContactRef.current.key
 
     var ref = null
     if(props.selectedEvent.newEvent)
@@ -41,12 +94,15 @@ function EventMenu(props) {
     else
       ref = dbRef(props.firebase.current.db, "events/" + props.selectedEvent.key)
 
+    // if eventContact == null && newContact && newContact != ""
+    //   create a contact with push and set
+
     var eventUpdateObject = {
       name: props.StringToNumbers(name),
       date: date,
       dateEnd: dateEnd,
       color: status,
-      notes: notes,
+      notes: props.StringToNumbers(notes),
       // This is silly, will revisit when re-structuring db
       imageKey: imageKey,
       key:ref.key
@@ -57,6 +113,12 @@ function EventMenu(props) {
 
     // upload it
     update(ref, eventUpdateObject)
+
+    if (eventContact.key)
+      props.updateContactDb({
+        key: eventContact.key,
+        color: status.replace("event",""),
+      })
   }
   
   function cancel(){
@@ -65,7 +127,7 @@ function EventMenu(props) {
 
   function deleteEvent(){
     if(props.selectedEvent.newEvent)
-      return
+      props.setOpen(false)
     set(dbRef(props.firebase.current.db, "events/"+props.selectedEvent.key), null)
     props.setOpen(false)
   }
@@ -89,11 +151,12 @@ function EventMenu(props) {
 
   function selectContact(_contact){
     updatedSomething()
-    setEventContct(_contact)    
+    setEventContct(_contact)   
+    eventContactRef.current = _contact
   }
   return (
     <>        
-      <div className='box2 menuBox blueGlow eventMenu'>
+      <div className='box2 menuBox blueGlow eventMenu' id='eventMenu'>
           <div className='closeButton' onClick={closeMenu}>x</div>
           <div className='leftDiv'>
             <div className='leftDivImgArrayContainer'>
