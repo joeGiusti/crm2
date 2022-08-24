@@ -51,13 +51,14 @@
 }
 .Green{
     border: 2px solid rgb(0, 255, 0);    
-        
+    box-shadow: 0 0 5px rgba(255, 217, 0, 0.76);   
+    filter: brightness(0.9) grayscale(.0);
 }
 .Green .contactName{
     background-image: radial-gradient(rgba(121, 255, 114, 0.66), rgba(38, 255, 0, 0.192), rgba(0, 0, 255, 0));   
 }
 .Blue{
-    border: 2px solid blue;
+    border: 3px solid rgb(32, 66, 255);    
 }
 .Blue .contactName{
     background-image: radial-gradient(rgba(0, 21, 255, 0.66), rgba(4, 0, 255, 0.192), rgba(0, 0, 255, 0));   

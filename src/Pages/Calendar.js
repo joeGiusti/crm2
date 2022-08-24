@@ -95,11 +95,13 @@ function Calendar(props) {
 
   return (
     <div className='calendarContainer' id='calendarContainer'>      
-      <ArrowButtons
-        message={ props.dayOfFocus.format("MMMM YYYY") }
-        arrowLeft={lastMonth}
-        arrowRight={nextMonth}
-      ></ArrowButtons>
+      <div>
+        <ArrowButtons
+          message={ props.dayOfFocus.format("MMMM YYYY") }
+          arrowLeft={lastMonth}
+          arrowRight={nextMonth}
+        ></ArrowButtons>
+      </div>
       <div className='calendar' id='calendar'>
           {displayEventMenu &&         
             <div>

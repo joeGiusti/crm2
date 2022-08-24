@@ -1,6 +1,6 @@
-import { refFromURL } from 'firebase/database'
+import { refFromURL, update } from 'firebase/database'
 import React, { useEffect, useRef, useState } from 'react'
-
+import { deleteObject, ref as storageRef } from 'firebase/storage'
 // on dragstart get moveFrom index
 // on dragover get moveTo index
 // on drag end move array of that index to moveToIndex
@@ -33,10 +33,8 @@ function ImageArrayEdit(props) {
         var imageBoxes = document.querySelectorAll('.imageEditImageContainer')                        
 
         imageBoxes.forEach((imageBox, index) => {
-            imageBox.addEventListener("dragstart", event =>{
-                //event.preventDefault()
-                fromIndex.current = index
-                console.log("aaa")
+            imageBox.addEventListener("dragstart", event =>{                
+                fromIndex.current = index                
             })
         })
         imageBoxes.forEach((imageBox, index) => {
@@ -54,15 +52,12 @@ function ImageArrayEdit(props) {
     }
 
     function swapImages(_fromIndex, _toIndex){
-        console.log("swapping " + _fromIndex+ " to " + _toIndex)
-        console.log(imageArrayRef.current)
         
         if(_fromIndex == _toIndex)
             return
 
         var tempArray = []
-        var moveImage = imageArrayRef.current[_fromIndex]
-        console.log("moving "+moveImage)
+        var moveImage = imageArrayRef.current[_fromIndex]        
 
         imageArrayRef.current.forEach((imageUrl, index) => {
             
@@ -89,9 +84,6 @@ function ImageArrayEdit(props) {
 
         })
 
-        console.log("setting image array")
-        console.log(tempArray)
- 
         imageArrayRef.current = tempArray
         setImageArray(tempArray)     
         
@@ -114,7 +106,24 @@ function ImageArrayEdit(props) {
         props.setDisplay(false)
     }
     function deleteImage(_index){
-        console.log("deleting image at index "+_index)
+        
+        // Remove image from the db
+        if(props.firebase)
+            deleteObject(storageRef(props.firebase.current.storage, imageArray[_index])).then(msg=>{
+                console.log("deleted Image")
+            })      
+        else
+            console.log("need firebase info to delete image "+imageArray[_index])
+
+        // Set the ref array and state
+        var tempArray = []
+        imageArrayRef.current.forEach((imageUrl, index) => {
+            if(index != _index)
+            tempArray.push(imageUrl)
+        })
+        imageArrayRef.current = tempArray
+        setImageArray(imageArrayRef.current)
+        
     }
 
   return (

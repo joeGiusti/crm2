@@ -221,8 +221,6 @@ function ContactMenu(props) {
   }
 
   function updateImageOrder(_imageUrlArray){
-    console.log("updating image order")
-    console.log(_imageUrlArray)
     setImageArray(_imageUrlArray)
     dbImages.current = _imageUrlArray
     update.current = true
@@ -284,6 +282,7 @@ function ContactMenu(props) {
                 imageArray={imageArray}
                 setDisplay={setDisplayImageEdit}
                 saveArray={updateImageOrder}
+                firebase={props.firebase}
               ></ImageArrayEdit>            
           }
       </>

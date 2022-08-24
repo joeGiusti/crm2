@@ -39,9 +39,9 @@ function App() {
   const [showGrayContacts, setShowGrayContacts] = useState(true)
   const [showBlueContacts, setShowBlueContacts] = useState(true)
   const [showYellowContacts, setShowYellowContacts] = useState(true)
-  const [showGreenContacts, setShowGreenContacts] = useState(true)
-  const [showOrangeContacts, setShowOrangeContacts] = useState(true)
-  const [showClearContacts, setShowClearContacts] = useState(true)
+  const [showGreenContacts, setShowGreenContacts] = useState(false)
+  const [showOrangeContacts, setShowOrangeContacts] = useState(false)
+  const [showClearContacts, setShowClearContacts] = useState(false)
   const [showArchivedContacts, setShowArchivedContacts] = useState(false)
   
   const [selectedContact, setSelectedContact] = useState({
@@ -244,7 +244,7 @@ function App() {
     if(page === "notes")
       return(
         <Notes
-        
+          firebase={firebase}
         ></Notes>
       )
     if(page === "gallery")
