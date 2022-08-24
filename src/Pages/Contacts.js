@@ -48,7 +48,28 @@ function Contacts(props) {
   }
 
   return (
-    <div className='contactsContainerContainer'>      
+    <div className='contactsContainerContainer'>    
+        <div className='Gray checkbox'>
+          <input type={"checkbox"} defaultChecked={props.showGrayContacts} onChange={event => {props.setShowGrayContacts(event.target.checked)}}></input>
+        </div>  
+        <div className='Blue checkbox'>
+          <input type={"checkbox"} defaultChecked={props.showBlueContacts} onChange={event => {props.setShowBlueContacts(event.target.checked)}}></input>
+        </div>  
+        <div className='Yellow checkbox'>
+          <input type={"checkbox"} defaultChecked={props.showYellowContacts} onChange={event => {props.setShowYellowContacts(event.target.checked)}}></input>
+        </div>  
+        <div className='Green checkbox'>
+          <input type={"checkbox"} defaultChecked={props.showGreenContacts} onChange={event => {props.setShowGreenContacts(event.target.checked)}}></input>
+        </div>  
+        <div className='Orange checkbox'>
+          <input type={"checkbox"} defaultChecked={props.showOrangeContacts} onChange={event => {props.setShowOrangeContacts(event.target.checked)}}></input>
+        </div>  
+        <div className='Clear checkbox'>
+          <input type={"checkbox"} defaultChecked={props.showClearContacts} onChange={event => {props.setShowClearContacts(event.target.checked)}}></input>
+        </div>  
+        <div className='Archived checkbox'>
+          <input type={"checkbox"} defaultChecked={props.showArchivedContacts} onChange={event => {props.setShowArchivedContacts(event.target.checked)}}></input>
+        </div>  
         <ArrowButtons
           message={pageRange.start + " to " + pageRange.end+" of "+props.contactsArray.length}
           arrowLeft={pageLast}

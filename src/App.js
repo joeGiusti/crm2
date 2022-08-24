@@ -36,13 +36,13 @@ function App() {
   const [imageDetailArray, setImageDetailArray] = useState([])
 
   const [search, setSearch] = useState("")
-  const [showGrayContacts, setShowGrayontacts] = useState(true)
+  const [showGrayContacts, setShowGrayContacts] = useState(true)
   const [showBlueContacts, setShowBlueContacts] = useState(true)
   const [showYellowContacts, setShowYellowContacts] = useState(true)
   const [showGreenContacts, setShowGreenContacts] = useState(true)
   const [showOrangeContacts, setShowOrangeContacts] = useState(true)
   const [showClearContacts, setShowClearContacts] = useState(true)
-  const [showArchived, setShowArchived] = useState(false)
+  const [showArchivedContacts, setShowArchivedContacts] = useState(false)
   
   const [selectedContact, setSelectedContact] = useState({
     name: "",
@@ -217,6 +217,28 @@ function App() {
           newContact={newContact}
           createContactDb={createContactDb}
           updateContactDb={updateContactDb}
+
+          showGrayContacts={showGrayContacts} 
+          setShowGrayContacts={setShowGrayContacts} 
+
+          showBlueContacts={showBlueContacts} 
+          setShowBlueContacts={setShowBlueContacts} 
+
+          showYellowContacts={showYellowContacts} 
+          setShowYellowContacts={setShowYellowContacts}
+
+          showGreenContacts={showGreenContacts} 
+          setShowGreenContacts={setShowGreenContacts} 
+
+          showOrangeContacts={showOrangeContacts} 
+          setShowOrangeContacts={setShowOrangeContacts} 
+
+          showClearContacts={showClearContacts} 
+          setShowClearContacts={setShowClearContacts} 
+
+          showArchived={showArchivedContacts} 
+          setShowArchivedContacts={setShowArchivedContacts} 
+
         ></Contacts>
       )
     if(page === "notes")
@@ -352,20 +374,6 @@ function App() {
         tempArray.push(contact)
     })
 
-    // Filter out archived
-    if(!showArchived){
-      var tempArray2 = []
-      tempArray.forEach(contact => {
-        if(contact.archived){
-
-        }
-        else{
-          tempArray2.push(contact)
-        }
-      })
-      tempArray = tempArray2
-    }
-
     // Sort into arrays by status
     var grayContacts = []
     var blueContacts = []
@@ -404,12 +412,12 @@ function App() {
     if(showYellowContacts)
       tempArray = [...tempArray, ...yellowContacts]
     if(showGreenContacts)
-      tempArray = [...tempArray, ...orangeContacts]
-    if(showOrangeContacts)
       tempArray = [...tempArray, ...greenContacts]
+    if(showOrangeContacts)
+      tempArray = [...tempArray, ...orangeContacts]
     if(showClearContacts)
       tempArray = [...tempArray, ...clearContacts]
-    if(showArchived)
+    if(showArchivedContacts)
       tempArray = [...tempArray, ...archivedContacts]
     tempArray = [...tempArray, ...otherContacts]
 

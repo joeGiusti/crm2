@@ -91,10 +91,10 @@ select{
   background-color: var(--background-color);
 }
 
-.arrowButtons{      
-  width: 100%;  
+.arrowButtons{        
   user-select: none;
   margin: 5px;
+  display: inline-block;
 }
 .abp{
   line-height: 30px;
@@ -189,4 +189,12 @@ select{
 .newContactText:hover{
   opacity: 1;
   line-height: 130px;
+}
+.checkbox{
+  height: 25px;
+  width: 25px;
+  display: inline-block;
+  text-align: center;
+  padding: 0;
+  margin: 5px;
 }

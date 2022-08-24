@@ -1,14 +1,15 @@
 .contactsContainerContainer{
     width: 90vw;
-    height: 90vh;
+    height: 95vh;
     margin-left:0vw;        
     display: inline-block;    
     overflow-x: hidden;    
+    overflow-y: hidden;
     padding-top: 20px; 
 }
-.contactsContainer{        
-    height: 90%;
-    overflow-y: scroll;
+.contactsContainer{      
+    height: calc(100% - 40px);      
+    overflow-y: auto;
     overflow-x: hidden;   
     padding-top: 20px; 
 }
@@ -16,8 +17,7 @@
     height: 140px;
     width: 140px;
     margin: 2px;
-    position: relative;
-    
+    position: relative;    
     filter: brightness(0.7) grayscale(.3);    
     border-radius: 3px;        
 }
@@ -79,6 +79,10 @@
 }
 .Orange .contactName{
     background-image: radial-gradient(rgba(255, 132, 0, 0.66), rgba(255, 119, 0, 0.192), rgba(0, 0, 255, 0));   
+}
+.Archived{
+    border: 2px solid rgba(190, 59, 83, 0.753);    
+        
 }
 .contactArrow{
     position: absolute;
