@@ -188,6 +188,15 @@ function ContactMenu(props) {
     props.setOpen(false)
   }
 
+  function archiveContact(){
+    console.log("pre3ssed archive for "+props.selectedContact.key)
+    set(dbRef(props.firebase.current.db, "images2/"+props.selectedContact.key+"/archived"), true)    
+  }
+  function unAarchiveContact(){
+    console.log("pre3ssed archive for "+props.selectedContact.key)
+    set(dbRef(props.firebase.current.db, "images2/"+props.selectedContact.key+"/archived"), false)    
+  }
+
   // #endregion
 
   //\\// ==================== ==================== Images ==================== ==================== \\//\\
@@ -261,10 +270,18 @@ function ContactMenu(props) {
             <option>Yellow</option>
             <option>Green</option>
             <option>Gray</option>
+            <option>Clear</option>
             <option>Orange</option>
+            <option>DarkGreen</option>
             <option>LightBlue</option>                    
           </select>                                                                                             
           <textarea id='notesInput' placeholder='Notes' defaultValue={props.selectedContact ? props.selectedContact.notes : ""} onChange={needsUpdate}></textarea>
+          {props.selectedContact.archived &&            
+            <div className='box hoverBox button' onClick={unAarchiveContact}>Unarchive</div>
+          }
+          {!props.selectedContact.archived &&  
+            <div className='box hoverBox button' onClick={archiveContact}>Archive</div>
+          }
           <div className='box hoverBox button' onClick={deleteContact}>Delete</div>
           <div className='box hoverBox button' onClick={revert}>Revert</div>                                
         </div>

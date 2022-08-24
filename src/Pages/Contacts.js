@@ -63,7 +63,7 @@ function Contacts(props) {
         }
       {pagedContacts(props.contactsArray).map((contact, index) => (
         <>
-          {index == 3 && 
+          {index == 8 && 
             <div className='hoverBox contactBox newContactBox' onClick={props.newContact}>
               <img src="https://firebasestorage.googleapis.com/v0/b/practice-79227.appspot.com/o/images2%2F-MuBiR0Qtsp7RRJ12mOn478.99475428835837?alt=media&token=c10862b2-91e1-4bf3-8953-f8e2930edf00"></img>
               {/* <img src="https://firebasestorage.googleapis.com/v0/b/practice-79227.appspot.com/o/images2%2F-MteKD1lOtpuKqb8Dx_J?alt=media&token=bdaa5943-b7d1-4b59-a76b-b94861ed5f9e"></img> */}

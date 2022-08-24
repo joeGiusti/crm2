@@ -36,6 +36,7 @@ function App() {
   const [imageDetailArray, setImageDetailArray] = useState([])
 
   const [search, setSearch] = useState("")
+  const [showArchived, setShowArchived] = useState(false)
   const [selectedContact, setSelectedContact] = useState({
     name: "",
     key: "",
@@ -318,12 +319,13 @@ function App() {
         // Put the values in an object and push it in a temp array which will be added to state
 
         images.unshift({
-          name:imageSnapName,
-          notes:imageSnapNotes,
-          color:imageSnap.child("color").val(),
-          url:imageSnap.child("url").val(),
-          images:imageSnap.child("images").val(),
-          key:imageSnap.key,
+          name: imageSnapName,
+          notes: imageSnapNotes,
+          color: imageSnap.child("color").val(),
+          url: imageSnap.child("url").val(),
+          images: imageSnap.child("images").val(),
+          key: imageSnap.key,
+          archived: imageSnap.child("archived").val()
         })
       })
 
@@ -336,11 +338,56 @@ function App() {
     if(!Array.isArray(_contactsArray))
       return
 
+    // Filter by search
     var tempArray = []
     _contactsArray.forEach(contact => {      
       if( contact.name && typeof contact.name === 'string' && contact.name.toLowerCase().includes(search.toLocaleLowerCase()))
         tempArray.push(contact)
     })
+
+    // Filter out archived
+    if(!showArchived){
+      var tempArray2 = []
+      tempArray.forEach(contact => {
+        if(contact.archived){
+
+        }
+        else{
+          tempArray2.push(contact)
+        }
+      })
+      tempArray = tempArray2
+    }
+
+    // Sort by status
+    var grayContacts = []
+    var blueContacts = []
+    var yellowContacts = []
+    var darkGreenContacts = []
+    var orangeContacts = []
+    var clearContacts = []
+    var greenContacts = []
+    var otherContacts = []
+    tempArray.forEach(contact => {
+      if(contact.color == "Gray")
+        grayContacts.push(contact)
+      else if(contact.color == "Blue")
+        blueContacts.push(contact)
+      else if(contact.color == "Yellow")
+        yellowContacts.push(contact)
+      else if(contact.color == "Orange")
+        orangeContacts.push(contact)
+      else if(contact.color == "Green")
+        greenContacts.push(contact)      
+      else if(contact.color == "Clear")
+        clearContacts.push(contact)
+      else
+        otherContacts.push(contact)
+    })
+    console.log(tempArray)
+    tempArray = [...grayContacts, ...blueContacts, ...yellowContacts, ...orangeContacts, ...greenContacts, ...clearContacts, ...otherContacts,]
+    console.log(tempArray)
+
     return tempArray
   }
   function loadEventsArray(){

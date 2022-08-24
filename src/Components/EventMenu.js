@@ -114,11 +114,24 @@ function EventMenu(props) {
     // upload it
     update(ref, eventUpdateObject)
 
-    if (eventContact.key)
-      props.updateContactDb({
+    // Update the contact status
+    if (eventContact.key){
+      var tempContactUpdateObject = {
         key: eventContact.key,
         color: status.replace("event",""),
-      })
+      }
+
+      // Some of the event status' are not valid contact status'
+      if(tempContactUpdateObject.color === "LightGreen")
+        tempContactUpdateObject.color = "Green"
+      if(tempContactUpdateObject.color === "DarkGreen")
+        tempContactUpdateObject.color = "Gray"
+      if(tempContactUpdateObject.color === "LightBlue")
+        tempContactUpdateObject.color = "Gray"
+        
+      // Update contact status in the db
+      props.updateContactDb(tempContactUpdateObject)
+    }
   }
   
   function cancel(){
