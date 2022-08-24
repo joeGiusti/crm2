@@ -271,17 +271,10 @@ function ContactMenu(props) {
             <option>Green</option>
             <option>Gray</option>
             <option>Clear</option>
-            <option>Orange</option>
-            <option>DarkGreen</option>
-            <option>LightBlue</option>                    
+            <option>Orange</option>       
+            <option>Archived</option>                
           </select>                                                                                             
           <textarea id='notesInput' placeholder='Notes' defaultValue={props.selectedContact ? props.selectedContact.notes : ""} onChange={needsUpdate}></textarea>
-          {props.selectedContact.archived &&            
-            <div className='box hoverBox button' onClick={unAarchiveContact}>Unarchive</div>
-          }
-          {!props.selectedContact.archived &&  
-            <div className='box hoverBox button' onClick={archiveContact}>Archive</div>
-          }
           <div className='box hoverBox button' onClick={deleteContact}>Delete</div>
           <div className='box hoverBox button' onClick={revert}>Revert</div>                                
         </div>

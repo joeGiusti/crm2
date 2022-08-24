@@ -91,11 +91,10 @@ select{
   background-color: var(--background-color);
 }
 
-.arrowButtons{
-  position: absolute;
-  top: 10px;    
+.arrowButtons{      
   width: 100%;  
   user-select: none;
+  margin: 5px;
 }
 .abp{
   line-height: 30px;

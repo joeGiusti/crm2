@@ -12,7 +12,7 @@ import Sidebar from './Components/Sidebar';
 import ContactMenu from './Components/ContactMenu';
 import ImageDetail from './Components/ImageDetail';
 import { initializeApp } from 'firebase/app'
-import { getDatabase, onValue, ref as dbRef, set, push, update } from 'firebase/database'
+import { getDatabase, onValue, ref as dbRef, set, push, update, orderByValue } from 'firebase/database'
 import { getStorage, uploadBytes, ref as sRef, getDownloadURL } from 'firebase/storage'
 import moment from 'moment'
 import SpaceComponent from './Components/SpaceComponent';
@@ -36,7 +36,14 @@ function App() {
   const [imageDetailArray, setImageDetailArray] = useState([])
 
   const [search, setSearch] = useState("")
+  const [showGrayContacts, setShowGrayontacts] = useState(true)
+  const [showBlueContacts, setShowBlueContacts] = useState(true)
+  const [showYellowContacts, setShowYellowContacts] = useState(true)
+  const [showGreenContacts, setShowGreenContacts] = useState(true)
+  const [showOrangeContacts, setShowOrangeContacts] = useState(true)
+  const [showClearContacts, setShowClearContacts] = useState(true)
   const [showArchived, setShowArchived] = useState(false)
+  
   const [selectedContact, setSelectedContact] = useState({
     name: "",
     key: "",
@@ -359,7 +366,7 @@ function App() {
       tempArray = tempArray2
     }
 
-    // Sort by status
+    // Sort into arrays by status
     var grayContacts = []
     var blueContacts = []
     var yellowContacts = []
@@ -368,6 +375,7 @@ function App() {
     var clearContacts = []
     var greenContacts = []
     var otherContacts = []
+    var archivedContacts = []
     tempArray.forEach(contact => {
       if(contact.color == "Gray")
         grayContacts.push(contact)
@@ -381,12 +389,31 @@ function App() {
         greenContacts.push(contact)      
       else if(contact.color == "Clear")
         clearContacts.push(contact)
+      else if(contact.color == "Archived")
+        archivedContacts.push(contact)
       else
         otherContacts.push(contact)
     })
-    console.log(tempArray)
-    tempArray = [...grayContacts, ...blueContacts, ...yellowContacts, ...orangeContacts, ...greenContacts, ...clearContacts, ...otherContacts,]
-    console.log(tempArray)
+
+    // Put them back in by order and filter
+    tempArray = []
+    if(showGrayContacts)
+      tempArray = [...tempArray, ...grayContacts]
+    if(showBlueContacts)
+      tempArray = [...tempArray, ...blueContacts]
+    if(showYellowContacts)
+      tempArray = [...tempArray, ...yellowContacts]
+    if(showGreenContacts)
+      tempArray = [...tempArray, ...orangeContacts]
+    if(showOrangeContacts)
+      tempArray = [...tempArray, ...greenContacts]
+    if(showClearContacts)
+      tempArray = [...tempArray, ...clearContacts]
+    if(showArchived)
+      tempArray = [...tempArray, ...archivedContacts]
+    tempArray = [...tempArray, ...otherContacts]
+
+    //tempArray = [...grayContacts, ...blueContacts, ...yellowContacts, ...orangeContacts, ...greenContacts, ...clearContacts, ...otherContacts,]    
 
     return tempArray
   }

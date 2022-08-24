@@ -5,8 +5,7 @@
     width: 80vw;
     min-width: 700px;
     height: calc(100vh - 30px);         
-    margin-left: 0vw;
-    margin-top: 40px;
+    margin-left: 0vw;    
     display: inline-block;    
     padding: 5px;
     position: relative;    
