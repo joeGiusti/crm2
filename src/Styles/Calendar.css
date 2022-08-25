@@ -59,7 +59,8 @@
     color: white;
 }
 .eventDarkGreen{
-    border: 1px solid rgb(18, 74, 18, .5);
+    border: 1px solid rgba(110, 0, 0, 0.744);
+    background-color: rgba(15, 42, 15, 0.767);
     color: rgba(255, 255, 255, 0.5);
 }
 .eventGreen:hover{

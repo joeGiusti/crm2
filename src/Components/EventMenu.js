@@ -13,14 +13,14 @@ function EventMenu(props) {
 
   useEffect(()=>{
  
-    console.log("in useeffect")
-
     // If its not a new event get the contact data
     if(!props.selectedEvent.newEvent){
       setEventContct(props.contactData(props.selectedEvent.imageKey))
       eventContactRef.current = props.contactData(props.selectedEvent.imageKey)
+    }    
+    else{
+      document.getElementById("textInput").focus()
     }
-    document.getElementById("textInput").focus()
     
     setUpKeyListener()
 
@@ -115,24 +115,27 @@ function EventMenu(props) {
     update(ref, eventUpdateObject)
 
     // Update the contact status
-    if (eventContact.key){
-      var tempContactUpdateObject = {
-        key: eventContact.key,
-        color: status.replace("event",""),
+    if(eventContact){
+      if (eventContact.key){
+        var tempContactUpdateObject = {
+          key: eventContact.key,
+          color: status.replace("event",""),
+        }
+  
+        // Some of the event status' are not valid contact status'
+        if(tempContactUpdateObject.color === "LightGreen")
+          tempContactUpdateObject.color = "Green"
+        if(tempContactUpdateObject.color === "DarkGreen")
+          tempContactUpdateObject.color = "Gray"
+        if(tempContactUpdateObject.color === "LightBlue")
+          tempContactUpdateObject.color = "Gray"
+          
+        // Update contact status in the db
+        props.updateContactDb(tempContactUpdateObject)
       }
+    } 
 
-      // Some of the event status' are not valid contact status'
-      if(tempContactUpdateObject.color === "LightGreen")
-        tempContactUpdateObject.color = "Green"
-      if(tempContactUpdateObject.color === "DarkGreen")
-        tempContactUpdateObject.color = "Gray"
-      if(tempContactUpdateObject.color === "LightBlue")
-        tempContactUpdateObject.color = "Gray"
-        
-      // Update contact status in the db
-      props.updateContactDb(tempContactUpdateObject)
     }
-  }
   
   function cancel(){
     props.setOpen(false)

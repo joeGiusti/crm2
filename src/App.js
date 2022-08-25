@@ -18,6 +18,7 @@ import moment from 'moment'
 import SpaceComponent from './Components/SpaceComponent';
 import userEvent from '@testing-library/user-event';
 import EventMenu from './Components/EventMenu';
+import Log from './Pages/Log';
 
 function App() {
   
@@ -150,7 +151,7 @@ function App() {
       if(tabDown.current && event.key == "j")
         setPage("contacts")
       if(tabDown.current && event.key == "k")
-        setPage("notes")
+        setPage("log")
       if(tabDown.current && event.key == "l")
         setPage("gallery")
       if(tabDown.current && event.key == ";")
@@ -240,6 +241,13 @@ function App() {
           setShowArchivedContacts={setShowArchivedContacts} 
 
         ></Contacts>
+      )
+      if(page === "log")
+      return(
+        <Log
+          firebase={firebase}
+        ></Log>
+        
       )
     if(page === "notes")
       return(

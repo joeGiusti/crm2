@@ -55,9 +55,9 @@ function Calendar(props) {
 
     if(!_day)
       _day = moment().clone()    
-    var start = _day.clone().startOf("month").startOf("week")
+    var start = _day.clone().startOf("month").startOf("week").subtract(1, "day")
     var counter = start.clone()
-    var end = _day.clone().endOf("month").endOf("week").add(1,"day")
+    var end = _day.clone().endOf("month").endOf("week")
     
     var tempArray = []
     while(counter.isBefore(end, "day"))

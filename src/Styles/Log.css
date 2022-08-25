@@ -1,0 +1,29 @@
+.logContainer{
+    width: 92vw;
+    margin-left: 5vw;    
+    padding-right: 2px;
+    margin-top: 25px;
+    max-height: calc(100vh - 50px);
+    overflow-y: auto;
+}
+.logItem{
+    width: 100%;    
+    min-height: 200px;
+    background-color: var(--background-color);
+    position: relative;
+}
+.logItem .closeButton{
+    top: 2px;
+    right: 2px;
+}
+.logItem textarea{
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 200px;
+}
+.logItem input{
+
+    height: 25px;
+    margin: 2px;
+    width: calc(50% - 5px);
+}

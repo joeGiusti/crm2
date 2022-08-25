@@ -18,9 +18,10 @@ function Sidebar(props) {
                 {/* <div className='sidebarButton' onClick={() => props.setPage("messages")}>Messages</div> */}
                 <div className='sidebarButton' onClick={() => props.setPage("calendar")}>Calendar</div>
                 <div className='sidebarButton' onClick={() => props.setPage("contacts")}>Contacts</div>
+                <div className='sidebarButton' onClick={() => props.setPage("log")}>Log</div>
                 <div className='sidebarButton' onClick={() => props.setPage("notes")}>Notes</div>
-                <div className='sidebarButton' onClick={() => props.setPage("gallery")}>Gallery</div>
                 <div className='sidebarButton' onClick={() => props.setPage("stats")}>Stats</div>
+                <div className='sidebarButton' onClick={() => props.setPage("gallery")}>Gallery</div>
                 <div className='sidebarButton' onClick={() => props.setPage("settings")}>Settings</div>
                 <div className='sidebarButton' onClick={() => props.setPage("account")}>Account</div>
             </>
