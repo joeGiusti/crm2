@@ -13,31 +13,50 @@ function ContactMenu(props) {
   //\\// ==================== ==================== Vars and Init ==================== ==================== \\//\\
   // #region
   
+  // This is the array of images that is displayed in the image display, loaded initially in useEffect
   const [imageArray, setImageArray] = useState([])
-  const [displayImageEdit, setDisplayImageEdit] = useState(false) 
-  // This flag is set when something is changed and contact is updated if needed
-  const update = useRef(false)
   // this is a list of image links as they are loaded from or into the db. All added to db when menu closes (unlesss reset is pressed)
   const dbImages = useRef([])
 
+  // Opens the image edit menu which can reorder or delete images
+  const [displayImageEdit, setDisplayImageEdit] = useState(false) 
 
-
+  // This flag is set so closeMenu knows if a db update is needed
+  const update = useRef(false)
+  // For keyboard shortcuts
+  const tabDown = useRef(false)
 
   useEffect(()=>{
-    if(props.selectedContact && Array.isArray(props.selectedContact.images))
+
+    // If there is an image array put it in state and ref
+    if(props.selectedContact && Array.isArray(props.selectedContact.images)){
       setImageArray(props.selectedContact.images)
-      if(Array.isArray(props.selectedContact.images))
-        dbImages.current = props.selectedContact.images      
+      dbImages.current = props.selectedContact.images      
+    }      
 
-      document.getElementById("nameInput").focus()
+    // Set initial focus on the name input so user can start typing without having to use mouse
+    document.getElementById("nameInput").focus()
 
-      keyListener()
+    setupKeyListener()
+
   },[])
 
-  function keyListener(){
+  function setupKeyListener(){
     document.getElementById("contactMenu").addEventListener("keydown", (event)=>{      
-      if(event.key == "Tab")
+      if(event.key == "Tab"){
         tabFocus()
+        tabDown.current = true
+      }      
+
+      // Tab + o is keyboard shortcut for save and close
+      if(tabDown.current && event.key == "o")
+        closeMenu()
+
+    }) 
+    document.getElementById("contactMenu").addEventListener("keyup", (event)=>{      
+      if(event.key == "Tab"){        
+        tabDown.current = false
+      }      
     })  
   }
 
@@ -45,6 +64,7 @@ function ContactMenu(props) {
 
   //\\// ==================== ==================== Display ==================== ==================== \\//\\
   // #region
+
   // Flag var so this is only called once per tab press
   const justTabbed = useRef(false)
   // when tab is pressed (window.addEventListener("keydown", ()=>{})) index goes up and doc.getelement(idAdIndex).focus() so the window focuses on that one
@@ -52,58 +72,28 @@ function ContactMenu(props) {
   function tabFocus(){    
     
     if(!justTabbed.current){
-      console.log("tab focus on contact menu " + tabIndexRef.current)
             
       if(tabIndexRef.current == 0)
-      document.getElementById("nameInput").focus()
+        document.getElementById("nameInput").focus()
 
       if(tabIndexRef.current == 1)
-      document.getElementById("notesInput").focus()
+        document.getElementById("notesInput").focus()
       
       if(tabIndexRef.current == 2)
         document.getElementById("statusInput").focus()
         
-        tabIndexRef.current = tabIndexRef.current + 1
-        if(tabIndexRef.current == 3)
+      tabIndexRef.current = tabIndexRef.current + 1
+      
+      if(tabIndexRef.current == 3)
         tabIndexRef.current = 0
     }    
 
     // Flag var so this is only called once per tab press
     justTabbed.current = true
     setTimeout(() => justTabbed.current = false, 100);
-  }
-
-  // #endregion
-  
-  //\\// ==================== ==================== Display ==================== ==================== \\//\\
-  // #region  
-
-
-  // #endregion
-
-  //\\// ==================== ==================== DB Old ==================== ==================== \\//\\
-  // #region
-
-  function updateName(){
-    var name = document.getElementById("nameInput").value
-    update(dbRef(props.firebase.current.db, "images2/"+props.selectedContact.key), {name: props.StringToNumbers(name)})
-  }
-  function updateNotes(){
-    var notes = document.getElementById("notesInput").value    
-    set(dbRef(props.firebase.current.db, "images2/"+props.selectedContact.key+"/notes"), props.StringToNumbers(notes))
-  }
-  function updateStaus(){
-    var status = document.getElementById("statusInput").value    
-    set(dbRef(props.firebase.current.db, "images2/"+props.selectedContact.key+"/color"), props.StringToNumbers(status))
-  }
-  function updateArchived(){
-    var archiveStatus = document.getElementById("archiveInput").value
-    set(dbRef(props.firebase.current.db, "images2/"+props.selectedContact.key+"/archived"), props.StringToNumbers(archiveStatus))
 
   }
-  function updateImages(){
-    // imageArray
-  }    
+
   // #endregion
 
   //\\// ==================== ==================== DB ==================== ==================== \\//\\
@@ -130,35 +120,15 @@ function ContactMenu(props) {
     // Gather the info
     var name = document.getElementById("nameInput").value
     var notes = document.getElementById("notesInput").value
-    var status = document.getElementById("statusInput").value
+    var color = document.getElementById("statusInput").value
 
-    console.log("in update contact ")
-    console.log(props.selectedContact.newContact)
-    if(props.selectedContact.newContact){
-      props.createContactDb({
-        name: name,
-        notes: notes,
-        color: status,
-        images:dbImages.current  
-      })
-      return
-    }
-
-    console.log("uploading")
-    console.log({
-      name: name,
-      notes: notes,
-      color: status,
-      images: dbImages.current,
-      key: props.selectedContact.key,      
-    })
-
-    // Put it in the db
+    // Put it in the db 
     props.updateContactDb({
       name: name,
       notes: notes,
-      color: status,
+      color: color,
       images: dbImages.current,
+      // If its a new contact props.selectedContact.key == null so it will push a new one and set props.selectedContact to reflect
       key: props.selectedContact.key,      
     })
   }
@@ -179,22 +149,19 @@ function ContactMenu(props) {
     dbImages.current = props.selectedContact.images
 
     // should also delete the ones added from the db so there aren't unused images there
-    //deleteImage()
+    //deleteImages() but only the new ones
+
   }  
   
   // Deletes the contact in the db and closes the menu
   function deleteContact(){    
-    remove(dbRef(props.firebase.current.db, "images2/"+props.selectedContact.key))
-    props.setOpen(false)
-  }
 
-  function archiveContact(){
-    console.log("pre3ssed archive for "+props.selectedContact.key)
-    set(dbRef(props.firebase.current.db, "images2/"+props.selectedContact.key+"/archived"), true)    
-  }
-  function unAarchiveContact(){
-    console.log("pre3ssed archive for "+props.selectedContact.key)
-    set(dbRef(props.firebase.current.db, "images2/"+props.selectedContact.key+"/archived"), false)    
+    remove(dbRef(props.firebase.current.db, "images2/"+props.selectedContact.key))    
+        
+    deleteImages(dbImages.current)    
+    
+    props.setOpen(false)
+    
   }
 
   // #endregion
@@ -240,8 +207,15 @@ function ContactMenu(props) {
     addImage(file)
   }
 
-  function deleteImage(){
+  function deleteImages(_imageUrlArray){
+    
+    _imageUrlArray.forEach( imageUrl => {
+      deleteImage(imageUrl)
+    })
 
+  }
+  function deleteImage(_imageUrl){
+    console.log("lingering image with url: "+_imageUrl)
   }
 
   // #endregion

@@ -61,7 +61,7 @@ function TypeSelectContacts(props) {
         
         setSelectedValue(_option)
         setHideOptions(true)     
-        //document.getElementById("textInput").value = _option.name
+        document.getElementById("textInput").value = _option.name
         
         props.selectContact(_option)
     }
@@ -123,7 +123,7 @@ function TypeSelectContacts(props) {
 
     return (
         <div id='selectText' className='typeSelect'>
-            <input id='textInput' onChange={typeChange} onFocus={()=>setHideOptions(false)} className="typeSelectInput" autoComplete='off'></input>
+            <input id='textInput' onChange={typeChange} onFocus={()=>setHideOptions(false)} className="typeSelectInput" autoComplete='off' defaultValue={props.defaultContact && props.defaultContact.name}></input>
             <div className={"typeSelectOptionHolder " + (hideOptions ? 'hidden':'')} >
                 <div className={"typeSelectOption"} onClick={selectNone}>None</div>
                 {filteredArray.map((contact, index) => (

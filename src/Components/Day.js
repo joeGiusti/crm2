@@ -13,15 +13,14 @@ function Day(props) {
  
     function selectDay(){
       props.setSelectedDay()
-      props.setSelectedEvent({
+      props.openEvent({
         name: "",
         notes: "",
         color: "eventBlue",        
         date: props.dayData.moment.format("YYYY-MM-DD"),
         imageKey: "",
         newEvent: true,
-      })   
-      props.openMenu(true)
+      })
     }    
 
   return (
@@ -30,11 +29,11 @@ function Day(props) {
       <div key={props.dayData.moment.format("MMMM, DD")}>
         {props.dayData.events.map(eventData => (
           <Event          
+            key={eventData ? eventData.key + eventData.imageKey : "eventWithNoData"}
             eventData={eventData}
-            contactData={props.contactData}
-            NumbersToString={props.NumbersToString}
+            getContactData={props.getContactData}            
             setSelectedEvent={props.setSelectedEvent}
-            openMenu={props.openMenu}
+            openEvent={props.openEvent}
           ></Event>                  
         ))}
       </div>   

@@ -26,7 +26,6 @@ function Log(props) {
     const [logArray, setLogArray] = useState([])
     const [hasToday, setHasToday] = useState(false)
 
-
     useEffect(()=>{
         loadLog()
     }, [])

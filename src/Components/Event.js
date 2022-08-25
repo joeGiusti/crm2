@@ -6,22 +6,21 @@ function Event(props) {
   
     const [contactData, setContactData] = useState(null)
   
-    useEffect(()=>{
-        setContactData( props.contactData(props.eventData.imageKey) )
+    useEffect(()=>{        
+        setContactData( props.getContactData(props.eventData.imageKey) )
     },[])
 
     // Opens the event menu
     function selectEvent(clickEvent){
-        clickEvent.stopPropagation()   
-        props.setSelectedEvent(props.eventData)   
-        props.openMenu(true)      
+        clickEvent.stopPropagation()           
+        props.openEvent(props.eventData)      
     }
 
     // Displays the event name (contact name unless there is another name specified)
     function eventName(){
         var returnValue = ""
         if(props.eventData && props.eventData.name !== "")
-            returnValue += props.NumbersToString(props.eventData.name)
+            returnValue += props.eventData.name
         else if(contactData)
             returnValue += contactData.name
         
@@ -30,7 +29,7 @@ function Event(props) {
 
     return (
     <div className='eventContainer'>        
-        <div className={'event shadowHilight ' + (props.eventData && props.eventData.color)} onClick={(clickEvent)=>selectEvent(clickEvent, props.eventData)} key={"event"+props.eventData.key}>
+        <div className={'event shadowHilight ' + (props.eventData && props.eventData.color)} onClick={(clickEvent)=>selectEvent(clickEvent, props.eventData)} >
         {eventName()}        
         <div className={'contactPreview '}>       
             <ImageArrayViewer

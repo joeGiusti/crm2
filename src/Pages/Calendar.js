@@ -3,7 +3,6 @@ import "../Styles/Calendar.css"
 import Day from '../Components/Day'
 import moment from "moment"
 import ArrowButtons from '../Components/ArrowButtons'
-import {onValue, ref} from 'firebase/database'
 import EventMenu from '../Components/EventMenu'
 
 function Calendar(props) {
@@ -82,17 +81,6 @@ function Calendar(props) {
     return temCalendarArray
   }
 
-  function openMenu(){
-    console.log("opening menu")
-    setDisplaEventMenu(true)
-    //console.log(displayEventMenu)
-  }
-  function closeMenu(){
-    console.log("closing menu")
-    setDisplaEventMenu(false)
-    //console.log(displayEventMenu)
-  }
-
   return (
     <div className='calendarContainer' id='calendarContainer'>      
       <div>
@@ -103,30 +91,16 @@ function Calendar(props) {
         ></ArrowButtons>
       </div>
       <div className='calendar' id='calendar'>
-          {displayEventMenu &&         
-            <div>
-              <EventMenu
-                setOpen={closeMenu}
-                selectedEvent={selectedEvent}
-                NumbersToString={props.NumbersToString}
-                contactsArray={props.contactsArray}
-                contactData={props.contactData}     
-                firebase={props.firebase}    
-                StringToNumbers={props.StringToNumbers}   
-                updateContactDb={props.updateContactDb}  
-              ></EventMenu>
-            </div>
-          }
+
           {selectedDay && calendarArray.map((dayData, index) => (          
             <Day
+              key={"day"+index}
               dayData={dayData}
               index={index}
-              openMenu={openMenu}            
+              openEvent={props.openEvent}            
               selectedDay={selectedDay}
               setSelectedDay={()=>{}}
-              contactData={props.contactData}
-              NumbersToString={props.NumbersToString}
-              setSelectedEvent={setSelectedEvent}
+              getContactData={props.getContactData}              
             >
             </Day>
           ))}

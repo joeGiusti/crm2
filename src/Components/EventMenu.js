@@ -13,139 +13,87 @@ function EventMenu(props) {
 
   useEffect(()=>{
  
-    // If its not a new event get the contact data
-    if(!props.selectedEvent.newEvent){
-      setEventContct(props.contactData(props.selectedEvent.imageKey))
-      eventContactRef.current = props.contactData(props.selectedEvent.imageKey)
-    }    
-    else{
+    console.log(props.selectedEvent)
+
+    // If theres no key its a new contact so put focus on the contact selector
+    if (!props.selectedEvent.key){
       document.getElementById("textInput").focus()
     }
-    
+    // If its an existing event get the contact data
+    else{
+      var contactData = props.getContactData(props.selectedEvent.imageKey)
+
+      setEventContct(contactData)
+      eventContactRef.current = contactData
+    }
+
     setUpKeyListener()
 
   },[])
 
-  const justPressedTab = useRef(false)
-  const tabIndex = useRef(0)
   const tabDown = useRef(false)
-  function setUpKeyListener(){
-    console.log("in key listener")
-    document.getElementById("eventMenu").addEventListener("keydown", event => {     
-      console.log(" keywodn "+event.key) 
+  function setUpKeyListener(){    
+    
+    // Keydown listener
+    document.getElementById("eventMenu").addEventListener("keydown", event => {  
+
       if(event.key == "Tab"){
-
-        tabDown.current = true
-
-        if(!justPressedTab.current){
-          console.log("tabbing over")
-          tabIndex.current = tabIndex.current + 1
-          // if(tabIndex.current == 1)
-          //   document.getElementById("name").focus()
-          justPressedTab.current = true
-          setTimeout(() => {
-            justPressedTab.current = false
-          }, 100);
-        }
+        tabDown.current = true                  
+        tabFocus()
       }
-      if(tabDown.current && event.key == "o"){
-        var n = ""
-       try{ 
-          n = document.getElementById("nameInput").value
-          console.log(document.getElementById("nameInput").value)
-          console.log(n)      
-        }catch(err){}
+
+      if(tabDown.current && event.key == "o")        
         closeMenu()
-      }
+      
     })
+
+    // Keyup listener
     document.getElementById("eventMenu").addEventListener("keyup", event => {      
       if(event.key == "Tab")
         tabDown.current = false
-      if(event.key == "p")
-        console.log(document.getElementById("nameInput").value)
     })
+
   }
 
-  // Db functions
-  function updateEvent(){
+  // Flag var so this is only called once per tab press
+  const justTabbed = useRef(false)
+  // when tab is pressed (window.addEventListener("keydown", ()=>{})) index goes up and doc.getelement(idAdIndex).focus() so the window focuses on that one
+  const tabIndexRef = useRef(1)
+  function tabFocus(){    
     
-    if(!needsUpdate.current)
-      return
+    if(!justTabbed.current){
+            
+      console.log("at tab index "+tabIndexRef.current)
 
-      // gather data
-      try{ 
-        var name = document.getElementById("nameInput").value    
-        var date = document.getElementById("dateStartSelector").value
-        var dateEnd = document.getElementById("dateEndSelector").value
-        var status = document.getElementById("eventStatusSelector").value
-        var notes = document.getElementById("notesInput").value  
-        var imageKey = ""
-      }catch(err){}    
+      if(tabIndexRef.current == 0)
+        document.getElementById("textInput").focus()
 
-    if(eventContact && eventContact.key && typeof eventContact.key == "string")
-      imageKey = eventContact.key    
+      if(tabIndexRef.current == 1)
+        document.getElementById("notesInput").focus()
+      
+      if(tabIndexRef.current == 2)
+        document.getElementById("eventStatusSelector").focus()
+        
+      tabIndexRef.current = tabIndexRef.current + 1
+        
+      if(tabIndexRef.current == 3)
+        tabIndexRef.current = 0
+    }    
 
-    if(eventContactRef.current && eventContactRef.current.key && typeof eventContactRef.current.key == "string")
-      imageKey = eventContactRef.current.key
+    // Flag var so this is only called once per tab press
+    justTabbed.current = true
+    setTimeout(() => justTabbed.current = false, 100);
 
-    var ref = null
-    if(props.selectedEvent.newEvent)
-      ref = push(dbRef(props.firebase.current.db, "events/"))
-    else
-      ref = dbRef(props.firebase.current.db, "events/" + props.selectedEvent.key)
+  }
 
-    // if eventContact == null && newContact && newContact != ""
-    //   create a contact with push and set
-
-    var eventUpdateObject = {
-      name: props.StringToNumbers(name),
-      date: date,
-      dateEnd: dateEnd,
-      color: status,
-      notes: props.StringToNumbers(notes),
-      // This is silly, will revisit when re-structuring db
-      imageKey: imageKey,
-      key:ref.key
-    }
-
-    // console.log("updating "+props.selectedEvent.key)
-    // console.log(eventUpdateObject)
-
-    // upload it
-    update(ref, eventUpdateObject)
-
-    // Update the contact status
-    if(eventContact){
-      if (eventContact.key){
-        var tempContactUpdateObject = {
-          key: eventContact.key,
-          color: status.replace("event",""),
-        }
-  
-        // Some of the event status' are not valid contact status'
-        if(tempContactUpdateObject.color === "LightGreen")
-          tempContactUpdateObject.color = "Green"
-        if(tempContactUpdateObject.color === "DarkGreen")
-          tempContactUpdateObject.color = "Gray"
-        if(tempContactUpdateObject.color === "LightBlue")
-          tempContactUpdateObject.color = "Gray"
-          
-        // Update contact status in the db
-        props.updateContactDb(tempContactUpdateObject)
-      }
-    } 
-
-    }
-  
-  function cancel(){
-    props.setOpen(false)
-  }  
 
   function deleteEvent(){
-    if(props.selectedEvent.newEvent)
-      props.setOpen(false)
-    set(dbRef(props.firebase.current.db, "events/"+props.selectedEvent.key), null)
-    props.setOpen(false)
+    
+    if(props.selectedEvent.key)      
+      set(dbRef(props.firebase.current.db, "events/"+props.selectedEvent.key), null)
+    
+      props.setDisplayEventMenu(false)    
+    
   }
 
   // Helper Functions
@@ -154,15 +102,39 @@ function EventMenu(props) {
     needsUpdate.current = true
   }
 
-  function colorFunction(_color){
-    if(!_color)
-      return ""
-    return _color.replace("event", "")
-  }
 
   function closeMenu(){
-    updateEvent()
-    props.setOpen(false)
+    
+    if(needsUpdate.current)
+      updateEventDb()
+    props.setDisplayEventMenu(false)
+  }
+  
+  function updateEventDb(){
+    
+    // gather the data
+    try{ 
+      var name = document.getElementById("nameInput").value    
+      var date = document.getElementById("dateStartSelector").value
+      var dateEnd = document.getElementById("dateEndSelector").value
+      var color = document.getElementById("eventStatusSelector").value
+      var notes = document.getElementById("notesInput").value  
+      var imageKey = eventContactRef.current.key
+    }catch(err){}    
+
+    if (imageKey == undefined)
+      imageKey = null
+
+    // put it in the db
+    props.updateEventDb({
+      name: name,
+      date: date,
+      dateEnd: dateEnd,
+      color: color,
+      notes: notes,
+      imageKey: imageKey,
+      key: props.selectedEvent.key,
+    })
   }
 
   function selectContact(_contact){
@@ -180,38 +152,15 @@ function EventMenu(props) {
                 imageArray={eventContact && eventContact.images && eventContact.images}
               ></ImageArrayViewer>
             </div>
-          {/* <img src={eventContact && eventContact.images && eventContact.images[0]}></img> */}
-          {/* 
-            over my head...
-            maybe need to learn jquery
-            https://stackoverflow.com/questions/65186998/alternatives-to-datalist-tag
-            https://twitter.github.io/typeahead.js/ 
-            https://twitter.github.io/typeahead.js/examples/
-          */}
-          <div className='contactNameSelect'>
-            {/* <input type="text" name="example" list="exampleList"/>
-            <datalist id="exampleList">
-              {props.contactsArray.map(contact => (
-                <option value={contact.name}></option>
-              ))}
-            </datalist> */}
-            {/* <input type="text" name="example" list="exampleList"/> */}    
-            {/* <select id="contactSelector" onChange={selectedAContact} defaultValue={props.selectedEvent && props.selectedEvent.imageKey}>
-              {Array.isArray(props.contactsArray) && props.contactsArray.map(contact => (
-                <>
-                  {contact && <option value={contact.key}>{contact.name}</option>}
-                </>
-              ))}              
-            </select>    */}
-          </div>
-          <TypeSelectContacts
-            optionArray={props.contactsArray}
-            selectContact={selectContact}
-          ></TypeSelectContacts>     
+            <TypeSelectContacts
+              optionArray={props.contactsArray}
+              selectContact={selectContact}
+              defaultContact={eventContact}
+            ></TypeSelectContacts>     
             <textarea placeholder='notes' defaultValue={eventContact && eventContact.notes}></textarea>                  
           </div>
           <div className='contactImageInfo'>
-            <input id='nameInput' placeholder='Name' defaultValue={props.selectedEvent && props.NumbersToString(props.selectedEvent.name)} onChange={updatedSomething}></input>            
+            <input id='nameInput' placeholder='Name' defaultValue={props.selectedEvent && props.selectedEvent.name} onChange={updatedSomething} autoComplete="off"></input>            
             <select id='eventStatusSelector' placeholder='status' className='eventStatusSelect' defaultValue={props.selectedEvent && props.selectedEvent.color} onChange={updatedSomething}>
               <option value="eventBlue">Blue</option>                    
               <option value="eventYellow">Yellow</option>
@@ -226,9 +175,9 @@ function EventMenu(props) {
             <input type={"checkbox"} className="eventCheckbox" defaultChecked={true} onChange={updatedSomething}></input>
             <input id='dateStartSelector' type={"date"} className="eventDateInput" defaultValue={props.selectedEvent && props.selectedEvent.date} onChange={updatedSomething}></input>
             <input id='dateEndSelector' type={"date"} className="eventDateInput" onChange={updatedSomething}></input>
-            <textarea id='notesInput' placeholder='Notes'  defaultValue={props.selectedEvent && props.NumbersToString(props.selectedEvent.notes)} onChange={updatedSomething}></textarea>
+            <textarea id='notesInput' placeholder='Notes'  defaultValue={props.selectedEvent && props.selectedEvent.notes} onChange={updatedSomething}></textarea>
             <div className='hoverBox button' onClick={deleteEvent}>Delete</div>
-            <div className='hoverBox button' onClick={cancel}>Cancel</div>
+            <div className='hoverBox button' onClick={()=>props.setDisplayEventMenu(false)}>Cancel</div>
           </div>
       </div>        
     </>
