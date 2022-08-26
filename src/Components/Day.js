@@ -1,5 +1,4 @@
 import React, {useEffect} from 'react'
-import moment from 'moment'
 import Event from "./Event"
 
 function Day(props) {
@@ -12,7 +11,6 @@ function Day(props) {
     },[])
  
     function selectDay(){
-      props.setSelectedDay()
       props.openEvent({
         name: "",
         notes: "",

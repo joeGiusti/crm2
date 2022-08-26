@@ -7,44 +7,33 @@ import EventMenu from '../Components/EventMenu'
 
 function Calendar(props) {
 
-  
-  const [displayEventMenu, setDisplaEventMenu] = useState(false)
   const [calendarArray, setCalendarArray] = useState([])
-  const [selectedEvent, setSelectedEvent] = useState(null)
   const [selectedDay, setSelectedDay] = useState(moment().clone())
+
+  const [dayOfFocus, setDayOfFocus] = useState(moment().clone())
 
   useEffect(()=>{    
     // Builds a calendar (array of days) and places events in those days. Puts that in state and maps it to screen
-    refreshCalendar(props.dayOfFocus)
+    refreshCalendar(dayOfFocus)
     setUpKeyListener()
     
   },[props.eventArray])
   
   function nextMonth(){
-    var newDay =props.dayOfFocus.clone().add(1, "month")
+    var newDay =dayOfFocus.clone().add(1, "month")
     refreshCalendar(newDay)
-    props.setDayOfFocus(newDay)
+    setDayOfFocus(newDay)
   }
   function lastMonth(){    
-    var newDay =props.dayOfFocus.clone().subtract(1, "month")
+    var newDay =dayOfFocus.clone().subtract(1, "month")
     refreshCalendar(newDay)
-    props.setDayOfFocus(newDay)
+    setDayOfFocus(newDay)
   }
   
   function setUpKeyListener(){
-    // console.log("set up key listener")
-    // document.getElementById("selectText"       ).addEventListener("keyup", (event)=>{  
-    // window.addEventListener("keyup", (event) => {
-    //   console.log(event.key)
-    //   if(event.key === "ArrowRight"){
-    //     console.log("arrow right")
-    //     // var newSelectedDay = selectedDay.add(1, "day")
-    //     // console.log(newSelectedDay)
-    //     // setSelectedDay(newSelectedDay)
-    //     //refreshCalendar()
-    //   }
-    // })
+    console.log("key listener not working")
   }
+
 
   function refreshCalendar(_day){    
     setCalendarArray(createCalendarArray(createMonthArray(_day), props.eventArray))
@@ -85,7 +74,7 @@ function Calendar(props) {
     <div className='calendarContainer' id='calendarContainer'>      
       <div>
         <ArrowButtons
-          message={ props.dayOfFocus.format("MMMM YYYY") }
+          message={ dayOfFocus.format("MMMM YYYY") }
           arrowLeft={lastMonth}
           arrowRight={nextMonth}
         ></ArrowButtons>
@@ -99,7 +88,6 @@ function Calendar(props) {
               index={index}
               openEvent={props.openEvent}            
               selectedDay={selectedDay}
-              setSelectedDay={()=>{}}
               getContactData={props.getContactData}              
             >
             </Day>

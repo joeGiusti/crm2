@@ -31,8 +31,8 @@ function App() {
   // Display
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [displayContactMenu, setDisplayContactMenu] = useState(false)  
-  const [displayImageDetail, setDisplayImageDetail] = useState(false)  
   const [displayEventMenu, setDisplayEventMenu] = useState(false)
+  const [displayImageDetail, setDisplayImageDetail] = useState(false)  
 
   // Data Arrays
   const [contactsArray, setContactsArray] = useState([])
@@ -40,17 +40,8 @@ function App() {
   const [imageDetailArray, setImageDetailArray] = useState([])
     
   // Object Data
-  const [selectedContact, setSelectedContact] = useState({
-    name: "",
-    key: null,
-    color: "Gray",
-    notes: "",
-    url: "",
-    urlList: [], 
-    archived: false,
-  })
+  const [selectedContact, setSelectedContact] = useState(null)
   const [selectedEvent, setSelectedEvent] = useState(null)
-  const [dayOfFocus, setDayOfFocus] = useState(moment().clone())
 
   // Filters
   const [search, setSearch] = useState("")
@@ -68,13 +59,9 @@ function App() {
 
   useEffect(()=>{
     setUpKeyListener()
-    // setBackground("https://i.ytimg.com/vi/Y1qQZbTF8iQ/maxresdefault.jpg")
-    // setBackground("./Images/cubefield.gif")
     firebaseSetup()
     loadContacts()
     loadEventsArray()
-    //window.focus(document.getElementById("root"))    
-    
   },[])
 
   function firebaseSetup() {
@@ -178,8 +165,8 @@ function App() {
           contactsArray={contactsArray}
 
           // idk why this is here and not in Calendar.js
-          dayOfFocus={dayOfFocus}
-          setDayOfFocus={setDayOfFocus}
+          // dayOfFocus={dayOfFocus}
+          // setDayOfFocus={setDayOfFocus}
           
           // This will be used in the event menu which is maybe moving here 
           updateContactDb={updateContactDb}
@@ -312,7 +299,6 @@ function App() {
   }    
 
   // #endregion
-
 
   //\\// ==================== ==================== Load ==================== ==================== \\//\\
   // #region

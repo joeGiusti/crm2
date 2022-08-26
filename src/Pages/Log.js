@@ -45,11 +45,32 @@ function Log(props) {
     }
 
     function sortLogEntries(_logEntryArray){
+
+        var tempArray = []
         _logEntryArray.forEach( entry => {
+            
+            // Get the index of the entry in the sorted array that is before the entry that is being placed
+            var c = 0
+            var placeIndex = tempArray.length
+            tempArray.forEach( placedEntry => {
+                if(moment(placedEntry.date, "YYYY-MM-DD").isBefore(moment(entry.date, "YYYY-MM-DD"))){
+                    placeIndex = c
+                    //console.log(moment(placedEntry.date,"YYYY-MM-DD").format("YYYY-MM-DD") + " is before " + moment(entry.date,"YYYY-MM-DD").format("YYYY-MM-DD"))
+                    return
+                }
+
+                c++
+            })
+
+            // Place the new entry            
+            tempArray.splice(placeIndex, 0, entry)
+
+            // Check to see if there is an entry for today
             if(entry.date === moment().format("YYYY-MM-DD"))
                 setHasToday(true)            
         })
-        return _logEntryArray
+
+        return tempArray
     }
 
     // Save given log item to the db

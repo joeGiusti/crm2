@@ -7,13 +7,11 @@ import TypeSelectContacts from './TypeSelectContacts'
 
 function EventMenu(props) {
 
-  const eventContactRef = useRef()
   const [eventContact, setEventContct]= useState(null)
+  const eventContactRef = useRef()
   const needsUpdate = useRef(false)
 
   useEffect(()=>{
- 
-    console.log(props.selectedEvent)
 
     // If theres no key its a new contact so put focus on the contact selector
     if (!props.selectedEvent.key){
@@ -63,8 +61,6 @@ function EventMenu(props) {
     
     if(!justTabbed.current){
             
-      console.log("at tab index "+tabIndexRef.current)
-
       if(tabIndexRef.current == 0)
         document.getElementById("textInput").focus()
 
