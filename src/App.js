@@ -15,8 +15,6 @@ import { initializeApp } from 'firebase/app'
 import { getDatabase, onValue, ref as dbRef, set, push, update, orderByValue } from 'firebase/database'
 import { getStorage, uploadBytes, ref as sRef, getDownloadURL } from 'firebase/storage'
 import moment from 'moment'
-import SpaceComponent from './Components/SpaceComponent';
-import userEvent from '@testing-library/user-event';
 import EventMenu from './Components/EventMenu';
 import Log from './Pages/Log';
 
@@ -58,10 +56,12 @@ function App() {
   const firebase = useRef(null)
 
   useEffect(()=>{
+    
     setUpKeyListener()
     firebaseSetup()
     loadContacts()
     loadEventsArray()
+    
   },[])
 
   function firebaseSetup() {
@@ -549,13 +549,6 @@ function App() {
     return returnString;
   }
 
-  function addImageArrays(){
-    contactsArray.forEach(contact => {
-      set(dbRef(firebase.current.db, "images2/"+contact.key+"/images"),         
-        [contact.url]
-      )
-    })
-  }
   function getContactData(_key){
     if(_key == "None")
       return {name:""}

@@ -111,7 +111,7 @@ function Log(props) {
             <LogItem
                 logData={{
                     date: moment().format("YYYY-MM-DD"),
-                    title:"for the new day",
+                    title: moment().format("YYYY-MM-DD"),
                     content:"",
                     key: null,
                 }}
