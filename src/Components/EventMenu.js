@@ -121,6 +121,7 @@ function EventMenu(props) {
       var imageKey = eventContactRef.current.key
     }catch(err){}    
 
+    // Firebase gives an error if there are any undefined values
     if (imageKey == undefined)
       imageKey = null
 
@@ -134,6 +135,10 @@ function EventMenu(props) {
       imageKey: imageKey,
       key: props.selectedEvent.key,
     })
+
+    // Update the status of the contact when changing their event status
+    if(imageKey && document.getElementById("updateContactStatusCheckbox").value)
+      update(dbRef(props.firebase.current.db, "images2/"+imageKey), {color: color.replace("event", "")})
   }
 
   function selectContact(_contact){
@@ -171,7 +176,7 @@ function EventMenu(props) {
               <option value="eventOrange">Orange</option>
               <option value="eventDarkGreen">DarkGreen</option>
             </select>
-            <input type={"checkbox"} className="eventCheckbox" defaultChecked={true} onChange={updatedSomething}></input>
+            <input type={"checkbox"} className="eventCheckbox" defaultChecked={true} id={"updateContactStatusCheckbox"}></input>
             <input id='dateStartSelector' type={"date"} className="eventDateInput" defaultValue={props.selectedEvent && props.selectedEvent.date} onChange={updatedSomething}></input>
             <input id='dateEndSelector' type={"date"} className="eventDateInput" onChange={updatedSomething}></input>
             <textarea id='notesInput' placeholder='Notes'  defaultValue={props.selectedEvent && props.selectedEvent.notes} onChange={updatedSomething}></textarea>

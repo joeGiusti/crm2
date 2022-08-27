@@ -254,7 +254,7 @@ function App() {
     if(page === "stats")
       return(
         <Stats
-        
+          eventsArray={eventsArray}
         ></Stats>
       )
     if(page === "account")
