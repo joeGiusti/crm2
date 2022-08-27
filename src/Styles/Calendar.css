@@ -27,11 +27,11 @@
 }
 .day:hover{
     background-color: var(--background-hover);
-    transition: 800ms; 
+    transition: 400ms; 
 }
 .dayHover{
     background-color: var(--background-hover);
-    transition: 800ms; 
+    transition: 400ms; 
 }
 .event{
     min-height: 18px;

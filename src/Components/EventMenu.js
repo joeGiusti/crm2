@@ -60,7 +60,7 @@ function EventMenu(props) {
   function tabFocus(){    
     
     if(!justTabbed.current){
-            
+
       if(tabIndexRef.current == 0)
         document.getElementById("textInput").focus()
 
@@ -69,10 +69,13 @@ function EventMenu(props) {
       
       if(tabIndexRef.current == 2)
         document.getElementById("eventStatusSelector").focus()
+
+      if(tabIndexRef.current == 3)
+        document.getElementById("nameInput").focus()
         
       tabIndexRef.current = tabIndexRef.current + 1
         
-      if(tabIndexRef.current == 3)
+      if(tabIndexRef.current == 4)
         tabIndexRef.current = 0
     }    
 

@@ -1,0 +1,131 @@
+[33mcommit fcebec25a3e0f2c028fff620398e2bc9c54cfdb3[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Fri Aug 26 15:13:33 2022 -0400
+
+    idk
+
+[33mcommit 1aae340c858eb339d3a2dd7fd8714063f97a46a1[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: joseph giusti <joedgiusti@gmail.com>
+Date:   Fri Aug 26 14:00:12 2022 -0400
+
+    from laptop
+
+[33mcommit 5edb81cba15828c46c67da284d3e85859f8c83ca[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Thu Aug 25 19:49:57 2022 -0400
+
+    cleaned up code
+
+[33mcommit e8b2722fec7bbc15a9cfd0b075706b8feefbeb62[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Wed Aug 24 20:34:37 2022 -0400
+
+    added log page
+
+[33mcommit 1579ae51968f21cbea294b4cf83b7e5d5a71f8ba[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Wed Aug 24 00:04:49 2022 -0400
+
+    seems to be working 8-24-2022
+
+[33mcommit ceee9e7603d43f7e601e0f3d9696e9057931a3bb[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Tue Aug 23 22:31:55 2022 -0400
+
+    filter contacts by status
+
+[33mcommit 2cb08a8956b462d7323f50ffebc21ce8f11685fb[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Tue Aug 23 21:55:57 2022 -0400
+
+    styling and archive
+
+[33mcommit c6451233be3881be5d71482b206c30af6c75991d[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Tue Aug 23 21:31:54 2022 -0400
+
+    contact sorting
+
+[33mcommit fe75c70654ff2f150268aa8e650325e4acb73a37[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Tue Aug 23 00:59:48 2022 -0400
+
+    moving along
+
+[33mcommit 6183b5957cc5ba7276e6bb381750a70cdefa9f28[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Sat Aug 20 23:56:23 2022 -0400
+
+    contack imageKey bug
+
+[33mcommit 59e5ff097c020a5caa88a16d75edc1f29b2c3c12[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Sat Aug 20 23:31:46 2022 -0400
+
+    contact type select working
+
+[33mcommit a47e66626236ce45d33063b5fcd2655e88f66528[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Sat Aug 20 23:28:01 2022 -0400
+
+    added type select for contacts
+
+[33mcommit 3fdcb793320ee2e60a25a6879ef53fb38695b673[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Sat Aug 20 01:56:41 2022 -0400
+
+    multi images for contacts
+
+[33mcommit 6d61b4236213de750e704af59aad1104cb177f7d[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Sat Aug 20 01:16:36 2022 -0400
+
+    multi images supported
+
+[33mcommit a28d8bb0de4844eeea519191cc3e12dedca33be7[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Fri Aug 19 23:44:22 2022 -0400
+
+    can add images to array
+
+[33mcommit b26e67ba8fd2c0b6359b7a9f797554c2d6dbc8c2[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Fri Aug 19 11:02:07 2022 -0400
+
+    first deploy
+
+[33mcommit 6ddb94665a1232dc6d802af99caef9788ec95ad7[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Thu Aug 18 17:44:20 2022 -0400
+
+    can add update and delete events in EventsMenu
+
+[33mcommit 87bd2a894c4d75c3c7a3cecb954295289e6352de[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Thu Aug 18 16:44:56 2022 -0400
+
+    contact data loads into event menu
+
+[33mcommit cfa1aa47cb9ab782d1e123deeeaad81cce9051e3[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Thu Aug 18 15:15:13 2022 -0400
+
+    contact shows in EventMenu selector
+
+[33mcommit 8e561b7515552c6e460556b3047624f6f679a290[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Thu Aug 18 15:00:43 2022 -0400
+
+    event menu loads some event data
+
+[33mcommit f3976b5f5935d1e62abcd1e6b9efce2eac330263[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Thu Aug 18 12:52:31 2022 -0400
+
+    events show on calendar
+
+[33mcommit 16b5bcb3c618fe20dd781a9fd075668c83681abe[m
+Author: joeGiusti <joedgiusti@gmail.com>
+Date:   Wed Aug 17 22:07:41 2022 -0400
+
+    can view and edit contacts

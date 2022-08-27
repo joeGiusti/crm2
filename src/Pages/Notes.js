@@ -1,191 +1,211 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import NoteBox from '../Components/NoteBox'
 import {onValue, ref, set, push, update} from 'firebase/database'
+import { extractQuerystring } from '@firebase/util'
+import moment from 'moment'
 
 function Notes(props) {
 
-  var sampleNoteTitle = {
-    title: "",    
-    key: "",
-    savedDate: "",
-    createdDate: "",
-  }
-  var sampleNoteData = {
-    title: "",
-    content: "",
-    key: "",
-    savedDate: "",
-    createdDate: "",
-  }
-  var sampleTitleArray = [
-    sampleNoteTitle,
-    sampleNoteTitle,
-    sampleNoteTitle,
-    sampleNoteTitle,
-  ]
-  // Determines weather a note is being displayed
-  const [viewNote, setViewNote] = useState(false)
-  const [noteTitles, setNoteTitles] = useState(sampleTitleArray)
-  const [noteData, setNoteData] = useState(sampleTitleArray)
+  // The date for the note currently being edited 
+  const [noteData, setNoteData] = useState(null)
+  // The array of note titles {title: string}
+  const [notesArray, setNotesArray] = useState([])  
+  // Flag state that determines what is displayed
+  const [editingNote, setEditingNote] = useState(false)
+  // Flag ref to keep track of if a db save is needed
+  const updatedSomething = useRef(false)
   
+  // Load the notes
   useEffect(()=>{
+    // Load the notes
+    loadNotes()
 
-    loadNoteTitles()
+  },[])
 
-  }, [])
+  // Opens note edit window after loading note data if there is any
+  function openNote(_noteKey){
 
-  // Put sample data and load the note
-  function newNote(){
-    setNoteData({
-      title: "",
-      content: "",
-      key: "",
-      savedDate: "",
-      createdDate: "",
-      newNote: true
-    })
-    setViewNote(true)
+    updatedSomething.current = false
+
+    if(!_noteKey){
+      
+      // Set a default value
+      setNoteData({
+        title: "",
+        content: "",
+        key: null,
+      })
+
+      // Open the note editing menu
+      setEditingNote(true)
+
+    }else{
+
+      // Load the note data from the db then open the note editing menu
+      loadNote(_noteKey)
+
+    }        
   }
 
-  // Load titles, map them
-  function loadNoteTitles(){
+  // Checks if save is needed, closes note edit window
+  function closeNote(){
+    if(updatedSomething.current){
 
-    onValue(ref(props.firebase.db, "noteTitles"), snap => {
+      var title = document.getElementById("noteTitleInput").value
+      var content = document.getElementById("noteContentInput").value
+      
+      saveNote({
+        title: title,
+        content: content,
+        key: noteData.key,
+        updateDate: moment().format("YYYY-MM-DD HH:MM")
+      })
 
-      // Spread the json of jsons into an array and put it in state to be mapped
-      setNoteTitles(...snap.val())
+    }
+    setEditingNote(false)
+    updatedSomething.current = false
+  }
 
-      // For each title save the data and key      
-      // var tempTitleArray = []
-      // snap.forEach(noteTitleSnap => {
-      //   var tempNoteTitle = noteTitleSnap
-      //   tempNoteTitle.key = snap.key
-      //   tempTitleArray.push(tempNoteTitle)
-      // })
-      // setNoteTitles(tempTitleArray)
+  // If there is something to save eitehr creates a new note in the db, or updates an existing note
+  function saveNote(_noteData){
 
-    })
+    if(!_noteData.key){
+
+      // push a new note, then save in db with that key
+      var newNoteRef = push(ref(props.firebase.current.db, "noteTitles"))
+      
+      // Put the title in the note titles section of the db
+      set(ref(props.firebase.current.db, "noteTitles/"+newNoteRef.key), {
+        title: props.StringToNumbers(_noteData.title),
+        createdDate: moment().format("YYYY-MM-DD HH:MM"),
+        updateDate: moment().format("YYYY-MM-DD HH:MM"),
+      })
+      
+      // Put the title and content in the note data section of the db
+      set(ref(props.firebase.current.db, "noteData/"+newNoteRef.key), {
+        title: props.StringToNumbers(_noteData.title), 
+        content: props.StringToNumbers(_noteData.content),
+        createdDate: moment().format("YYYY-MM-DD HH:MM"),
+        updateDate: moment().format("YYYY-MM-DD HH:MM"),
+      })
+
+    }else{      
+
+      // If there is an exting note update the values
+      set(ref(props.firebase.current.db, "noteTitles/"+_noteData.key), {
+        title: props.StringToNumbers(_noteData.title),
+        updateDate: moment().format("YYYY-MM-DD HH:MM"),
+      })
+      set(ref(props.firebase.current.db, "noteData/"+_noteData.key), {
+        title: props.StringToNumbers(_noteData.title), 
+        content: props.StringToNumbers(_noteData.content),
+        updateDate: moment().format("YYYY-MM-DD HH:MM"),
+      })
+
+    }
 
   }
 
-  // Load note data, open viewer to display it
-  function loadNote(_noteId){
+  // Moves the note data to an archive
+  function deleteNote(_noteKey){
+    if(!_noteKey)
+      return
+    set(ref(props.firebase.current.db, "noteTitles/"+_noteKey), null)
+    set(ref(props.firebase.current.db, "noteData/"+_noteKey), null)
 
-    onValue(ref(props.firebase.db, "noteData"), snap => {
+    set(ref(props.firebase.current.db, "noteArchive/"+_noteKey), {
+      title: document.getElementById("noteTitleInput").value,
+      content: document.getElementById("noteContentInput").value,     
+      deleteDate: moment().format("YYYY-MM-DD HH:MM")
+    })
+    
+    setEditingNote(false)
+  }
+
+  // Loads note titles from /noteTitles
+  function loadNotes(){
+
+    // Get the list of data from the db
+    onValue(ref(props.firebase.current.db, "/noteTitles"), snapshotResponse => {              
+
+      var tempArray = []     
+      for( var key in snapshotResponse.val()){
+        
+        // Get the data (title and key)
+        var tempTitleData = {} 
+        tempTitleData.title = props.NumbersToString(snapshotResponse.val()[key].title)
+        tempTitleData.key = key  
+        
+        // Put it in the array
+        tempArray.push(tempTitleData)
+      }
       
-      // Get the date, put in state
-      setNoteData(snap.val())  
-
-      // Get the date, save the key, put in state
-      // var tempNoteData = snap.val
-      // tempNoteData.key = snap.key      
-      // setNoteData(tempNoteData)  
-      
-      // open the viewer
-      setViewNote(true) 
-
+      // Put the array in state
+      setNotesArray(tempArray)
     })
 
+
+  }
+
+  // Loads a note from /noteData
+  function loadNote(_noteKey){
+    console.log("loading note")
+    console.log(_noteKey)
+    if(!_noteKey)
+      return
+    onValue(ref(props.firebase.current.db, "noteData/"+_noteKey), noteSnap =>{      
+
+      // Containes key: {title: string, content: string}
+      var tempNoteData = noteSnap.val()
+
+      console.log(tempNoteData)
+      
+      // Convert the data
+      tempNoteData.title = props.NumbersToString(tempNoteData.title)
+      tempNoteData.content = props.NumbersToString(tempNoteData.content)
+      tempNoteData.key = _noteKey
+
+      // Save in state to be displayed.
+      setNoteData(tempNoteData)
+
+      // Open the note edit menu
+      setEditingNote(true)
+
+    })
   }  
 
-  function saveNote(){
-
-    // get typed note data
-    var title = document.getElementById("noteTitleInput").value
-    var note = document.getElementById("noteArea").value
-
-    var noteDataTemp = {
-      title: title,  
-      content: note,      
-    }
-    var noteTitleTemp = {      
-      title: title,        
-    }
-
-    updateNote(noteDataTemp, noteTitleTemp)
-
-  }
-
-  function updateNote(_noteData, _noteTitle){
-    // save it to the db
-    update(ref(props.firebase.db, "noteData/"+noteData.key), _noteData)
-    update(ref(props.firebase.db, "noteTitles/"+noteData.key), _noteTitle)
-  }
-
-  function saveNewNote(){
-    var newRef =  push(ref(props.firebase.db, "noteTitles/"))
-    
-    var title = document.getElementById("noteTitleInput").value
-    var note = document.getElementById("noteArea").value
-
-    var newNoteData = {
-      title: title,
-      content: note,
-      key: newRef.key,      
-    }
-    var newTitleData = {
-      title: title,      
-      key: newRef.key,      
-    }
-    
-    updateNote(newNoteData, newTitleData)
-
-    // Update note date for future saves
-    var tempNoteData = noteData
-    tempNoteData.newNote = false
-    tempNoteData.key = newRef.key
-    setNoteData(tempNoteData)
-  }
-  
-  function closeNoteViewer(){
-
-    // Save the data
-    saveButton()    
-
-    // Close the window
-    setViewNote(false)
-
-  }
-
-  function saveButton(){
-    
-    // Call function depending on if it is a new note
-    if(noteData.newNote)
-      saveNewNote()
-    else
-      saveNote()
-  }
-
-  function deleteNote(){
-
-  }
-
-  function revertNote(){
-
+  // Sets a flag so saveNote knows if there is something to save
+  function updated(){
+    updatedSomething.current = true
   }
 
   return (
-    <div className='contactsContainer'>
-      <div className='noteBox' onClick={newNote}>
-          New Note
+    <div className='notesContainer'>
+      {!editingNote ? 
+        <div>
+          <div onClick={()=>openNote(null)} className="noteBox">New Note</div>
+          {console.log(notesArray)}
+          {notesArray.map(noteTitleData => (
+            <div 
+              key={noteTitleData.key}
+              className='noteBox' 
+              onClick={()=>{openNote(noteTitleData.key)}}
+            >
+              {noteTitleData.title}
+            </div>
+          ))}
         </div>
-      {noteTitles.map((noteTitleData, index) => (
-        <div className='noteBox' onClick={()=>loadNote(noteTitleData.key)}>
-          {noteTitleData.title}               
-        </div>
-        // Maybe put it just for the animation effect
-        // <NoteBox
-        //   noteTitleData={noteTitleData}
-        //   loadNote={loadNote}
-        //   index={index}
-        //   openMenu={props.openMenu}          
-        //   setViewNote={setViewNote}
-        // ></NoteBox>
-      ))}
-      {viewNote &&
-        <div className='noteViewer'>
-          <div className='closeButton' onClick={closeNoteViewer}>x</div>
-          <textarea id='noteArea' defaultValue={noteData.content}></textarea>
+      :
+      editingNote &&
+        <div className='noteEdit'>
+          <div className='closeButton' onClick={closeNote}>x</div>
+          <div>
+            <input defaultValue={noteData.title} onChange={updated} id="noteTitleInput"></input>
+          </div>
+          <div>
+            <textarea defaultValue={noteData.content} onChange={updated} id="noteContentInput"></textarea> 
+          </div>
+          <div onClick={()=>deleteNote(noteData.key)} className='noteDeleteButton'>Delete</div>           
         </div>
       }
     </div>

@@ -128,7 +128,7 @@ function Log(props) {
         <LogItem
             logData={{
                 date: null,
-                title:"Set a date here to create a new entry for that date",
+                title:"New Entry",
                 content:"",
                 key: null,
             }}

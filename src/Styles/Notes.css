@@ -1,11 +1,50 @@
+.noteEdit{
+    width: 90%;
+    height: 90vh;
+    margin-left: 5%;    
+    background-color: var(--background-color);
+    position: relative;
+}
+.noteEdit input{
+    width: calc(100% - 50px);
+    height: 30px;
+    margin-left: 10px;
+    margin-top: 5px;
+    float: left;
+}
+.noteEdit textarea{
+    margin: 10px;
+    width: calc(100% - 20px);
+    height: calc(90vh - 60px);
+}
 .noteBox{
-    height: 200px;
-    width: 200px;
-    margin: 2px;
-    padding: 5px;    
+    height: 120px;
+    width: 120px;
+    background-color: var(--background-color);
+    display: inline-block;
+    cursor: pointer;
+    padding-top: 10px;
+    margin: 10px;
 }
-.noteTitle{
-    margin-bottom: 10px
+.noteBox:hover{
+    background-color: var(--background-hover);
+    box-shadow: 0 0 10px rgba(68, 127, 236, 0.5);    
 }
-.notePreview{    
+.notesContainer{
+    text-align: center;
+    width: 100%;
+    margin-top: 40px;
 }
+.noteDeleteButton{
+    position: absolute;
+    bottom: 10px;
+    left: 10px;    
+    cursor: pointer;
+    user-select: none;
+    background-color: var(--background-color);
+    padding: 10px;
+}
+.noteDeleteButton:hover{
+    background-color: var(--background-hover);
+}
+    

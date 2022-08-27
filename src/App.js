@@ -13,10 +13,13 @@ import ContactMenu from './Components/ContactMenu';
 import ImageDetail from './Components/ImageDetail';
 import { initializeApp } from 'firebase/app'
 import { getDatabase, onValue, ref as dbRef, set, push, update, orderByValue } from 'firebase/database'
-import { getStorage, uploadBytes, ref as sRef, getDownloadURL } from 'firebase/storage'
+import { getStorage, uploadBytes, ref as sRef, getDownloadURL, connectStorageEmulator } from 'firebase/storage'
 import moment from 'moment'
+import SpaceComponent from './Components/SpaceComponent';
+import userEvent from '@testing-library/user-event';
 import EventMenu from './Components/EventMenu';
 import Log from './Pages/Log';
+import { isCompositeComponent } from 'react-dom/test-utils';
 
 function App() {
   
@@ -29,8 +32,8 @@ function App() {
   // Display
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [displayContactMenu, setDisplayContactMenu] = useState(false)  
-  const [displayEventMenu, setDisplayEventMenu] = useState(false)
   const [displayImageDetail, setDisplayImageDetail] = useState(false)  
+  const [displayEventMenu, setDisplayEventMenu] = useState(false)
 
   // Data Arrays
   const [contactsArray, setContactsArray] = useState([])
@@ -40,6 +43,8 @@ function App() {
   // Object Data
   const [selectedContact, setSelectedContact] = useState(null)
   const [selectedEvent, setSelectedEvent] = useState(null)
+  const dayOfFocusRef = useRef(moment().clone())
+  const [dayOfFocus, setDayOfFocus] = useState(dayOfFocusRef.current)
 
   // Filters
   const [search, setSearch] = useState("")
@@ -83,9 +88,31 @@ function App() {
     
   }  
 
+  const setUpRef = useRef(false)
   function setUpKeyListener(){
+    if(setUpRef.current)
+      return
+    setUpRef.current = true
     window.addEventListener("keydown", (event) => {      
-            
+
+      // Tab + Arrow keys to move around calendar
+      if(tabDown.current && event.key === "ArrowRight"){        
+        dayOfFocusRef.current = dayOfFocusRef.current.clone().add(1, "day")
+        setDayOfFocus(dayOfFocusRef.current)        
+      }
+      if(tabDown.current && event.key === "ArrowLeft"){        
+        dayOfFocusRef.current = dayOfFocusRef.current.clone().subtract(1, "day")
+        setDayOfFocus(dayOfFocusRef.current)        
+      }
+      if(tabDown.current && event.key === "ArrowUp"){        
+        dayOfFocusRef.current = dayOfFocusRef.current.clone().subtract(7, "day")
+        setDayOfFocus(dayOfFocusRef.current)        
+      }
+      if(tabDown.current && event.key === "ArrowDown"){        
+        dayOfFocusRef.current = dayOfFocusRef.current.clone().add(7, "day")
+        setDayOfFocus(dayOfFocusRef.current)        
+      } 
+
       if(event.key == "Tab"){        
         //event.preventDefault()
         tabDown.current = true                     
@@ -113,7 +140,7 @@ function App() {
       if(tabDown.current && event.key == "m")
         openContact()
       if(tabDown.current && event.key == "n")
-        openEvent()      
+        openEvent(null)            
       if(tabDown.current && event.key == ","){  
         // Open the sidebar and focus on the search input to start filtering by search input
         setSidebarOpen(true)
@@ -130,8 +157,7 @@ function App() {
         // Close all menus and clear search filter
         closeAll()
         document.getElementById("searchInput").value = "" 
-      }
-            
+      }            
     })
     window.addEventListener("keyup", (event) => {
         if(event.key == "Tab"){
@@ -165,8 +191,8 @@ function App() {
           contactsArray={contactsArray}
 
           // idk why this is here and not in Calendar.js
-          // dayOfFocus={dayOfFocus}
-          // setDayOfFocus={setDayOfFocus}
+          dayOfFocus={dayOfFocus}
+          setDayOfFocus={setDayOfFocus}
           
           // This will be used in the event menu which is maybe moving here 
           updateContactDb={updateContactDb}
@@ -215,6 +241,8 @@ function App() {
       return(
         <Notes
           firebase={firebase}
+          NumbersToString={NumbersToString}
+          StringToNumbers={StringToNumbers}
         ></Notes>
       )
     if(page === "gallery")
@@ -267,17 +295,17 @@ function App() {
     
     setDisplayContactMenu(true)
   }
-  function openEvent(_event){    
+  function openEvent(_event){  
     if(_event)
       setSelectedEvent(_event)
     else
-      setSelectedEvent({
+        setSelectedEvent({
         key: null,
         name: "",
         notes: "",
         imageKey: null,
-        date: moment().clone().format("YYYY-MM-DD"),
-        dateEnd: moment().clone().format("YYYY-MM-DD"),
+        date: dayOfFocusRef.current.clone().format("YYYY-MM-DD"),
+        dateEnd: dayOfFocusRef.current.clone().format("YYYY-MM-DD"),
       })
     setDisplayEventMenu(true)
   }
