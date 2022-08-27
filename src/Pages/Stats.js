@@ -23,8 +23,10 @@ function Stats(props) {
       green: 0,
       gray: 0,
       lightBlue: 0, 
+      donations: 0, 
       months: {},
       monthsArray: [],
+      contactKeys: {},
     }
 
     props.eventsArray.forEach( event => {
@@ -54,38 +56,66 @@ function Stats(props) {
       if(event.color === "eventLightGreen"){
         // Total
         tempStatsObject.green += 1
+        tempStatsObject.donations += 1
+        
         // Month
-        tempStatsObject.months[month].green += 1
+        tempStatsObject.months[month].green += 1        
+
+        tempStatsObject.contactKeys[event.imageKey] = true
       }
       if(event.color === "eventGray"){
         // Total
         tempStatsObject.gray += 1
+        tempStatsObject.donations += 1
+        tempStatsObject.contactKeys[event.imageKey] = true
+
         // Month
         tempStatsObject.months[month].gray += 1
+
       }
       if(event.color === "eventLightBlue"){
         // Total
         tempStatsObject.lightBlue += 1
+        tempStatsObject.donations += 1
+        tempStatsObject.contactKeys[event.imageKey] = true
+
         // Month
         tempStatsObject.months[month].lightBlue += 1
+
       }
       if(event.color === "eventDarkGreen"){
         // Total
         tempStatsObject.darkGreen += 1
+        tempStatsObject.donations += 1
+        tempStatsObject.contactKeys[event.imageKey] = true
+        
         // Month
         tempStatsObject.months[month].darkGreen += 1
+
       }
 
+      if(event.color === "eventGreen"){
+        // Total        
+        tempStatsObject.donations += 1      
+        tempStatsObject.contactKeys[event.imageKey] = true
+      }
+      if(event.color === "eventYellow"){
+        // Total
+        tempStatsObject.donations += 1     
+        tempStatsObject.contactKeys[event.imageKey] = true
+      }
     })    
+    
+    // A cool reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-    // Create an array with the month data
+    // Create an array with the data for each month
     var tempMonthsArray = []
     for(var monthName in tempStatsObject.months){
       tempMonthsArray.push({
         name: monthName,
         gray: tempStatsObject.months[monthName].gray,
         green: tempStatsObject.months[monthName].green,
-        lightBlue: tempStatsObject.months[monthName].lightBlue,
+        lightBlue: tempStatsObject.months[monthName].lightBlue,      
         darkGreen: tempStatsObject.months[monthName].darkGreen,
         momentDate: tempStatsObject.months[monthName].momentDate,
       })
@@ -135,38 +165,27 @@ function Stats(props) {
 
   return (
     <div className='box statsBox'>
-        <div className='barGreen statNumber'>Green: {statsObject.green}</div>
-        <div className='barLightBlue statNumber'>Light Blue: {statsObject.lightBlue}</div>
-        <div className='barGray statNumber'>Gray : {statsObject.gray}</div>    
         <div>
-          {/* {statsObject.monthsArray.map( month => (
-            <div className='monthStatBox'>
-              <div>
-                {month.name}
-              </div>
-              <div className='eventGreen'>
-                Green: {month.green}
-              </div>    
-              <div className='eventLightBlue'>
-                Light Blue: {month.lightBlue}
-              </div>              
-              <div className='eventGray'>
-                Gray: {month.gray}
-              </div>
-              <div className='eventDarkGreen'>
-                Dark Green: {month.darkGreen}
-              </div>
-              <div>
-                hey
-                <div className='columnContainer'>
-                  <div>{month.green}</div>
-                  <div className='column' style={{height: (month.green * 20)+"px"}}>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))} */}
+          <div className='barGreen statNumber'>Green: {statsObject.green}</div>
+          <div className='barLightBlue statNumber'>Light Blue: {statsObject.lightBlue}</div>
+          <div className='barGray statNumber'>Gray : {statsObject.gray}</div> 
+        </div>
+        <div>
+          <div className='statNumber barGreen'> {Array.isArray(statsObject.monthsArray) && (statsObject.green / statsObject.monthsArray.length).toFixed(2) + " / month"}</div>    
+          <div className='statNumber barLightBlue'> {Array.isArray(statsObject.monthsArray) && (statsObject.lightBlue / statsObject.monthsArray.length).toFixed(2) + " / month"}</div>    
+          <div className='statNumber barGray'> {Array.isArray(statsObject.monthsArray) && (statsObject.gray / statsObject.monthsArray.length).toFixed(2) + " / month"}</div>    
+        </div>
+        <div>
+          <div className='statNumber barGreen'> {Array.isArray(statsObject.monthsArray) && (statsObject.green / (statsObject.monthsArray.length / 12)).toFixed(2) + " / year"}</div>    
+          <div className='statNumber barLightBlue'> {Array.isArray(statsObject.monthsArray) && (statsObject.lightBlue / (statsObject.monthsArray.length  / 12)).toFixed(2) + " / year"}</div>    
+          <div className='statNumber barGray'> {Array.isArray(statsObject.monthsArray) && (statsObject.gray / (statsObject.monthsArray.length / 12)).toFixed(2) + " / year"}</div>    
+        </div>
+        <div>
+          <div className='statNumber'> {Array.isArray(statsObject.monthsArray) && statsObject.monthsArray.length + " months "}</div>  
+          <div className='statNumber'> {statsObject.contactKeys && Object.keys(statsObject.contactKeys).length + " contacts "}</div>      
+          <div className='statNumber'> {statsObject.donations + " donations "}</div>      
+        </div>
+        <div>
           <div>
             {statsObject.monthsArray.map( month => (
               <div className='monthStatBox'>                             

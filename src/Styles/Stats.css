@@ -42,4 +42,6 @@
     display: inline-block;
     width: 140px;
     padding: 5px;
+    border: 1px solid rgba(128, 128, 128, 0.309);
+    cursor: crosshair;
 }
