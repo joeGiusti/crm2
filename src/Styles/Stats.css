@@ -1,6 +1,45 @@
+.statsBox{
+    height: 98vh;
+    width: 95%;
+    margin-top: 1vh;
+    margin-left: 2.5%;
+    overflow-y: auto;
+    padding-top: 10px;
+}
 .monthStatBox{
     display: inline-block;
-    margin: 10px;
-    padding: 10px;
-    background-color: var(--background-color);
+    margin: 4px;
+    padding: 4px; 
+    vertical-align: bottom;    
+}
+.columnContainer{
+    width: 25px;
+    display: inline-block;
+    vertical-align: bottom;
+    user-select: none;
+    cursor: cell;
+}
+.column{
+    width: 100%;   
+    vertical-align: bottom;  
+}
+.barGreen{
+    background-color: green;
+}
+.barGray{
+    background-color: gray;
+}
+.barLightBlue{
+    background-color: lightblue;
+}
+.barDarkGreen{
+    background-color: rgb(30, 61, 30);
+}
+.container{
+    vertical-align: bottom;
+}
+.statNumber{
+    display: inline-block;
+    width: 140px;
+    padding: 5px;
 }

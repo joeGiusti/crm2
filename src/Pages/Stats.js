@@ -134,12 +134,12 @@ function Stats(props) {
   }
 
   return (
-    <div className='box pageBox'>
-        <div className='eventGreen'>Green: {statsObject.green}</div>
-        <div className='eventLightBlue'>Light Blue: {statsObject.lightBlue}</div>
-        <div className='eventGray'>Gray : {statsObject.gray}</div>    
+    <div className='box statsBox'>
+        <div className='barGreen statNumber'>Green: {statsObject.green}</div>
+        <div className='barLightBlue statNumber'>Light Blue: {statsObject.lightBlue}</div>
+        <div className='barGray statNumber'>Gray : {statsObject.gray}</div>    
         <div>
-          {statsObject.monthsArray.map( month => (
+          {/* {statsObject.monthsArray.map( month => (
             <div className='monthStatBox'>
               <div>
                 {month.name}
@@ -156,8 +156,43 @@ function Stats(props) {
               <div className='eventDarkGreen'>
                 Dark Green: {month.darkGreen}
               </div>
+              <div>
+                hey
+                <div className='columnContainer'>
+                  <div>{month.green}</div>
+                  <div className='column' style={{height: (month.green * 20)+"px"}}>
+
+                  </div>
+                </div>
+              </div>
             </div>
-          ))}
+          ))} */}
+          <div>
+            {statsObject.monthsArray.map( month => (
+              <div className='monthStatBox'>                             
+                <div className='container'>
+                  <div className='columnContainer'>
+                    <div>{month.green}</div>
+                    <div className='column barGreen' style={{height: (month.green * 20)+"px"}}></div>
+                  </div>
+                  <div className='columnContainer'>
+                    <div>{month.lightBlue}</div>
+                    <div className='column barLightBlue' style={{height: (month.lightBlue * 20)+"px"}}></div>
+                  </div>
+                  <div className='columnContainer'>
+                    <div>{month.darkGreen}</div>
+                    <div className='column barDarkGreen' style={{height: (month.darkGreen * 20)+"px"}}></div>
+                  </div>
+                  <div className='columnContainer'>
+                    <div>{month.gray}</div>
+                    <div className='column barGray' style={{height: (month.gray * 20)+"px"}}></div>
+                  </div>
+                </div>
+                {month.name}
+              </div>
+              
+            ))}
+          </div>
         </div>    
     </div>
   ) 
