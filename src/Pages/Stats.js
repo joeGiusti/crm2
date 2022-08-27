@@ -129,7 +129,7 @@ function Stats(props) {
   // Determines if the event contact (imageKey) was seen within the previous 2 weeks
   function cycleDuplicate(){
     // Check to see if there is an event within 14 days before with same contact
-    // The first one will not show any, any attempts after will, so each cycle will count as 1
+    // The first one will not show any, any attempts after will, so each cycle will count as 1 attempt even if met the multiple times for that cycle
     return false
   }
 
