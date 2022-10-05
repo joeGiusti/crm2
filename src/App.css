@@ -201,3 +201,37 @@ select{
   background-color: rgba(240, 248, 255, 0.105);
   box-sizing: border-box;
 }
+.authWindow{
+  height: 200px;
+  width: 400px;
+  margin: calc(40vh - 100px) auto;
+  background-color: var(--background-color);
+  padding: 20px;    
+}
+.authWindow input{
+  margin: 5px;
+  padding: 5px;
+  width: 90%;
+  height: 30px;
+}
+.authWindowInner{
+  padding-top: 10px;
+}
+.authWindow button{
+  width: 44%;
+  height: 30px;
+  background-color: rgb(214, 197, 95);
+  margin: 8px 1%;  
+  cursor: pointer;
+  outline: none;
+  border: none;
+}
+.authWindow button:hover{  
+  box-shadow: 0 0 10px gold;
+  background-color: gold;
+}
+.errorMessage{
+  color: rgb(224, 124, 124);
+  margin-top: -5px;
+  font-size: 14px;
+}

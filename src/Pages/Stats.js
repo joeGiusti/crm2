@@ -21,16 +21,86 @@ function Stats(props) {
     
     var tempStatsObject = {
       green: 0,
+      darkGreen: 0,
       gray: 0,
       lightBlue: 0, 
-      donations: 0, 
+      donations: 0,       
+      totalCycles: 0,
+      completedCycles: 0,
+      positiveRate: 0,
+      finalRate: 0,
+      waitingOn: 0,
+      scheduled: 0,
       months: {},
       monthsArray: [],
       contactKeys: {},
     }
 
-    props.eventsArray.forEach( event => {
+    // Could create an array of the events with moment objects instead of strings
+    // for each one check all of the other events
+    // if there is an event with the same contact within 2 weeks before its not new
+    // if it is new add it as a cycle for the month and total tally
 
+    // O(n) (around 400) creating a more usable array 
+    var tempEventsArray = []
+    props.eventsArray.forEach( event => {
+      var tempEvent = {        
+        date: moment(event.date, "YYYY-MM-DD").clone(),
+        color: event.color,
+        imageKey: event.imageKey,
+        key: event.key,
+        name: event.name,
+      }
+      // Not adding the clear or orange events becasue they do not factor in with these statistics
+      if(tempEvent.color !== "eventClear" && tempEvent.color !== "eventOrange" && tempEvent.color !== "eventPurple")
+        tempEventsArray.push(tempEvent)
+    })    
+
+    var greenCheck = 0
+    var totalCycles = 0
+    var completedCycles = 0
+    tempEventsArray.forEach(event => {
+
+      // Determine if it is the first event in the cycle
+      var isFirst = true
+      
+      if(event.color )
+
+      for(var index in tempEventsArray){
+        // If the second event is not the same one as the focus event
+        if(tempEventsArray[index].key != event.key)
+          // If the image key is the same
+          if(tempEventsArray[index].imageKey == event.imageKey){
+            // Look to see if the second event is within 14 days before
+            var earlierDaysBefore = event.date.diff(tempEventsArray[index].date, "days")
+            // If it is than the event of focus is not the first one for the given cycle
+            if(earlierDaysBefore > 0 && earlierDaysBefore < 14)
+              isFirst = false
+          }            
+      }        
+      // If it is first add it to the tally of cycles
+      if(isFirst){
+        
+        totalCycles ++        
+        if(event.color === "eventGray" || event.color === "eventLightGreen" || event.color === "eventGreen")
+          completedCycles++
+        if(event.color === "eventYellow"){
+          tempStatsObject.waitingOn++
+          console.log("waiting on " + event.imageKey)
+        }
+        if(event.color === "eventBlue")
+          tempStatsObject.scheduled++
+        //console.log(event)
+      }
+      if(isFirst && (event.color == "eventLightGreen" || event.color == "eventGreen"))
+        greenCheck ++
+    })
+                  
+    console.log("green check")
+    console.log(greenCheck)
+
+    // Look through each event and add them to statsObject.months object for bar chart display
+    props.eventsArray.forEach( event => {
       
       // Create a moment object from the data
       var momentDate = moment(event.date, "YYYY-MM-DD").clone()  
@@ -52,15 +122,10 @@ function Stats(props) {
           momentDate: momentDate,
         }        
       }
-                      
-      if(event.color === "eventLightGreen"){
+                
+      if(event.color === "eventYellow"){
         // Total
-        tempStatsObject.green += 1
-        tempStatsObject.donations += 1
-        
-        // Month
-        tempStatsObject.months[month].green += 1        
-
+        tempStatsObject.donations += 1     
         tempStatsObject.contactKeys[event.imageKey] = true
       }
       if(event.color === "eventGray"){
@@ -73,16 +138,23 @@ function Stats(props) {
         tempStatsObject.months[month].gray += 1
 
       }
-      if(event.color === "eventLightBlue"){
+      if(event.color === "eventLightGreen"){
         // Total
-        tempStatsObject.lightBlue += 1
+        tempStatsObject.green += 1
         tempStatsObject.donations += 1
-        tempStatsObject.contactKeys[event.imageKey] = true
-
+        
         // Month
-        tempStatsObject.months[month].lightBlue += 1
+        tempStatsObject.months[month].green += 1        
 
+        tempStatsObject.contactKeys[event.imageKey] = true
       }
+
+      if(event.color === "eventGreen"){
+        // Total        
+        tempStatsObject.donations += 1      
+        tempStatsObject.contactKeys[event.imageKey] = true
+      }
+
       if(event.color === "eventDarkGreen"){
         // Total
         tempStatsObject.darkGreen += 1
@@ -93,17 +165,16 @@ function Stats(props) {
         tempStatsObject.months[month].darkGreen += 1
 
       }
-
-      if(event.color === "eventGreen"){
-        // Total        
-        tempStatsObject.donations += 1      
-        tempStatsObject.contactKeys[event.imageKey] = true
-      }
-      if(event.color === "eventYellow"){
+      if(event.color === "eventLightBlue"){
         // Total
-        tempStatsObject.donations += 1     
-        tempStatsObject.contactKeys[event.imageKey] = true
+        tempStatsObject.lightBlue += 1
+        tempStatsObject.donations += 1        
+
+        // Month
+        tempStatsObject.months[month].lightBlue += 1
+
       }
+
     })    
     
     // A cool reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
@@ -123,6 +194,11 @@ function Stats(props) {
 
     // Sort it and place it in the tempStatsObject
     tempStatsObject.monthsArray = sortMonthsArray(tempMonthsArray)
+
+    tempStatsObject.totalCycles = totalCycles
+    tempStatsObject.completedCycles  = completedCycles
+    tempStatsObject.positiveRate = (tempStatsObject.green) / completedCycles
+    tempStatsObject.finalRate = (tempStatsObject.green + tempStatsObject.darkGreen) / completedCycles
 
     // save the tempStatsObject into state to be displayed
     setStatsObject(tempStatsObject)
@@ -185,6 +261,17 @@ function Stats(props) {
           <div className='statNumber'> {statsObject.contactKeys && Object.keys(statsObject.contactKeys).length + " contacts "}</div>      
           <div className='statNumber'> {statsObject.donations + " donations "}</div>      
         </div>
+        <div>
+          <div className='statNumber'> {typeof statsObject.positiveRate == "number" && statsObject.positiveRate.toFixed(2)+"% final "}</div>      
+          <div className='statNumber'> {typeof statsObject.finalRate == "number" && statsObject.finalRate.toFixed(2) + "% positive "}</div>      
+          <div className='statNumber'> {typeof statsObject.completedCycles == "number" && statsObject.completedCycles.toFixed(0) +" cycles"}</div>  
+        </div>   
+        <div>
+          <div className='statNumber'> {statsObject.scheduled + " scheduled"}</div>   
+          <div className='statNumber'> {statsObject.waitingOn + " waiting on"}</div>      
+          <div className='statNumber'> {(statsObject.waitingOn * statsObject.finalRate).toFixed(0) + " projected"}</div>   
+          
+        </div>        
         <div>
           <div>
             {statsObject.monthsArray.map( month => (

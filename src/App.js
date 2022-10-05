@@ -20,6 +20,8 @@ import userEvent from '@testing-library/user-event';
 import EventMenu from './Components/EventMenu';
 import Log from './Pages/Log';
 import { isCompositeComponent } from 'react-dom/test-utils';
+import Auth from './Pages/Auth';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 function App() {
   
@@ -27,7 +29,8 @@ function App() {
   // #region
 
   // Page
-  const [page, setPage] = useState("calendar")
+  const [page, setPage] = useState("auth")
+  const [userId, setUserId] = useState(null)
 
   // Display
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -82,10 +85,23 @@ function App() {
     })
     var db = getDatabase(app)
     var storage = getStorage(app)
-    
+    var auth = getAuth()    
+
     // Save a ref to the refs
-    firebase.current = {app: app, db: db, storage: storage}
+    firebase.current = {app: app, db: db, storage: storage, auth: auth}
     
+    onAuthStateChanged(firebase.current.auth, (user) => {
+      if (user) {
+        // When user is signed in save id and go to calendar
+        setUserId(user.uid)
+        setPage("calendar")
+      } else {
+        // User is signed out
+        setUserId(null)
+        setPage("auth")
+      }
+    });
+
   }  
 
   const setUpRef = useRef(false)
@@ -132,7 +148,7 @@ function App() {
       if(tabDown.current && event.key == "k")
         setPage("log")
       if(tabDown.current && event.key == "l")
-        setPage("gallery")
+        setPage("notes")
       if(tabDown.current && event.key == ";")
         setPage("stats")   
       if(tabDown.current && event.key == "'")
@@ -173,6 +189,12 @@ function App() {
   // #region
   
   function DisplayPage(){    
+    if(page === "auth")
+      return(
+        <Auth      
+          firebase={firebase}
+        ></Auth>
+      )
     if(page === "calendar")
       return(
         <Calendar          
@@ -260,7 +282,7 @@ function App() {
     if(page === "account")
       return(        
         <Account
-        
+          firebase={firebase}
         ></Account>
       )
     if(page === "settings")
