@@ -618,13 +618,13 @@ function App() {
   return (
     <div className="App" id='mainApp' onClick={closeSidebar}>
       <div>
-        <Sidebar
+        {userId &&  <Sidebar
           setPage={setPage}
           open={sidebarOpen}
           openFunction={openSidebar}
           closeFunction={closeSidebar}
           setSearch={setSearch}  
-        ></Sidebar>
+        ></Sidebar>}
         {DisplayPage()}
         {displayContactMenu && 
           <ContactMenu
