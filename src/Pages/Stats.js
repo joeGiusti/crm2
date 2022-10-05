@@ -4,13 +4,35 @@ import "../Styles/Stats.css"
 
 function Stats(props) {
 
-  const [statsObject, setStatsObject] = useState({      
-    green: 0,
-    gray: 0,
+  const [statsObject2, setStatsObject2] = useState({      
+    // All d: gray, green, dark green, yellow, lightBlue
+    totalD: 0,
+    // All C: first: gray, green, dark green, yellow, lightBlue 
+    totalC: 0,
+    // got results: gray, green, dark green
+    completeC: 0,
+    // waiting on results on cycle: yellow
+    openC: 0,
+    // waiting on meeting: blue
+    scheduled: 0,
+    // got result on cycle: green
+    greenC: 0,
+    // got result on cycle: gray
+    grayC: 0,
+    // got result on cycle: darkGreen
+    darkGreenC: 0,
+    // event: lightBlue
     lightBlue: 0,
-    darkGreen: 0,
+    // Got initial result of green: green, darkGreen
+    positiveRate: 0,
+    // Result is currently green
+    currentPositiveRate: 0,
+    // list of objects that keep track of each month
     months: {},
+    // idk why there is an array also, maybe for a map      
     monthsArray: [],
+    // keeps track of the number of contacts cycled
+    contactKeys: {},
   })
 
   useEffect(()=>{
@@ -19,6 +41,9 @@ function Stats(props) {
 
   function buildStatObject(){
     
+    // total don, complete don, comple cyc, total cyc
+
+    // This object will hold the stats data
     var tempStatsObject = {
       green: 0,
       darkGreen: 0,
@@ -26,6 +51,7 @@ function Stats(props) {
       lightBlue: 0, 
       donations: 0,       
       totalCycles: 0,
+      currentGreen: 0,      
       completedCycles: 0,
       positiveRate: 0,
       finalRate: 0,
@@ -36,12 +62,39 @@ function Stats(props) {
       contactKeys: {},
     }
 
-    // Could create an array of the events with moment objects instead of strings
-    // for each one check all of the other events
-    // if there is an event with the same contact within 2 weeks before its not new
-    // if it is new add it as a cycle for the month and total tally
+    var tempStatsObject2 = {
+      // All d: gray, green, dark green, yellow, lightBlue
+      totalD: 0,
+      // All C: first: gray, green, dark green, yellow, lightBlue 
+      totalC: 0,
+      // got results: gray, green, dark green
+      completeC: 0,
+      // waiting on results on cycle: yellow
+      openC: 0,
+      // waiting on meeting: blue
+      scheduledC: 0,
+      // got result on cycle: green
+      greenC: 0,
+      // got result on cycle: gray
+      grayC: 0,
+      // got result on cycle: darkGreen
+      darkGreenC: 0,
+      // event: lightBlue
+      lightBlue: 0,
+      // Got initial result of green: green, darkGreen
+      positiveRate: 0,
+      // Result is currently green
+      currentPositiveRate: 0,
+      // list of objects that keep track of each month
+      months: {},
+      // idk why there is an array also, maybe for a map      
+      monthsArray: [],
+      // keeps track of the number of contacts cycled
+      contactKeys: {},
+      greenContactKeys: {},
+    }
 
-    // O(n) (around 400) creating a more usable array 
+    // Creating a more usable array O(n) (around 400). Filters out events that do not factor in, puts date object instead of string
     var tempEventsArray = []
     props.eventsArray.forEach( event => {
       var tempEvent = {        
@@ -55,17 +108,45 @@ function Stats(props) {
       if(tempEvent.color !== "eventClear" && tempEvent.color !== "eventOrange" && tempEvent.color !== "eventPurple")
         tempEventsArray.push(tempEvent)
     })    
-
-    var greenCheck = 0
+    
+    // Add event data to object
     var totalCycles = 0
     var completedCycles = 0
     tempEventsArray.forEach(event => {
 
+      // Get the month of this event and add it to the data object
+      var month = event.date.format("YYYY MMMM")   
+      // If the event is something that should be put in a month object
+      if(  event.color === "eventGray" 
+        || event.color === "eventLightGreen" 
+        || event.color === "eventGreen" 
+        || event.color === "eventDarkGreen"
+        || event.color === "eventYellow"         
+        || event.color === "eventLightBlue"         
+      )
+        // If the month is not already in the data object add it
+        if(tempStatsObject2.months[month] === undefined){
+          tempStatsObject2.months[month] = {
+            name: month,                    
+            totalD: 0,
+            totalC: 0,
+            completeC: 0,
+            openC: 0,
+            scheduledC: 0,
+            greenC: 0, 
+            grayC:  0,
+            darkGreenC: 0,          
+            lightBlue: 0,          
+            positiveRate: 0,          
+            currentPositiveRate: 0,
+            // Save the moment object for sorting later
+            momentDate: event.date,
+          }   
+        }
+
       // Determine if it is the first event in the cycle
       var isFirst = true
-      
-      if(event.color )
-
+      // Look through all the other events to see if there is one with the same contact within 2 weeks
       for(var index in tempEventsArray){
         // If the second event is not the same one as the focus event
         if(tempEventsArray[index].key != event.key)
@@ -78,141 +159,144 @@ function Stats(props) {
               isFirst = false
           }            
       }        
-      // If it is first add it to the tally of cycles
+
+      // These are the event types that count as d
+      if(  event.color === "eventGray" 
+        || event.color === "eventLightGreen" 
+        || event.color === "eventGreen" 
+        || event.color === "eventDarkGreen"
+        || event.color === "eventYellow" 
+        || event.color === "lightBlue" 
+      ){
+        tempStatsObject2.months[month].totalD++
+        tempStatsObject2.totalD++
+      }
+
+      // Each light blue counts as 1 light blue
+      if(event.color == "eventLightBlue"){
+        tempStatsObject2.months[month].lightBlue++
+        tempStatsObject2.lightBlue++
+      }
+
+      // If it is first add it to the tally of c depending on type
       if(isFirst){
+        // The events that are of orange clear or purple are not in this list so any first event is a cycle
+        totalCycles++        
         
-        totalCycles ++        
+        // These are the event types that count as c
+        if(  event.color === "eventGray" 
+          || event.color === "eventLightGreen" 
+          || event.color === "eventGreen" 
+          || event.color === "eventDarkGreen"
+          || event.color === "eventYellow" 
+        ){
+          tempStatsObject2.months[month].totalC++
+          tempStatsObject2.totalC++
+        }
+
+        // These are the event types that count as c
+        if(  event.color === "eventGray" 
+          || event.color === "eventLightGreen" 
+          || event.color === "eventGreen" 
+          || event.color === "eventDarkGreen"          
+        ){
+          tempStatsObject2.months[month].completeC++
+          tempStatsObject2.completeC++
+        }
+          
+        // These are the event types that count as waiting on c
+        if(  event.color === "eventYellow" ){
+          tempStatsObject2.months[month].openC++
+          tempStatsObject2.openC++
+        }
+
+        // These are the event types that count as scheduled c
+        if(  event.color === "eventBlue" )
+          tempStatsObject2.scheduledC++
+
+        if(event.color == "eventLightGreen" || event.color == "eventGreen"){
+          tempStatsObject2.months[month].greenC++
+          tempStatsObject2.greenC++
+        }
+
+        if(event.color == "eventGray"){
+          tempStatsObject2.months[month].grayC++
+          tempStatsObject2.grayC++
+        }
+                    
+        if(event.color == "eventDarkGreen"){
+          tempStatsObject2.months[month].darkGreenC++
+          tempStatsObject2.darkGreenC++
+        }
+          
+        // Keep track of number of contacts met and how many c met
+        if(tempStatsObject2.contactKeys[event.imageKey])
+          tempStatsObject2.contactKeys[event.imageKey]++
+        else
+          tempStatsObject2.contactKeys[event.imageKey] = 1  
+
+        // Keep track of the contact keys of the green cycles
+        if(event.color == "eventLightGreen" || event.color == "eventGreen")
+          tempStatsObject2.greenContactKeys[event.imageKey] = true        
+          
+        // If there is a result on the event add it to completed cycles
         if(event.color === "eventGray" || event.color === "eventLightGreen" || event.color === "eventGreen")
           completedCycles++
+
+        // Cycles still waiting on
         if(event.color === "eventYellow"){
-          tempStatsObject.waitingOn++
-          console.log("waiting on " + event.imageKey)
+          tempStatsObject.waitingOn++          
         }
+        // Cycles scheduled
         if(event.color === "eventBlue")
           tempStatsObject.scheduled++
-        //console.log(event)
-      }
-      if(isFirst && (event.color == "eventLightGreen" || event.color == "eventGreen"))
-        greenCheck ++
+        // Good cycles
+        if(isFirst && (event.color == "eventLightGreen" || event.color == "eventGreen"))
+          tempStatsObject.currentGreen ++
+      }  
+
+      // Save the contact key so we can keep track of the number of contacts
+      tempStatsObject.contactKeys[event.imageKey] = true
+      
+      // put the months into an array for map and length
+
+
     })
-                  
-    console.log("green check")
-    console.log(greenCheck)
+                 
 
-    // Look through each event and add them to statsObject.months object for bar chart display
-    props.eventsArray.forEach( event => {
-      
-      // Create a moment object from the data
-      var momentDate = moment(event.date, "YYYY-MM-DD").clone()  
-      // Get the month from it
-      var month = momentDate.format("YYYY MMMM")
-      
-      if(month === "Invalid date")
-        console.log("invalid event with key: "+event.key)
 
-      // Add the month if its not already there
-      if(tempStatsObject.months[month] === undefined){
-        tempStatsObject.months[month] = {
-          name: month,
-          green: 0, 
-          gray:  0,
-          lightBlue: 0,
-          darkGreen: 0,
-          // Save the moment object for sorting later
-          momentDate: momentDate,
-        }        
-      }
-                
-      if(event.color === "eventYellow"){
-        // Total
-        tempStatsObject.donations += 1     
-        tempStatsObject.contactKeys[event.imageKey] = true
-      }
-      if(event.color === "eventGray"){
-        // Total
-        tempStatsObject.gray += 1
-        tempStatsObject.donations += 1
-        tempStatsObject.contactKeys[event.imageKey] = true
+    var tempMonthsArray = []
+    for(var index in  tempStatsObject2.months){
+      tempMonthsArray.push(tempStatsObject2.months[index])
+    }
+    tempMonthsArray = sortMonthsArray(tempMonthsArray)
+    tempStatsObject2.monthsArray = tempMonthsArray
 
-        // Month
-        tempStatsObject.months[month].gray += 1
-
-      }
-      if(event.color === "eventLightGreen"){
-        // Total
-        tempStatsObject.green += 1
-        tempStatsObject.donations += 1
-        
-        // Month
-        tempStatsObject.months[month].green += 1        
-
-        tempStatsObject.contactKeys[event.imageKey] = true
-      }
-
-      if(event.color === "eventGreen"){
-        // Total        
-        tempStatsObject.donations += 1      
-        tempStatsObject.contactKeys[event.imageKey] = true
-      }
-
-      if(event.color === "eventDarkGreen"){
-        // Total
-        tempStatsObject.darkGreen += 1
-        tempStatsObject.donations += 1
-        tempStatsObject.contactKeys[event.imageKey] = true
-        
-        // Month
-        tempStatsObject.months[month].darkGreen += 1
-
-      }
-      if(event.color === "eventLightBlue"){
-        // Total
-        tempStatsObject.lightBlue += 1
-        tempStatsObject.donations += 1        
-
-        // Month
-        tempStatsObject.months[month].lightBlue += 1
-
-      }
-
-    })    
+    tempStatsObject2.currentPositiveRate = tempStatsObject2.greenC / tempStatsObject2.completeC
+    tempStatsObject2.positiveRate = (tempStatsObject2.greenC + tempStatsObject2.darkGreenC) / tempStatsObject2.completeC
     
+    setStatsObject2(tempStatsObject2)
+        
     // A cool reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
 
     // Create an array with the data for each month
-    var tempMonthsArray = []
-    for(var monthName in tempStatsObject.months){
-      tempMonthsArray.push({
-        name: monthName,
-        gray: tempStatsObject.months[monthName].gray,
-        green: tempStatsObject.months[monthName].green,
-        lightBlue: tempStatsObject.months[monthName].lightBlue,      
-        darkGreen: tempStatsObject.months[monthName].darkGreen,
-        momentDate: tempStatsObject.months[monthName].momentDate,
-      })
-    }
-
-    // Sort it and place it in the tempStatsObject
-    tempStatsObject.monthsArray = sortMonthsArray(tempMonthsArray)
-
-    tempStatsObject.totalCycles = totalCycles
-    tempStatsObject.completedCycles  = completedCycles
-    tempStatsObject.positiveRate = (tempStatsObject.green) / completedCycles
-    tempStatsObject.finalRate = (tempStatsObject.green + tempStatsObject.darkGreen) / completedCycles
-
-    // save the tempStatsObject into state to be displayed
-    setStatsObject(tempStatsObject)
+    
   }
 
   // Sorts and filters an array of month data and return the sorted array
   function sortMonthsArray(_monthsArray){
     
+    
+
     // Place each month in the temp array based on its momentDate
     var tempArray = []
     _monthsArray.forEach( month => {
 
+      console.log("sorting ")
+      console.log(month)
+
       // Don't worry about stray events with no data
-      if(month.gray == 0 && month.green == 0 && month.lightBlue == 0)
+      if(month.grayC == 0 && month.greenC == 0 && month.lightBlue == 0)
         return
 
       // Get the index of the first month thats before this one
@@ -242,56 +326,70 @@ function Stats(props) {
   return (
     <div className='box statsBox'>
         <div>
-          <div className='barGreen statNumber'>Green: {statsObject.green}</div>
-          <div className='barLightBlue statNumber'>Light Blue: {statsObject.lightBlue}</div>
-          <div className='barGray statNumber'>Gray : {statsObject.gray}</div> 
+          <div className='statNumber'>Completed</div>
+          <div className='barGreen statNumber'>{statsObject2.greenC} Green</div>
+          <div className='barGray statNumber'>{statsObject2.grayC} Gray</div> 
+          <div className='statNumber'> {statsObject2.completeC} Ttl</div>            
         </div>
         <div>
-          <div className='statNumber barGreen'> {Array.isArray(statsObject.monthsArray) && (statsObject.green / statsObject.monthsArray.length).toFixed(2) + " / month"}</div>    
-          <div className='statNumber barLightBlue'> {Array.isArray(statsObject.monthsArray) && (statsObject.lightBlue / statsObject.monthsArray.length).toFixed(2) + " / month"}</div>    
-          <div className='statNumber barGray'> {Array.isArray(statsObject.monthsArray) && (statsObject.gray / statsObject.monthsArray.length).toFixed(2) + " / month"}</div>    
+          <div className='statNumber'>Open</div>
+          <div className='statNumber barBlue'> {statsObject2.scheduledC + " scheduled"}</div>   
+          <div className='statNumber barYellow'> {statsObject2.openC + " open"}</div>      
+          <div className='statNumber'> {(statsObject2.openC * statsObject2.positiveRate).toFixed(0) + " projected"}</div>             
         </div>
         <div>
-          <div className='statNumber barGreen'> {Array.isArray(statsObject.monthsArray) && (statsObject.green / (statsObject.monthsArray.length / 12)).toFixed(2) + " / year"}</div>    
-          <div className='statNumber barLightBlue'> {Array.isArray(statsObject.monthsArray) && (statsObject.lightBlue / (statsObject.monthsArray.length  / 12)).toFixed(2) + " / year"}</div>    
-          <div className='statNumber barGray'> {Array.isArray(statsObject.monthsArray) && (statsObject.gray / (statsObject.monthsArray.length / 12)).toFixed(2) + " / year"}</div>    
+          <div className='statNumber'>Green</div>
+          <div className='barGreen statNumber'>{statsObject2.greenC} Ttl</div>
+          <div className='statNumber barGreen'> {Array.isArray(statsObject2.monthsArray) && (statsObject2.greenC / statsObject2.monthsArray.length).toFixed(2) + " / month"}</div>    
+          <div className='statNumber barGreen'> {Array.isArray(statsObject2.monthsArray) && (statsObject2.greenC / (statsObject2.monthsArray.length / 12)).toFixed(2) + " / year"}</div>              
         </div>
         <div>
-          <div className='statNumber'> {Array.isArray(statsObject.monthsArray) && statsObject.monthsArray.length + " months "}</div>  
-          <div className='statNumber'> {statsObject.contactKeys && Object.keys(statsObject.contactKeys).length + " contacts "}</div>      
-          <div className='statNumber'> {statsObject.donations + " donations "}</div>      
+          <div className='statNumber'>Gray</div>
+          <div className='barGray statNumber'>{statsObject2.grayC} Ttl</div>
+          <div className='statNumber barGray'> {Array.isArray(statsObject2.monthsArray) && (statsObject2.grayC / statsObject2.monthsArray.length).toFixed(2) + " / month"}</div>    
+          <div className='statNumber barGray'> {Array.isArray(statsObject2.monthsArray) && (statsObject2.grayC / (statsObject2.monthsArray.length / 12)).toFixed(2) + " / year"}</div>              
         </div>
         <div>
-          <div className='statNumber'> {typeof statsObject.positiveRate == "number" && statsObject.positiveRate.toFixed(2)+"% final "}</div>      
-          <div className='statNumber'> {typeof statsObject.finalRate == "number" && statsObject.finalRate.toFixed(2) + "% positive "}</div>      
-          <div className='statNumber'> {typeof statsObject.completedCycles == "number" && statsObject.completedCycles.toFixed(0) +" cycles"}</div>  
-        </div>   
-        <div>
-          <div className='statNumber'> {statsObject.scheduled + " scheduled"}</div>   
-          <div className='statNumber'> {statsObject.waitingOn + " waiting on"}</div>      
-          <div className='statNumber'> {(statsObject.waitingOn * statsObject.finalRate).toFixed(0) + " projected"}</div>   
-          
+          <div className='statNumber'>Cryo</div>          
+          <div className='barLightBlue statNumber'>Light Blue: {statsObject2.lightBlue}</div>
+          <div className='statNumber barLightBlue'> {Array.isArray(statsObject2.monthsArray) && (statsObject2.lightBlue / statsObject2.monthsArray.length).toFixed(2) + " / month"}</div>    
+          <div className='statNumber barLightBlue'> {Array.isArray(statsObject2.monthsArray) && (statsObject2.lightBlue / (statsObject2.monthsArray.length  / 12)).toFixed(2) + " / year"}</div>    
         </div>        
         <div>
+          <div className='statNumber'>Rates</div>          
+          <div className='statNumber'> {typeof statsObject2.positiveRate == "number" && statsObject2.currentPositiveRate.toFixed(2)+"% final "}</div>      
+          <div className='statNumber'> {typeof statsObject2.currentPositiveRate == "number" && statsObject2.positiveRate.toFixed(2) + "% positive "}</div>      
+          <div className='statNumber'> {statsObject2.completeC +" cycles"}</div>  
+        </div>                  
+        <div>
+          <div className='statNumber'>Totals</div>          
+          <div className='statNumber'> {Array.isArray(statsObject2.monthsArray) && statsObject2.monthsArray.length + " months "}</div>  
+          <div className='statNumber'> {statsObject2.contactKeys && Object.keys(statsObject2.contactKeys).length + " contacts "}</div>      
+          <div className='statNumber'> {statsObject2.totalD + " donations "}</div>      
+        </div>
+
+        
+        <div>
           <div>
-            {statsObject.monthsArray.map( month => (
+            {statsObject2.monthsArray.map( month => (
               <div className='monthStatBox'>                             
                 <div className='container'>
                   <div className='columnContainer'>
-                    <div>{month.green}</div>
-                    <div className='column barGreen' style={{height: (month.green * 20)+"px"}}></div>
+                    <div>{month.greenC < 2 && month.greenC}</div>
+                    <div className='column barGreen' style={{height: (month.greenC * 20)+"px"}}>{month.greenC >= 2 && month.greenC}</div>
                   </div>
                   <div className='columnContainer'>
-                    <div>{month.lightBlue}</div>
-                    <div className='column barLightBlue' style={{height: (month.lightBlue * 20)+"px"}}></div>
+                    <div>{month.lightBlue < 2 && month.lightBlue}</div>
+                    <div className='column barLightBlue' style={{height: (month.lightBlue * 20)+"px"}}>{month.lightBlue >= 2 && month.lightBlue}</div>
                   </div>
                   <div className='columnContainer'>
-                    <div>{month.darkGreen}</div>
-                    <div className='column barDarkGreen' style={{height: (month.darkGreen * 20)+"px"}}></div>
+                    <div>{month.darkGreenC < 2 && month.darkGreenC}</div>
+                    <div className='column barDarkGreen' style={{height: (month.darkGreenC * 20)+"px"}}>{month.darkGreen >= 2 && month.darkGreen}</div>
                   </div>
                   <div className='columnContainer'>
-                    <div>{month.gray}</div>
-                    <div className='column barGray' style={{height: (month.gray * 20)+"px"}}></div>
+                    {month.grayC < 2 && month.grayC}                    
+                    <div className='column barYellow' style={{height: (month.openC * 20)+"px"}}>{month.openC >= 2 && month.openC}</div>
+                    <div className='column barGray' style={{height: (month.grayC * 20)+"px"}}>{month.grayC > 2 && month.grayC}</div>
                   </div>
                 </div>
                 {month.name}

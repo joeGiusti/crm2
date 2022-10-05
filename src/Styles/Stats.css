@@ -35,6 +35,12 @@
 .barDarkGreen{
     background-color: rgb(30, 61, 30);
 }
+.barYellow{
+    background-color: rgba(216, 216, 96, 0.689);
+}
+.barBlue{
+    background-color: rgba(63, 63, 177, 0.759);
+}
 .container{
     vertical-align: bottom;
 }
