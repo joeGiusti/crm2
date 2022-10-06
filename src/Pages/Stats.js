@@ -27,12 +27,30 @@ function Stats(props) {
     positiveRate: 0,
     // Result is currently green
     currentPositiveRate: 0,
+    sixMData: {
+      totalD: 0,
+      totalC: 0,
+      completeC: 0,
+      openC: 0,
+      scheduledC: 0,
+      greenC: 0, 
+      grayC:  0,
+      darkGreenC: 0,          
+      lightBlue: 0,          
+      avgPerMonth: 0,
+      avgPerMonthTTl: 0,
+      positiveRate: 0,          
+      currentPositiveRate: 0,  
+    },
     // list of objects that keep track of each month
     months: {},
     // idk why there is an array also, maybe for a map      
     monthsArray: [],
     // keeps track of the number of contacts cycled
     contactKeys: {},
+    // an array of numbers representing the number of cycles it took to get the green
+    cyclesTilG: {},
+    cyclesTilArray: {},
   })
 
   useEffect(()=>{
@@ -41,27 +59,7 @@ function Stats(props) {
 
   function buildStatObject(){
     
-    // total don, complete don, comple cyc, total cyc
-
     // This object will hold the stats data
-    var tempStatsObject = {
-      green: 0,
-      darkGreen: 0,
-      gray: 0,
-      lightBlue: 0, 
-      donations: 0,       
-      totalCycles: 0,
-      currentGreen: 0,      
-      completedCycles: 0,
-      positiveRate: 0,
-      finalRate: 0,
-      waitingOn: 0,
-      scheduled: 0,
-      months: {},
-      monthsArray: [],
-      contactKeys: {},
-    }
-
     var tempStatsObject2 = {
       // All d: gray, green, dark green, yellow, lightBlue
       totalD: 0,
@@ -85,6 +83,21 @@ function Stats(props) {
       positiveRate: 0,
       // Result is currently green
       currentPositiveRate: 0,
+      sixMData: {
+        totalD: 0,
+        totalC: 0,
+        completeC: 0,
+        openC: 0,
+        scheduledC: 0,
+        greenC: 0, 
+        grayC:  0,
+        darkGreenC: 0,          
+        lightBlue: 0,          
+        avgPerMonth: 0,
+        avgPerMonthTTl: 0,
+        positiveRate: 0,          
+        currentPositiveRate: 0,  
+      },
       // list of objects that keep track of each month
       months: {},
       // idk why there is an array also, maybe for a map      
@@ -92,6 +105,8 @@ function Stats(props) {
       // keeps track of the number of contacts cycled
       contactKeys: {},
       greenContactKeys: {},
+      cyclesTilG: {},
+      cyclesTilArray: {},
     }
 
     // Creating a more usable array O(n) (around 400). Filters out events that do not factor in, puts date object instead of string
@@ -110,8 +125,6 @@ function Stats(props) {
     })    
     
     // Add event data to object
-    var totalCycles = 0
-    var completedCycles = 0
     tempEventsArray.forEach(event => {
 
       // Get the month of this event and add it to the data object
@@ -160,7 +173,7 @@ function Stats(props) {
           }            
       }        
 
-      // These are the event types that count as d
+      // These are the event types that count as a d
       if(  event.color === "eventGray" 
         || event.color === "eventLightGreen" 
         || event.color === "eventGreen" 
@@ -179,10 +192,14 @@ function Stats(props) {
       }
 
       // If it is first add it to the tally of c depending on type
-      if(isFirst){
-        // The events that are of orange clear or purple are not in this list so any first event is a cycle
-        totalCycles++        
+      if(isFirst){     
         
+        // Keep track of number of contacts met and how many c each contact was met                
+        if(tempStatsObject2.contactKeys[event.imageKey])
+          tempStatsObject2.contactKeys[event.imageKey]++
+        else
+          tempStatsObject2.contactKeys[event.imageKey] = 1  
+
         // These are the event types that count as c
         if(  event.color === "eventGray" 
           || event.color === "eventLightGreen" 
@@ -214,9 +231,35 @@ function Stats(props) {
         if(  event.color === "eventBlue" )
           tempStatsObject2.scheduledC++
 
+        // For green events
         if(event.color == "eventLightGreen" || event.color == "eventGreen"){
+
+          // Add to the overall and month tally 
           tempStatsObject2.months[month].greenC++
           tempStatsObject2.greenC++
+
+          // Add to list of the contact keys with green cycles
+          tempStatsObject2.greenContactKeys[event.imageKey] = true     
+
+          // Get the number of cycles before, add 1, push onto array          
+          // only add if there is none before (so maybe use an object)          
+          
+          // but what if the green event comes first in the list? Theyre not sorted by date so this number could be inaccurate.
+
+          // If the contact is not yet in the list add with the initial number of times it took
+          if(!tempStatsObject2.cyclesTilG[event.imageKey]){
+
+            tempStatsObject2.cyclesTilG[event.imageKey] = tempStatsObject2.contactKeys[event.imageKey]
+            var contactData = props.getContactData(event.imageKey)
+            //console.log(contactData.name+" after "+tempStatsObject2.contactKeys[event.imageKey]+" trys")
+            // console.log()
+          }
+          // Else add them with (times it took this time) - (time it took before)
+          else
+            // Making the imageKey unique so it adds it twice
+            tempStatsObject2.cyclesTilG[event.imageKey +""+ tempStatsObject2.contactKeys[event.imageKey]] = tempStatsObject2.contactKeys[event.imageKey] - tempStatsObject2.cyclesTilG[event.imageKey]
+
+
         }
 
         if(event.color == "eventGray"){
@@ -227,44 +270,21 @@ function Stats(props) {
         if(event.color == "eventDarkGreen"){
           tempStatsObject2.months[month].darkGreenC++
           tempStatsObject2.darkGreenC++
-        }
-          
-        // Keep track of number of contacts met and how many c met
-        if(tempStatsObject2.contactKeys[event.imageKey])
-          tempStatsObject2.contactKeys[event.imageKey]++
-        else
-          tempStatsObject2.contactKeys[event.imageKey] = 1  
 
-        // Keep track of the contact keys of the green cycles
-        if(event.color == "eventLightGreen" || event.color == "eventGreen")
-          tempStatsObject2.greenContactKeys[event.imageKey] = true        
-          
-        // If there is a result on the event add it to completed cycles
-        if(event.color === "eventGray" || event.color === "eventLightGreen" || event.color === "eventGreen")
-          completedCycles++
+          if(!tempStatsObject2.cyclesTilG[event.imageKey])
+            tempStatsObject2.cyclesTilG[event.imageKey] = tempStatsObject2.contactKeys[event.imageKey]
+          // Else add them with (times it took this time) - (time it took before)
+          else
+            // Making the imageKey unique so it adds it twice
+            tempStatsObject2.cyclesTilG[event.imageKey +""+ tempStatsObject2.contactKeys[event.imageKey]] = tempStatsObject2.contactKeys[event.imageKey] - tempStatsObject2.cyclesTilG[event.imageKey]
 
-        // Cycles still waiting on
-        if(event.color === "eventYellow"){
-          tempStatsObject.waitingOn++          
-        }
-        // Cycles scheduled
-        if(event.color === "eventBlue")
-          tempStatsObject.scheduled++
-        // Good cycles
-        if(isFirst && (event.color == "eventLightGreen" || event.color == "eventGreen"))
-          tempStatsObject.currentGreen ++
-      }  
+        }                        
 
-      // Save the contact key so we can keep track of the number of contacts
-      tempStatsObject.contactKeys[event.imageKey] = true
-      
-      // put the months into an array for map and length
+      }       
 
+    })                 
 
-    })
-                 
-
-
+    // Turn the months object into an array for sorting and mapping and put it in the stats object
     var tempMonthsArray = []
     for(var index in  tempStatsObject2.months){
       tempMonthsArray.push(tempStatsObject2.months[index])
@@ -272,11 +292,62 @@ function Stats(props) {
     tempMonthsArray = sortMonthsArray(tempMonthsArray)
     tempStatsObject2.monthsArray = tempMonthsArray
 
+    // Calculate the rates
     tempStatsObject2.currentPositiveRate = tempStatsObject2.greenC / tempStatsObject2.completeC
     tempStatsObject2.positiveRate = (tempStatsObject2.greenC + tempStatsObject2.darkGreenC) / tempStatsObject2.completeC
     
+    // Calculate the last 6 months (not including most recent one)
+    var monthArrayLength = tempStatsObject2.monthsArray.length
+    var c = 0
+    var last6Months = []
+    tempStatsObject2.monthsArray.forEach(month => {
+      if(c >= monthArrayLength-7 && c!= monthArrayLength-1){
+        console.log(month.name)
+        last6Months.push(month)
+      }
+      c++
+    })
+
+    var sixMData = {
+      totalD: 0,
+      totalC: 0,
+      completeC: 0,
+      openC: 0,
+      scheduledC: 0,
+      greenC: 0, 
+      grayC:  0,
+      darkGreenC: 0,          
+      lightBlue: 0,          
+      avgPerMonth: 0,
+      avgPerMonthTTl: 0,
+      positiveRate: 0,          
+      currentPositiveRate: 0,      
+    }
+    last6Months.forEach(month => {
+      sixMData.totalD += month.totalD
+      sixMData.totalC += month.totalC
+      sixMData.completeC += month.completeC
+      sixMData.openC += month.openC
+      sixMData.scheduledC += month.scheduledC
+      sixMData.greenC += month.greenC
+      sixMData.grayC += month.grayC
+      sixMData.darkGreenC += month.darkGreenC
+      sixMData.lightBlue += month.lightBlue
+      sixMData.positiveRate += month.positiveRate
+      sixMData.currentPositiveRate += month.currentPositiveRate
+    })
+    sixMData.currentPositiveRate = (sixMData.greenC / sixMData.completeC)
+    sixMData.positiveRate = (sixMData.greenC + sixMData.darkGreenC) / sixMData.completeC
+    sixMData.avgPerMonth = sixMData.greenC / 6
+    sixMData.avgPerMonthTTl = (sixMData.greenC + sixMData.darkGreenC) / 6
+
+    tempStatsObject2.sixMData = sixMData
+
+    // Put in object in state
     setStatsObject2(tempStatsObject2)
         
+    console.log(tempStatsObject2)
+
     // A cool reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
 
     // Create an array with the data for each month
@@ -284,16 +355,11 @@ function Stats(props) {
   }
 
   // Sorts and filters an array of month data and return the sorted array
-  function sortMonthsArray(_monthsArray){
-    
-    
+  function sortMonthsArray(_monthsArray){        
 
     // Place each month in the temp array based on its momentDate
     var tempArray = []
     _monthsArray.forEach( month => {
-
-      console.log("sorting ")
-      console.log(month)
 
       // Don't worry about stray events with no data
       if(month.grayC == 0 && month.greenC == 0 && month.lightBlue == 0)
@@ -314,13 +380,6 @@ function Stats(props) {
 
     // Return the sorted and filtered array
     return tempArray
-  }
-
-  // Determines if the event contact (imageKey) was seen within the previous 2 weeks
-  function cycleDuplicate(){
-    // Check to see if there is an event within 14 days before with same contact
-    // The first one will not show any, any attempts after will, so each cycle will count as 1 attempt even if met the multiple times for that cycle
-    return false
   }
 
   return (
@@ -367,7 +426,23 @@ function Stats(props) {
           <div className='statNumber'> {statsObject2.contactKeys && Object.keys(statsObject2.contactKeys).length + " contacts "}</div>      
           <div className='statNumber'> {statsObject2.totalD + " donations "}</div>      
         </div>
-
+        <div>
+          <div className='statNumber'>+</div>          
+          <div className='statNumber'>Last 6 Months</div>
+          <div className='statNumber'>+</div>          
+        </div>
+        <div>          
+          <div className='statNumber'> {statsObject2.sixMData.totalC} Ttl</div>            
+          <div className='barGreen statNumber'>{statsObject2.sixMData.greenC} Green</div>
+          <div className='barDarkGreen statNumber'>{statsObject2.sixMData.darkGreenC} dg</div> 
+          <div className='barGray statNumber'>{statsObject2.sixMData.grayC} Gray</div> 
+        </div>            
+        <div>          
+          <div className=' statNumber'>{statsObject2.sixMData.currentPositiveRate.toFixed(2)}% current</div>
+          <div className=' statNumber'>{statsObject2.sixMData.positiveRate.toFixed(2)}% ttl</div>
+          <div className=' statNumber'>{statsObject2.sixMData.avgPerMonth.toFixed(1)} / month</div>
+          <div className=' statNumber'>{(statsObject2.sixMData.avgPerMonth * 12).toFixed(1)} /y (proj)</div>
+        </div>  
         
         <div>
           <div>

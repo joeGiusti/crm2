@@ -277,6 +277,7 @@ function App() {
       return(
         <Stats
           eventsArray={eventsArray}
+          getContactData={getContactData}
         ></Stats>
       )
     if(page === "account")
