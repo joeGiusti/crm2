@@ -57,7 +57,9 @@ function App() {
   const [showGreenContacts, setShowGreenContacts] = useState(false)
   const [showOrangeContacts, setShowOrangeContacts] = useState(false)
   const [showClearContacts, setShowClearContacts] = useState(false)
-  const [showArchivedContacts, setShowArchivedContacts] = useState(false)    
+  const [showArchivedContacts, setShowArchivedContacts] = useState(false)   
+  
+  const [youtubeVideoId, setYoutubeVideoId] = useState()   
 
   // Refs
   const tabDown = useRef(false)
@@ -289,7 +291,7 @@ function App() {
     if(page === "settings")
       return(        
         <Settings
-        
+          setYoutubeVideoId={setYoutubeVideoId}
         ></Settings>
       )
 
@@ -618,6 +620,7 @@ function App() {
 
   return (
     <div className="App" id='mainApp' onClick={closeSidebar}>
+
       <div>
         {userId &&  <Sidebar
           setPage={setPage}

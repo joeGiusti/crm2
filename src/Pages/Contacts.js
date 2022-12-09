@@ -36,7 +36,7 @@ function Contacts(props) {
 
   return (
     <div className='contactsContainerContainer'>    
-      <div>
+      <div className='checkboxContainer'>
         <div className='Gray checkbox'>
           <input type={"checkbox"} defaultChecked={props.showGrayContacts} onChange={event => {props.setShowGrayContacts(event.target.checked)}}></input>
         </div>  
@@ -59,12 +59,12 @@ function Contacts(props) {
           <input type={"checkbox"} defaultChecked={props.showArchivedContacts} onChange={event => {props.setShowArchivedContacts(event.target.checked)}}></input>
         </div>  
 
-      </div>
         <ArrowButtons
           message={pageRange.start + " to " + pageRange.end+" of "+props.contactsArray.length}
           arrowLeft={pageLast}
           arrowRight={pageNext}
         ></ArrowButtons>
+      </div>
       <div className='contactsContainer'>
         {props.contactsArray.length < 3 &&  
               <div className='hoverBox contactBox newContactBox' onClick={props.openContact}>

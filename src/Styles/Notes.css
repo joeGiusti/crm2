@@ -34,9 +34,13 @@
     text-align: center;
     width: 100%;
     margin-top: 40px;
+    position: absolute;
+    max-height: calc(100vh - 50px);
+    overflow-y: auto;
 }
 .noteDeleteButton{
     position: absolute;
+    z-index: 1;
     bottom: 10px;
     left: 10px;    
     cursor: pointer;
