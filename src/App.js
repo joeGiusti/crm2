@@ -22,6 +22,7 @@ import Log from './Pages/Log';
 import { isCompositeComponent } from 'react-dom/test-utils';
 import Auth from './Pages/Auth';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import Scroller from './Pages/Scroller';
 
 function App() {
   
@@ -272,7 +273,7 @@ function App() {
     if(page === "gallery")
       return(
         <Gallery
-        
+        contactsArray={contactsArray}  
         ></Gallery>
       )
     if(page === "stats")
@@ -293,6 +294,12 @@ function App() {
         <Settings
           setYoutubeVideoId={setYoutubeVideoId}
         ></Settings>
+      )
+    if(page === "scroller")
+      return(        
+        <Scroller
+          contactsArray={contactsArray}
+        ></Scroller>
       )
 
   }

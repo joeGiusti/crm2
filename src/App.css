@@ -264,3 +264,52 @@ select{
     width: 177.78vh;
   }
 }
+.galleryImage{
+  height: 250px;
+  width: 250px;
+  display: inline-block;
+}
+.galleryImage img{
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+.scrollerContainer{
+  text-align: center;
+  width: 100%;  
+}
+.scroller{
+  height: 100vh;
+  width: 100vw;
+  max-width: 600px;
+  overflow-y: auto;
+  display: inline-block;  
+}
+.scroller img{
+  width: 100%;
+  min-height: 100px;
+}
+.scrollerButtons{
+  position: absolute;
+  top:0;
+  right: 0;
+  padding: 20px;
+  text-align: center;
+  width: 200px;
+}
+.scrollerButtons button{
+  height: 30px;  
+  margin: 3px;
+  width: 100%;
+  background-color: orange;
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+.scrollerButtons button:hover{
+  background-color: rgb(247, 202, 118);
+  box-shadow: 0 0 10px orange;
+}
+.height20{
+  height: 20px;
+}

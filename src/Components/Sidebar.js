@@ -24,6 +24,7 @@ function Sidebar(props) {
                 <div className='sidebarButton' onClick={() => props.setPage("gallery")}>Gallery</div>
                 <div className='sidebarButton' onClick={() => props.setPage("settings")}>Settings</div>
                 <div className='sidebarButton' onClick={() => props.setPage("account")}>Account</div>
+                <div className='sidebarButton' onClick={() => props.setPage("scroller")}>Scroller</div>
             </>
         }        
     </div>
