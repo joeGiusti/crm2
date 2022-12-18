@@ -115,11 +115,12 @@
 .checkboxContainer{
     position: absolute;
     z-index: 2;
-    width: calc(100% - 80px);
+    width: 280px;
+    margin-left: calc(50% - 140px);
+    z-index: 0;
 }
 .arrowButtons{        
     user-select: none;
     margin: 5px;
     display: inline-block;
-    width: 100%;  
   }
