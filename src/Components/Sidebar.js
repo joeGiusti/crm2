@@ -8,9 +8,16 @@ function Sidebar(props) {
     props.setSearch(searchInput)
     //props.setPage()
   }
+  
 
   return (
-    <div className={"sidebar " + (props.open ? " sidebarOpen":"")} onClick={(event)=>props.openFunction(event)}>
+    <div 
+      className={"sidebar " + (props.open ? " sidebarOpen":"")} 
+      onClick={(event)=>props.openFunction(event)}
+      onMouseEnter={()=>props.setSidebarOpen(true)}
+      onMouseExit={()=>props.setSidebarOpen(false)}
+
+    >
       <input id='searchInput' placeholder='search' autoComplete='off' onChange={updateSearch}></input>
         {props.open && 
             <>

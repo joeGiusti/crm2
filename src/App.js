@@ -637,7 +637,8 @@ function App() {
           open={sidebarOpen}
           openFunction={openSidebar}
           closeFunction={closeSidebar}
-          setSearch={setSearch}  
+          setSearch={setSearch} 
+          setSidebarOpen={setSidebarOpen} 
         ></Sidebar>}
         {DisplayPage()}
         {displayContactMenu && 
