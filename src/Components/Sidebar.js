@@ -20,7 +20,7 @@ function Sidebar(props) {
       <input id='searchInput' placeholder='search' autoComplete='off' onChange={updateSearch}></input>
         {props.open && 
             <>
-                <div className='closeButton' onClick={(event)=>props.closeFunction(event)}>x</div>
+                {/* <div className='closeButton' onClick={(event)=>props.closeFunction(event)}>x</div> */}
                 {/* <div className='sidebarButton' onClick={() => props.setPage("messages")}>Messages</div> */}
                 <div className='sidebarButton' onClick={() => props.setPage("calendar")}>Calendar</div>
                 <div className='sidebarButton' onClick={() => props.setPage("contacts")}>Contacts</div>
