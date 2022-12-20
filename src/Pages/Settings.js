@@ -27,6 +27,11 @@ function Settings(props) {
     " Tab + . = Clear Sidebar Search",
     " Tab + y = Close All Windows",
     " Esc = Close All Windows and Sidebar",
+    " ===== ",
+    " Contacts Menu",
+    " Tab + 1 = Current Contacts",
+    " Tab + 2 = Green Contacts",
+    " Tab + 3 = All Contacts",
   ] 
       
   return (
