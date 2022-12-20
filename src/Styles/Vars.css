@@ -66,3 +66,18 @@ div{
     box-sizing: border-box;
     display: inline-block;
 }
+.pageBox button{
+    height: 30px;
+    background-color: rgb(50, 42, 163);
+    color: white;
+    outline: none;
+    border: none;
+    border-radius: 3px;
+    margin: 5px;
+    box-shadow: 0 0 10px black;
+    cursor: pointer;
+}
+.pageBox button:hover{
+    box-shadow: 0 0 5px black;
+    transform: scale(0.99);
+}

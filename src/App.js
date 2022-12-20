@@ -131,6 +131,7 @@ function App() {
         dayOfFocusRef.current = dayOfFocusRef.current.clone().add(7, "day")
         setDayOfFocus(dayOfFocusRef.current)        
       } 
+      
 
       if(event.key == "Tab"){        
         //event.preventDefault()
@@ -155,7 +156,9 @@ function App() {
       if(tabDown.current && event.key == ";")
         setPage("stats")   
       if(tabDown.current && event.key == "'")
-        setPage("settings")        
+        setPage("settings")  
+      if(tabDown.current && event.key == "g")
+        setPage("scroller")        
       if(tabDown.current && event.key == "m")
         openContact()
       if(tabDown.current && event.key == "n")
@@ -656,6 +659,7 @@ function App() {
             getContactData={getContactData}
             firebase={firebase}
             contactsArray={contactsArray}
+            updateContactDb={updateContactDb}               
           ></EventMenu>
         }        
         {displayImageDetail &&

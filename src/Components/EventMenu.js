@@ -146,6 +146,40 @@ function EventMenu(props) {
     setEventContct(_contact)   
     eventContactRef.current = _contact
   }
+
+  const contactNotesRef = useRef()
+  const updateContactsNoteTimer = useRef()
+
+  function changedContactNotes(){
+
+    // If there is a pending save clear it
+    if(updateContactsNoteTimer.current)
+      clearTimeout(updateContactsNoteTimer.current)
+    
+    // Save in 2 seconds (2 seconds of inactivity)
+    updateContactsNoteTimer.current = setTimeout(() => {
+      updateContactNotes()
+    }, 1000);
+  }
+
+  function updateContactNotes(){
+    console.log("updating contact notes to: ")
+    console.log(contactNotesRef.current.value)
+    
+    // If there is no selected event contact don't update anything
+    if(!eventContact)
+      return
+
+    props.updateContactDb({
+      name: eventContact.name,
+      notes: contactNotesRef.current.value,
+      color: eventContact.color,
+      images: eventContact.images,
+      // If its a new contact key == null so it will push a new one and set props.selectedContact (accessed by ContactManu)to reflect
+      key: eventContact.key,      
+    })
+  }
+
   return (
     <>        
       <div className='box2 menuBox blueGlow eventMenu' id='eventMenu'>
@@ -153,7 +187,7 @@ function EventMenu(props) {
           <div className='leftDiv'>
             <div className='leftDivImgArrayContainer'>
               <ImageArrayViewer
-                imageArray={eventContact && eventContact.images && eventContact.images}
+                imageArray={eventContact && eventContact.images}
               ></ImageArrayViewer>
             </div>
             <TypeSelectContacts
@@ -161,7 +195,12 @@ function EventMenu(props) {
               selectContact={selectContact}
               defaultContact={eventContact}
             ></TypeSelectContacts>     
-            <textarea placeholder='notes' defaultValue={eventContact && eventContact.notes}></textarea>                  
+            <textarea 
+              placeholder='notes' 
+              defaultValue={eventContact && eventContact.notes} 
+              ref={contactNotesRef} 
+              onChange={changedContactNotes}
+            ></textarea>                  
           </div>
           <div className='contactImageInfo'>
             <input id='nameInput' placeholder='Name' defaultValue={props.selectedEvent && props.selectedEvent.name} onChange={updatedSomething} autoComplete="off"></input>            

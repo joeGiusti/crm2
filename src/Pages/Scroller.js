@@ -25,6 +25,9 @@ function Scroller(props) {
         // Creates an intersection observer
         setUpIntersectionOberver()
 
+        // Start scrolling by default
+        startScroll()
+
         //pageScroll()
     },[])
 
