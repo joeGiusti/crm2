@@ -22,7 +22,11 @@ function Day(props) {
     }    
 
   return (
-    <div className={'day '+(props.selectedDay.isSame(props.dayData.moment, "day") ? "dayHover" : "")} key={"day"+props.index} id={"day"+props.index} onClick={selectDay}>
+    <div 
+      className={'day '+(props.selectedDay.isSame(props.dayData.moment, "day") ? "dayHover" : "")} 
+      key={"day"+props.index} id={"day"+props.index} onClick={selectDay}
+      onMouseEnter={()=>props.setHoverDate(props.dayData.moment.format("MM DD YYYY"))}
+    >
       {props.dayData.moment.format("D") === "1" ? props.dayData.moment.format("MMMM, DD") : props.dayData.moment.format("DD")}   
       <div key={props.dayData.moment.format("MMMM, DD")}>
         {props.dayData.events.map(eventData => (

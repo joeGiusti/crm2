@@ -33,7 +33,8 @@ function Log(props) {
     // Load the log items from the db and put in state to be mapped
     function loadLog(){        
         onValue(ref(props.firebase.current.db, "log"), snap => {            
-            
+            console.log("loaded log: ")
+            console.log(snap.val())
             var tempArray = []
             for(var v in snap.val()){
                 tempArray.push(snap.val()[v])

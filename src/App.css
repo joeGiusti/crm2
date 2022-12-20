@@ -166,11 +166,11 @@ select{
 }
 .imageDetail{
   position: absolute;
-  top: 5vh;
-  left: 10vw;
   background-color: var(--background-color2);
-  width: 80vw;
-  height: 90vh;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
 }
 .newContactText{
   height: 100%;

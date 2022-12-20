@@ -1,0 +1,17 @@
+.calendarLog{
+    position: absolute;
+    top: 20px;
+    left: 80px;
+    resize: both;
+    overflow: auto;
+    height: 600px;
+    width: 300px;
+    background-color: var(--background-color);
+    z-index: 1;
+    border-radius: 5px;
+    box-shadow: 0 0 10px black;
+}
+.calendarLogTopBar{
+    height: 30px;
+    cursor: move;
+}

@@ -4,10 +4,13 @@ import Day from '../Components/Day'
 import moment from "moment"
 import ArrowButtons from '../Components/ArrowButtons'
 import EventMenu from '../Components/EventMenu'
+import CalendarLog from '../Components/CalendarLog'
 
 function Calendar(props) {
 
   const [calendarArray, setCalendarArray] = useState([])
+  const [showLog, setShowLog] = useState(false)
+  const [hoverDate, setHoverDate] = useState()
 
   useEffect(()=>{    
 
@@ -63,13 +66,19 @@ function Calendar(props) {
   }
 
   return (
-    <div className='calendarContainer' id='calendarContainer'>      
+    <div className='calendarContainer' id='calendarContainer'>   
+      {showLog &&
+        <CalendarLog
+          hoverDate={hoverDate}
+        ></CalendarLog>
+      }   
       <div>
         <ArrowButtons
           message={ props.dayOfFocus.format("MMMM YYYY") }
           arrowLeft={lastMonth}
           arrowRight={nextMonth}
         ></ArrowButtons>
+        <input type='checkbox' onChange={()=>setShowLog(!showLog)}></input>
       </div>
       <div className='calendar' id='calendar'>
 
@@ -80,7 +89,8 @@ function Calendar(props) {
               index={index}
               openEvent={props.openEvent}            
               selectedDay={props.dayOfFocus}
-              getContactData={props.getContactData}              
+              getContactData={props.getContactData}  
+              setHoverDate={setHoverDate}            
             >
             </Day>
           ))}
