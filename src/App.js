@@ -344,7 +344,13 @@ function App() {
       })
     setDisplayEventMenu(true)
   }
-  function openImageDetail(_imageUrlArray){
+  const imageDetailIndex = useRef(0)
+  function openImageDetail(_imageUrlArray, _index){
+    if(!_index)
+      imageDetailIndex.current = 0
+    else
+      imageDetailIndex.current = _index
+
     setImageDetailArray(_imageUrlArray)
     setDisplayImageDetail(true)
   }
@@ -667,6 +673,7 @@ function App() {
           <ImageDetail
             imageArray={imageDetailArray}
             setOpen={setDisplayImageDetail}
+            startingIndex={imageDetailIndex.current}
           ></ImageDetail>
         }
         {/* <SpaceComponent></SpaceComponent> */}

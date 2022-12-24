@@ -257,6 +257,7 @@ function ContactMenu(props) {
                 setDisplay={setDisplayImageEdit}
                 saveArray={updateImageOrder}
                 firebase={props.firebase}
+                openImageDetail={props.openImageDetail}
               ></ImageArrayEdit>            
           }
       </>

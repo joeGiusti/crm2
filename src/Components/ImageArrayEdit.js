@@ -126,12 +126,26 @@ function ImageArrayEdit(props) {
         
     }
 
+    const openViewer = useRef()
+    const imageDetailIndex = useRef(0)
+    const [showDetail, setShowDetail] = useState()
+    function openImageDetail(index){
+        // set the index to show in where it can be accessed
+        imageDetailIndex.current = index
+        setShowDetail(true)
+    }
+
   return (
     <div className='pageBox imageArrayEdit'>
         <div className='closeButton' onClick={closeWindow}>x</div>
         {imageArray.map((imageUrl, index) => (
             <div className='imageEditImageContainer' onDragOver={(event)=>dragOver(event)} key={imageUrl+Math.random()}>
-                <div draggable={true} className={"imageEditImageBox"}>   
+                <div 
+                    draggable={true} 
+                    className={"imageEditImageBox"} 
+                    onDrag={()=>{openViewer.current = false}} 
+                    onClick={()=>props.openImageDetail(props.imageArray, index)} 
+                >   
                     <div className='closeButton smallCloseButton' onClick={()=>deleteImage(index)}>x</div>
                     <img src={imageUrl}></img>
                 </div>

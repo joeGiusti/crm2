@@ -4,7 +4,9 @@ function ImageArrayViewer(props) {
   const [index, setIndex] = useState(0)
     
     useEffect(()=>{
-        
+      if(props.startingIndex)
+        setIndex(props.startingIndex)
+      console.log(props.startingIndex)
     },[])
 
     function nextImage(event){
@@ -33,7 +35,8 @@ function ImageArrayViewer(props) {
 }
 
 ImageArrayViewer.defaultProps = {
-  onClick: ()=>{}
+  onClick: ()=>{},
+  startingIndex: 0,
 }
 
 export default ImageArrayViewer
